@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/oclif/oclip/issues"
   },
-  "homepage": "https://github.com/oclif/oclip#readme"
+  "homepage": "https://github.com/oclif/oclip#readme",
+  "devDependencies": {
+    "typescript": "^3.7.5"
+  },
+  "dependencies": {
+    "reflect-metadata": "^0.1.13"
+  }
 }
