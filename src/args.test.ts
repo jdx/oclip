@@ -200,3 +200,32 @@ describe('default', () => {
     }).exec([])
   })
 })
+
+describe('choices', () => {
+  test('picks a choice', () => {
+    return oclip({
+      args: [
+        arg('A', {choices: ['abc', '123']}),
+      ],
+      run: ({args}) => expect(args).toEqual(['123'])
+    }).exec(['123'])
+  })
+
+  test('picks a choice from a promise', () => {
+    return oclip({
+      args: [
+        arg('A', {choices: async () => ['abc', '123']}),
+      ],
+      run: ({args}) => expect(args).toEqual(['123'])
+    }).exec(['123'])
+  })
+
+  test('picks a wrong choice', () => {
+    return expect(oclip({
+      args: [
+        arg('A', {choices: ['abc', '123']}),
+      ],
+      run: ({args}) => expect(args).toEqual(['123'])
+    }).exec(['124'])).rejects.toThrowError(/Expected "124" to be one of:\nabc\n123/)
+  })
+})

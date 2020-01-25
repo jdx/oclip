@@ -30,6 +30,7 @@
     "url": "git+https://github.com/oclif/oclip.git"
   },
   "scripts": {
+    "lint": "tsc -p . && eslint --ext ts ./src && cd example && eslint --ext ts .",
     "prepare": "rm -rf lib tsconfig.tsbuildinfo && tsc -b",
     "test": "jest"
   },

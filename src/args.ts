@@ -63,10 +63,6 @@ function argBuilder<T>(defaultOptions: ArgOpts<T> & {parse: (input: string) => T
       const val = arg['default']
       arg['default'] = async () => val
     }
-    const choices = arg['choices']
-    if (choices && typeof choices !== 'function') {
-      arg['choices'] = async () => choices
-    }
     return arg
   }
 
@@ -87,7 +83,7 @@ function argBuilder<T>(defaultOptions: ArgOpts<T> & {parse: (input: string) => T
   return arg
 }
 
-export const arg = argBuilder({parse: s => s})
+export const arg = argBuilder({parse: (s: string) => s})
 
 const addIdToArgs = (args: Arg<any>[]) => {
   for (let i=0; i<args.length; i++) {
@@ -138,7 +134,14 @@ export const validateArgs = async <A extends Arg<any>[]>(options: FullOptions<A,
   }
 
   for (let def of defs.slice(0, args.length)) {
-    args[def.id] = def.parse(args[def.id])
+    const input = args[def.id]
+    if (def.choices) {
+      const choices = (typeof def.choices === 'function' ? await def.choices() : def.choices)
+      if (!choices.includes(input)) {
+        throw new Error(`Expected "${input}" to be one of:\n${choices.join('\n')}`)
+      }
+    }
+    args[def.id] = def.parse(input)
   }
 
   const missingArgs = defs.slice(args.length)
