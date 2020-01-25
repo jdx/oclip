@@ -1,4 +1,6 @@
-import {oclip, arg} from '.'
+import {arg} from './args'
+import { command } from './command'
+import { topic } from './topic'
 
 const argv = process.argv
 
@@ -8,20 +10,20 @@ describe('run', () => {
   test('runs with just a run function', async () => {
     process.argv = ['node', './script']
     const fn = jest.fn()
-    await oclip({
+    await command({
       run: () => fn('abc')
     }).exec()
     expect(fn).toBeCalledWith('abc')
   })
 
   test('passes through return value', () => {
-    return expect(oclip({
+    return expect(command({
       run: () => 123
     }).exec([])).resolves.toEqual(123)
   })
 
   test('gets homedir', () => {
-    return oclip({
+    return command({
       run: ({ctx}) => expect(ctx.dirs.home).toMatch(/^\//)
     }).exec([])
   })
@@ -30,8 +32,8 @@ describe('run', () => {
 describe('subcommands', () => {
   test('runs subcommand', async () => {
     const fn = jest.fn()
-    await oclip({children: {
-      foo: oclip({
+    await topic({children: {
+      foo: command({
         run: () => fn(),
       })
     }}).exec(['foo'])
@@ -39,8 +41,8 @@ describe('subcommands', () => {
   })
   test('runs subcommand with arg', async () => {
     const fn = jest.fn()
-    await oclip({children: {
-      foo: oclip({
+    await topic({children: {
+      foo: command({
         args: [arg('BAR')],
         run: ({args}) => fn(args),
       }),

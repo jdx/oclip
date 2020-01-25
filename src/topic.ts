@@ -33,3 +33,7 @@ export class Topic {
     if (cmd) return this.children[cmd].exec(argv)
   }
 }
+
+export function topic(options: TopicOptions): Topic {
+  return new Topic(options)
+}

@@ -1,4 +1,4 @@
-import { validateArgDefs, Args } from './args'
+import { validateArgDefs, Args, Arg, RestArg } from './args'
 import parse from './parse'
 import { VersionSignal } from './version'
 import { Context } from './context'
@@ -47,3 +47,14 @@ export interface RunParams<TArgs extends any[], F extends Flags> {
   flags: FlagValues<F>
   ctx: Context
 }
+
+export function command<F extends Flags, A1 extends Arg<any>, A2 extends Arg<any>, R>(options: CommandOptions<[A1, A2], F, [ArgVal<A1>, ArgVal<A2>], R>): Command
+export function command<F extends Flags, A1 extends RestArg<any>, R>(options: CommandOptions<[A1], F, ArgVal<A1>[], R>): Command
+export function command<F extends Flags, A1 extends Arg<any>, R>(options: CommandOptions<[A1], F, [ArgVal<A1>], R>): Command
+export function command<F extends Flags, R>(options: CommandOptions<[], F, [], R>): Command
+export function command<F extends Flags, A extends Arg<any>, R>(options: CommandOptions<A[], F, ArgVal<A>[], R>): Command
+export function command(opts: CommandOptions): Command {
+  return new Command(opts)
+}
+
+export type ArgVal<A extends Arg<any>> = A extends {required: false} ? ReturnType<A['parse']> | undefined : ReturnType<A['parse']>

@@ -1,9 +1,9 @@
-import oclip, {flag} from '.'
+import {flag, command} from '.'
 
 describe('boolean', () => {
   test('sets true', async () => {
     const run = jest.fn()
-    await oclip({
+    await command({
       flags: {
         foo: flag.boolean()
       },
@@ -14,7 +14,7 @@ describe('boolean', () => {
 
   describe('allowNo', () => {
     test('sets to false on --no-foo', () => {
-      return oclip({
+      return command({
         flags: {
           foo: flag.boolean({allowNo: true})
         },
@@ -22,7 +22,7 @@ describe('boolean', () => {
       }).exec(['--no-foo'])
     })
     test('sets to true normally', () => {
-      return oclip({
+      return command({
         flags: {
           foo: flag.boolean({allowNo: true})
         },
@@ -34,7 +34,7 @@ describe('boolean', () => {
 
 describe('input', () => {
   test('sets a flag', async () => {
-    return oclip({
+    return command({
       flags: {
         foo: flag.input()
       },
@@ -42,7 +42,7 @@ describe('input', () => {
     }).exec(['--foo', 'bar'])
   })
   test('sets a flag with `=`', async () => {
-    return oclip({
+    return command({
       flags: {
         foo: flag.input()
       },
@@ -50,7 +50,7 @@ describe('input', () => {
     }).exec(['--foo=bar'])
   })
   test('sets a flag with no space', async () => {
-    return oclip({
+    return command({
       flags: {
         foo: flag.input()
       },
@@ -60,7 +60,7 @@ describe('input', () => {
 
   describe('parse', () => {
     test('parses', async () => {
-      return oclip({
+      return command({
         flags: {
           foo: flag.input({parse: s => parseInt(s)})
         },
@@ -70,7 +70,7 @@ describe('input', () => {
   })
   describe('multiple', () => {
     test('returns empty array with nothing', async () => {
-      return oclip({
+      return command({
         flags: {
           foo: flag.input({multiple: true})
         },
@@ -78,7 +78,7 @@ describe('input', () => {
       }).exec([])
     })
     test('gets multiple', async () => {
-      return oclip({
+      return command({
         flags: {
           foo: flag.input({multiple: true})
         },
@@ -86,7 +86,7 @@ describe('input', () => {
       }).exec(['--foo=123', '--foo', '1234'])
     })
     test('parses individually', async () => {
-      return oclip({
+      return command({
         flags: {
           foo: flag.input({multiple: true, parse: s => s.length})
         },
@@ -96,7 +96,7 @@ describe('input', () => {
   })
   describe('required', () => {
     test('accepts input', () => {
-      return oclip({
+      return command({
         flags: {
           foo: flag.input(),
           bar: flag.input({required: true})
@@ -105,7 +105,7 @@ describe('input', () => {
       }).exec(['--foo=123', '--bar', '234'])
     })
     test('fails if missing', () => {
-      return expect(oclip({
+      return expect(command({
         flags: {
           foo: flag.input(),
           bar: flag.input({required: true})
