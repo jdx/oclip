@@ -19,19 +19,23 @@ describe('required', () => {
     }).parse(['foo', 'bar'])
   })
   test('throws on missing arg', async () => {
-    const cmd = oclip({args: [arg('FOO'), arg('BAR')]}).parse(['foo'])
+    const cmd = oclip({args: [arg('FOO'), arg('BAR')], run: () => {}}).parse(['foo'])
     await expect(cmd).rejects.toThrowError(RequiredArgsError)
   })
   test('throws on missing arg', async () => {
-    const cmd = oclip({args: [arg.required('FOO'), arg.required('BAR')]}).parse(['foo'])
+    const cmd = oclip({args: [arg.required('FOO'), arg.required('BAR')], run: () => {}}).parse(['foo'])
+    await expect(cmd).rejects.toThrowError(/Missing 1 required arg:\nBAR/)
+  })
+  test('throws on missing arg and optional', async () => {
+    const cmd = oclip({args: [arg.required('FOO'), arg.required('BAR'), arg.optional('BAZ')], run: () => {}}).parse(['foo'])
     await expect(cmd).rejects.toThrowError(/Missing 1 required arg:\nBAR/)
   })
   test('required by default', async () => {
-    const cmd = oclip({args: [arg('FOO'), arg('BAR')]}).parse(['foo'])
+    const cmd = oclip({args: [arg('FOO'), arg('BAR')], run: () => {}}).parse(['foo'])
     await expect(cmd).rejects.toThrowError(/Missing 1 required arg:\nBAR/)
   })
   test('throws when extra arg', async () => {
-    const cmd = oclip({args: [arg('FOO')]}).parse(['foo', 'bar'])
+    const cmd = oclip({args: [arg('FOO')], run: () => {}}).parse(['foo', 'bar'])
     await expect(cmd).rejects.toThrowError(/Unexpected argument: bar/)
   })
 })

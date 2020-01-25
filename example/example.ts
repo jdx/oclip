@@ -1,27 +1,8 @@
-import Oclip, {arg} from 'oclip'
+import {oclip, arg} from 'oclip'
 
-class Version extends Oclip {
-  async run() {}
-}
-
-class MyCLI extends Oclip {
-  static subcommands = {
-    'version': Version,
+oclip({
+  args: [arg('arg1'), arg.optional('arg2')],
+  run({args}) {
+    console.dir({args})
   }
-
-  @arg()
-  arg1!: string
-
-  @arg.optional('mydesc2')
-  arg2?: string
-
-  @arg.rest()
-  restargs!: string[]
-
-  async run() {
-    console.log('running MyCLI' + this.arg1)
-    return {exitCode: 100}
-  }
-}
-
-Oclip.run(MyCLI)
+}).parse()

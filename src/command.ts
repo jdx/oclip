@@ -2,28 +2,48 @@ import { Arg, RestArg, } from './args'
 import { Flags } from './flags'
 import parse from './parse'
 import * as os from 'os'
+import { VersionSignal } from './signals'
 
 export class Command<F extends Flags, R> {
   constructor(options: Options<any, F, R, []>) {
     this.options = {
       args: [],
       flags: {} as F,
-      run: () => undefined as any,
       ...options,
     }
+    this.runOrSubcommandsCheck()
   }
   readonly options: FullOptions<any, F, R, []>
 
   async parse(argv = process.argv.slice(2)) {
-    const {args, flags} = await parse(this.options, argv) as any
-    const ctx = {
-      dirs: {
-        home: os.homedir(),
-      },
-      command: this,
+    try {
+      const {args, flags, subcommand} = await parse(this.options, argv) as any
+      const ctx = {
+        dirs: {
+          home: os.homedir(),
+        },
+        command: this,
+      }
+      if (subcommand) {
+        const result = await subcommand.parse(args)
+        return result
+      }
+      if (this.options.run) {
+        const result: any = await this.options.run({args, flags, ctx})
+        return result
+      }
+    } catch (err) {
+      if (err instanceof VersionSignal) {
+        console.log(err.render())
+        return
+      }
+      throw err
     }
-    const result: any = await this.options.run({args, flags, ctx})
-    return result
+  }
+
+  private runOrSubcommandsCheck() {
+    if (this.options.subcommands && this.options.run) throw new Error('command may have subcommands OR a run function but not both.')
+    if (!this.options.subcommands && !this.options.run) throw new Error('command must have subcommands OR a run function')
   }
 }
 
@@ -46,12 +66,13 @@ export interface Oclip {
   <F extends Flags, A extends Arg<any>, R>(options?: Options<A[], F, R, ArgVal<A>[]>): Command<F, R>
 }
 
+export type Options<A extends Arg<any>[], F extends Flags, R, AParams extends any[]> = Partial<FullOptions<A, F, R, AParams>>
 export interface FullOptions<A extends Arg<any>[], F extends Flags, R, AParams extends any[]> {
   args: A
   flags: F
-  run: RunFunc<AParams, F, R>
+  run?: RunFunc<AParams, F, R>
+  subcommands?: {[id: string]: Command<any, any>}
 }
-export type Options<A extends Arg<any>[], F extends Flags, R, AParams extends any[]> = Partial<FullOptions<A, F, R, AParams>>
 
 export interface RunFunc<AParams extends any[], F extends Flags, R> {
   (params: RunParams<AParams, F>): Promise<R> | R
