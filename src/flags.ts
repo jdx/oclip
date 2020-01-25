@@ -88,6 +88,7 @@ export function boolean (opts: BooleanFlagOpts<any> = {}): BooleanFlag<any> {
     type: 'boolean',
   }
 }
+export const bool = boolean
 
 export function input<T> (opts: Multiple<InputFlagOpts<T>> & {parse: ((input: string) => T) | ((input: string) => Promise<T>)}): Multiple<InputFlag<T>>
 export function input<T> (opts: Required<InputFlagOpts<T>> & {parse: ((input: string) => T) | ((input: string) => Promise<T>)}): Required<InputFlag<T>>

@@ -28,20 +28,22 @@ describe('run', () => {
 })
 
 describe('subcommands', () => {
-  test('runs subcommand', async () => {
+  test.skip('runs subcommand', async () => {
     const fn = jest.fn()
-    await oclip({subcommands: {foo: oclip({
-      run: () => fn(),
-    })}}).exec(['foo'])
+    await oclip({children: {
+      foo: oclip({
+        run: () => fn(),
+      })
+    }}).exec(['foo'])
     expect(fn).toBeCalledTimes(1)
   })
-  test('runs subcommand with arg', async () => {
+  test.skip('runs subcommand with arg', async () => {
     const fn = jest.fn()
-    await oclip({subcommands: {
+    await oclip({children: {
       foo: oclip({
         args: [arg('BAR')],
         run: ({args}) => fn(args),
-      })
+      }),
     }}).exec(['foo', 'bar'])
     expect(fn).toBeCalledWith(['bar'])
   })

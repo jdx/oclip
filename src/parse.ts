@@ -1,17 +1,16 @@
-import { Command, FullOptions } from './command'
-import { validateArgs, Arg } from './args'
+import { validateArgs, Args } from './args'
 import { Flags, Flag } from './flags'
 import assert from './assert'
 import { RequiredFlagError } from './errors'
+import { Command } from './command'
 
 interface ParseResult<F extends Flags> {
   args: any[]
   flags: {[K in keyof F]?: any}
-  subcommand?: Command<F, any>
+  subcommand?: Command
 }
 
-export default async function parse<A extends Arg<any>[], F extends Flags>(options: FullOptions<A, F, any, any>, argv: string[]): Promise<ParseResult<F>> {
-  const flagDefs = options.flags
+export default async function parse<F extends Flags>(argv: string[], argDefs: Args, flagDefs: F): Promise<ParseResult<F>> {
   initFlags(flagDefs)
   argv = argv.slice()
   const args = [] as any
@@ -83,7 +82,7 @@ export default async function parse<A extends Arg<any>[], F extends Flags>(optio
     flags[name] = typeof def.default === 'function' ? (await def.default()) : def.default
   }
 
-  const {subcommand} = await validateArgs(options, args)
+  const {subcommand} = await validateArgs(argDefs, args)
 
   return {args, flags: flags as {[K in keyof F]?: any}, subcommand}
 }

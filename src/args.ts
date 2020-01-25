@@ -1,4 +1,4 @@
-import { Command, FullOptions } from './command'
+import { Command } from './command'
 import { VersionSignal } from './version'
 import { RequiredArgsError, UnexpectedArgsError } from './errors'
 
@@ -16,6 +16,8 @@ export interface Arg<T> {
 export type RestArg<T> = Arg<T> & {rest: true, required: false}
 export type OptionalArg<T> = Arg<T> & {required: false}
 export type RequiredArg<T> = Arg<T> & {required: true}
+
+export type Args = Arg<any>[]
 
 export interface ArgOpts<T> {
   description?: string
@@ -108,25 +110,24 @@ const validateNothingRequiredAfterOptional = (defs: Arg<any>[]) => {
 // const numRequiredArgs = (args: Arg<any>[]) => args.reduce((total, arg) => arg.required ? total+1 : total, 0)
 const numOptionalArgs = (args: Arg<any>[]) => args.reduce((total, arg) => arg.rest ? -1 : total + 1, 0)
 
-export const validateArgDefs = <A extends Arg<any>[]>(options: FullOptions<A, any, any, any>) => {
-  validateNothingRequiredAfterOptional(options.args)
+export const validateArgDefs = (argDefs: Args) => {
+  validateNothingRequiredAfterOptional(argDefs)
 }
 
-export const validateArgs = async <A extends Arg<any>[]>(options: FullOptions<A, any, any, any>, args: any[]): Promise<{subcommand?: Command<any, any>}> => {
-  const defs = options.args
+export const validateArgs = async (defs: Args, args: any[]) => {
   addIdToArgs(defs)
   let maxArgs = numOptionalArgs(defs)
 
-  let subcommand: Command<any, any> | undefined
+  let subcommand: Command | undefined
   if (args[0]) {
     if (args[0] === '--version' || args[0] === '-v') throw new VersionSignal()
-    if (options.subcommands) {
-      subcommand = options.subcommands[args[0]]
-      if (subcommand) {
-        maxArgs = -1
-        args.shift()
-      }
-    }
+    // if (options.subcommands) {
+    //   subcommand = options.subcommands[args[0]]
+    //   if (subcommand) {
+    //     maxArgs = -1
+    //     args.shift()
+    //   }
+    // }
   }
 
   for (let def of defs.slice(0, args.length)) {

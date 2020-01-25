@@ -1,4 +1,4 @@
-import {oclip} from './command'
+import {oclip} from './oclip'
 import {arg} from './args'
 import * as flag from './flags'
 
