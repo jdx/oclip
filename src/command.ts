@@ -3,6 +3,7 @@ import { Flags } from './flags'
 import parse from './parse'
 import * as os from 'os'
 import { VersionSignal } from './version'
+import { Context } from './context'
 
 export class Command<F extends Flags, R> {
   constructor(options: Options<any, F, R, []>) {
@@ -19,12 +20,7 @@ export class Command<F extends Flags, R> {
   async exec(argv = process.argv.slice(2)) {
     try {
       const {args, flags, subcommand} = await parse(this.options, argv)
-      const ctx = {
-        dirs: {
-          home: os.homedir(),
-        },
-        command: this,
-      }
+      const ctx = new Context(this)
       if (subcommand) {
         const result: any = await subcommand.exec(args)
         return result
@@ -76,17 +72,10 @@ export interface FullOptions<A extends Arg<any>[], F extends Flags, R, AParams e
 }
 
 export interface RunFunc<AParams extends any[], F extends Flags, R> {
-  (params: RunParams<AParams, F>): Promise<R> | R
+  (params: RunParams<AParams, F, R>): Promise<R> | R
 }
-export interface RunParams<TArgs extends any[], F extends Flags> {
+export interface RunParams<TArgs extends any[], F extends Flags, R> {
   args: TArgs
   flags: {}
-  ctx: RunContext<F>
-}
-
-export interface RunContext<F extends Flags> {
-  dirs: {
-    home: string
-  }
-  command: Command<F, any>
+  ctx: Context<F, R>
 }
