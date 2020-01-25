@@ -1,7 +1,6 @@
 import { Arg, RestArg, validateArgDefs, } from './args'
 import { Flags } from './flags'
 import parse from './parse'
-import * as os from 'os'
 import { VersionSignal } from './version'
 import { Context } from './context'
 
@@ -63,7 +62,10 @@ export interface Oclip {
   <F extends Flags, A extends Arg<any>, R>(options?: Options<A[], F, R, ArgVal<A>[]>): Command<F, R>
 }
 
-export type Options<A extends Arg<any>[], F extends Flags, R, AParams extends any[]> = Partial<FullOptions<A, F, R, AParams>>
+export type Options<A extends Arg<any>[], F extends Flags, R, AParams extends any[]> =
+  | Partial<FullOptions<A, F, R, AParams>> & {subcommands: {[id: string]: Command<any, any>}}
+  | Partial<FullOptions<A, F, R, AParams>> & {run: RunFunc<AParams, F, R>}
+
 export interface FullOptions<A extends Arg<any>[], F extends Flags, R, AParams extends any[]> {
   args: A
   flags: F

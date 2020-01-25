@@ -104,15 +104,9 @@ describe('argBuilder', () => {
       run: ({ctx}) => expect(ctx.command.options.args[0]).toMatchObject({name: 'FOO'})
     }).exec(['foo'])
   })
-  test('name/desc', () => {
+  test('name/options', () => {
     return oclip({
-      args: [arg('FOO', 'DESC')],
-      run: ({ctx}) => expect(ctx.command.options.args[0]).toMatchObject({name: 'FOO', description: 'DESC'}),
-    }).exec(['foo'])
-  })
-  test('name/desc/options', () => {
-    return oclip({
-      args: [arg('FOO', 'DESC', {parse: s => parseInt(s)})],
+      args: [arg('FOO', {parse: s => parseInt(s), description: 'DESC'})],
       run: ({args, ctx}) => {
         expect(args).toEqual([123])
         expect(ctx.command.options.args[0]).toMatchObject({name: 'FOO', description: 'DESC'})
@@ -121,10 +115,10 @@ describe('argBuilder', () => {
   })
   test('undefined options', () => {
     return oclip({
-      args: [arg('FOO', 'DESC', undefined)],
+      args: [arg('FOO', undefined)],
       run: ({args, ctx}) => {
         expect(args).toEqual(['foo'])
-        expect(ctx.command.options.args[0]).toMatchObject({name: 'FOO', description: 'DESC'})
+        expect(ctx.command.options.args[0]).toMatchObject({name: 'FOO'})
       }
     }).exec(['foo'])
   })
