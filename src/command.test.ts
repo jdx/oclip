@@ -21,4 +21,11 @@ describe('run', () => {
     return expect(oclip().run([], () => 123))
       .resolves.toEqual(123)
   })
+
+  test('gets homedir', () => {
+    return oclip()
+      .run([], ({ctx}) => {
+        expect(ctx.dirs.home).toMatch(/^\//)
+      })
+  })
 })

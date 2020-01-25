@@ -1,7 +1,12 @@
-import type { Arg } from './args'
-import type { Flags } from './flags'
+import { Arg, } from './args'
+import { Flags } from './flags'
 
-export interface Options<TArgs extends Arg<any>[], TFlags extends Flags> {
-  args?: TArgs
-  flags?: TFlags
+export interface Options<A extends Arg<any>[], F extends Flags> {
+  args?: A
+  flags?: F
+}
+
+export type FullOptions<A extends Arg<any>[], F extends Flags> = Options & {
+  args: A
+  flags: F
 }

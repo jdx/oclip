@@ -38,7 +38,7 @@ export class UnexpectedArgsError extends OclipError {
 }
 
 function init() {
-  process.on('unhandledRejection', (reason, promise) => {
+  process.on('unhandledRejection', reason => {
     if (reason instanceof OclipError) {
       console.error(reason.render())
       process.exit(190)
