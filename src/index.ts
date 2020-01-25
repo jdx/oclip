@@ -1,4 +1,4 @@
-export {oclip} from './command'
+export {oclip, oclip as default} from './command'
 export {arg} from './args'
 
 export let _parent: NodeModule['parent'] | undefined
