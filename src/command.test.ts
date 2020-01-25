@@ -28,7 +28,7 @@ describe('run', () => {
 })
 
 describe('subcommands', () => {
-  test.skip('runs subcommand', async () => {
+  test('runs subcommand', async () => {
     const fn = jest.fn()
     await oclip({children: {
       foo: oclip({
@@ -37,7 +37,7 @@ describe('subcommands', () => {
     }}).exec(['foo'])
     expect(fn).toBeCalledTimes(1)
   })
-  test.skip('runs subcommand with arg', async () => {
+  test('runs subcommand with arg', async () => {
     const fn = jest.fn()
     await oclip({children: {
       foo: oclip({

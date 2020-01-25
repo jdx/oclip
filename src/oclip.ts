@@ -3,7 +3,7 @@ import { Command } from './command'
 import { Arg, RestArg } from './args'
 import { Flags } from './flags'
 
-export const oclip: Oclip = (options: Options): any => 'subcommands' in options ? new Topic(options) : new Command(options)
+export const oclip: Oclip = (options: Options): any => 'children' in options ? new Topic(options) : new Command(options)
 
 export type ArgVal<A extends Arg<any>> = A extends {required: false} ? ReturnType<A['parse']> | undefined : ReturnType<A['parse']>
 

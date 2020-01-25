@@ -38,4 +38,4 @@ jobs:
         cd example
         yarn
         yarn link oclip
-        npx ts-node example.ts arg1 arg2
+        npx ts-node example.ts serve 20000
