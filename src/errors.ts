@@ -1,4 +1,14 @@
 import { Arg } from './args'
+import { Flag } from './flags'
+
+(function init() {
+  process.on('unhandledRejection', reason => {
+    if (reason instanceof OclipError) {
+      console.error(reason.render())
+      process.exit(190)
+    } else throw reason
+  })
+})()
 
 export class OclipError extends Error {
   constructor(options: { message: string }) {
@@ -37,12 +47,14 @@ export class UnexpectedArgsError extends OclipError {
   }
 }
 
-function init() {
-  process.on('unhandledRejection', reason => {
-    if (reason instanceof OclipError) {
-      console.error(reason.render())
-      process.exit(190)
-    } else throw reason
-  })
+export class RequiredFlagError extends OclipError {
+  public flags: Flag<any>[]
+
+  constructor({flags}: { flags: Flag<any>[] }) {
+    // const usage = m.list.renderList(m.help.flagUsages([flag], {displayRequired: false}))
+    // const message = `Missing required flag:\n${usage}`
+    const message = `Missing required flag${flags.length > 1 ? 's' : ''}: ${flags.map(f => f.toString()).join('\n')}`
+    super({message})
+    this.flags = flags
+  }
 }
-init()

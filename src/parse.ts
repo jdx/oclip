@@ -2,6 +2,7 @@ import { Command, FullOptions } from './command'
 import { validateArgs, Arg } from './args'
 import { Flags, Flag } from './flags'
 import assert from './assert'
+import { RequiredFlagError } from './errors'
 
 interface ParseResult<F extends Flags> {
   args: any[]
@@ -57,6 +58,12 @@ export default async function parse<A extends Arg<any>[], F extends Flags>(optio
       continue
     }
     flags[flag.name] = b
+  }
+
+  const missingRequiredFlags = Object.values(flagDefs)
+    .filter(flag => !(flag.name in flags) && flag.required && !flag.default)
+  if (missingRequiredFlags.length) {
+    throw new RequiredFlagError({flags: missingRequiredFlags})
   }
 
   for (const [name, val] of Object.entries(flags)) {

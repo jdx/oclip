@@ -94,4 +94,24 @@ describe('input', () => {
       }).exec(['--foo=123', '--foo', '1234'])
     })
   })
+  describe('required', () => {
+    test('accepts input', () => {
+      return oclip({
+        flags: {
+          foo: flag.input(),
+          bar: flag.input({required: true})
+        },
+        run: ({flags}) => expect(flags).toMatchObject({foo: '123', bar: '234'}),
+      }).exec(['--foo=123', '--bar', '234'])
+    })
+    test('fails if missing', () => {
+      return expect(oclip({
+        flags: {
+          foo: flag.input(),
+          bar: flag.input({required: true})
+        },
+        run: ({flags}) => expect(flags).toMatchObject({foo: '123'}),
+      }).exec(['--foo=123'])).rejects.toThrowError(/Missing required flag: --bar/)
+    })
+  })
 })
