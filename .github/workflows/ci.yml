@@ -24,3 +24,9 @@ jobs:
     - run: bash <(curl -s https://codecov.io/bash)
       env:
         CODECOV_TOKEN: 5183f977-3ea8-48b1-87a0-0a5114afabf0
+    - run: |
+        yarn link
+        cd example
+        yarn
+        yarn link oclip
+        npx ts-node example.ts
