@@ -6,16 +6,13 @@
     "url": "https://github.com/oclif/oclip/issues"
   },
   "devDependencies": {
-    "@babel/core": "^7.8.3",
-    "@babel/preset-env": "^7.8.3",
-    "@babel/preset-typescript": "^7.8.3",
     "@types/jest": "^24.9.1",
     "@types/node": "^13.5.0",
     "@typescript-eslint/eslint-plugin": "^2.17.0",
     "@typescript-eslint/parser": "^2.17.0",
-    "babel-jest": "^25.1.0",
     "eslint": "^6.8.0",
     "jest": "^25.1.0",
+    "ts-jest": "^25.0.0",
     "ts-node": "^8.6.2",
     "typescript": "^3.8.0-beta"
   },
@@ -30,8 +27,10 @@
     "url": "git+https://github.com/oclif/oclip.git"
   },
   "scripts": {
+    "clean": "rm -rf lib tsconfig.tsbuildinfo",
     "lint": "tsc -p . && eslint --ext ts ./src && cd example && eslint --ext ts .",
-    "prepare": "rm -rf lib tsconfig.tsbuildinfo && tsc -b",
+    "prepublish": "yarn clean",
+    "prepare": "tsc -b",
     "test": "jest"
   },
   "types": "lib/index.d.ts"
