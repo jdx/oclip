@@ -2,7 +2,7 @@ import { Arg, RestArg, } from './args'
 import { Flags } from './flags'
 import parse from './parse'
 import * as os from 'os'
-import { VersionSignal } from './signals'
+import { VersionSignal } from './version'
 
 export class Command<F extends Flags, R> {
   constructor(options: Options<any, F, R, []>) {

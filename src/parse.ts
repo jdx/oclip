@@ -1,7 +1,7 @@
 import { Arg, parseArgs } from './args'
 import { UnexpectedArgsError, RequiredArgsError } from './errors'
 import { Options, Command } from './command'
-import { VersionSignal } from './signals'
+import { VersionSignal } from './version'
 
 interface ParseResult {
   args: any[]
