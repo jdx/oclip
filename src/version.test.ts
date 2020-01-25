@@ -1,7 +1,9 @@
 import {oclip} from '.'
 
+const {version} = require('../package.json')
+
 test('version', async () => {
   const spy = jest.spyOn(console, 'log').mockImplementationOnce(() => {})
-  await oclip({run: () => {}}).parse(['--version'])
-  expect(spy).toHaveBeenCalledWith('oclip version: 0.0.0')
+  await oclip({run: () => {}}).exec(['--version'])
+  expect(spy).toHaveBeenCalledWith(`oclip version: ${version}`)
 })

@@ -18,7 +18,7 @@ export class Command<F extends Flags, R> {
 
   async exec(argv = process.argv.slice(2)) {
     try {
-      const {args, flags, subcommand} = await parse(this.options, argv) as any
+      const {args, flags, subcommand} = await parse(this.options, argv)
       const ctx = {
         dirs: {
           home: os.homedir(),
@@ -26,11 +26,11 @@ export class Command<F extends Flags, R> {
         command: this,
       }
       if (subcommand) {
-        const result = await subcommand.parse(args)
+        const result: any = await subcommand.exec(args)
         return result
       }
       if (this.options.run) {
-        const result: any = await this.options.run({args, flags, ctx})
+        const result: any = await this.options.run({args: args as any, flags, ctx})
         return result
       }
     } catch (err) {

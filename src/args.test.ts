@@ -186,9 +186,17 @@ describe('default', () => {
       args: [
         arg('A'),
         arg.optional('B', {default: () => undefined}),
-        arg('C', {default: () => 123}),
+        arg.optional('C', {default: () => 123}),
       ],
       run: ({args}) => expect(args).toEqual(['a', undefined, 123])
     }).exec(['a'])
+  })
+  test('default rest argument', () => {
+    return oclip({
+      args: [
+        arg.rest('C', {default: 123}),
+      ],
+      run: ({args}) => expect(args).toEqual([123])
+    }).exec([])
   })
 })

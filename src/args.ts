@@ -1,4 +1,4 @@
-import { Options, Command, FullOptions } from './command'
+import { Command, FullOptions } from './command'
 import { VersionSignal } from './version'
 import { RequiredArgsError, UnexpectedArgsError } from './errors'
 
@@ -6,11 +6,11 @@ export interface Arg<T> {
   id: number
   name?: string
   description?: string
-  parse(input: string): T
   required: boolean
-  choices?: string[]
-  default?: () => T | Promise<T>
   rest?: boolean
+  parse(input: string): T
+  choices?: string[] | (() => string[] | Promise<string[]>)
+  default?: () => Promise<T>
 }
 export type RestArg<T> = Arg<T> & {rest: true, required: false}
 export type OptionalArg<T> = Arg<T> & {required: false}
@@ -18,7 +18,7 @@ export type RequiredArg<T> = Arg<T> & {required: true}
 
 export interface ArgOpts<T> {
   parse?: (input: string) => T | Promise<T>
-  choices?: string[]
+  choices?: string[] | (() => string[] | Promise<string[]>)
   default?: T | (() => T | Promise<T>)
 }
 
@@ -61,7 +61,11 @@ function argBuilder<T>(defaultOptions: ArgOpts<T> & {parse: (input: string) => T
     }
     if ('default' in arg && typeof arg['default'] !== 'function') {
       const val = arg['default']
-      arg['default'] = () => val
+      arg['default'] = async () => val
+    }
+    const choices = arg['choices']
+    if (choices && typeof choices !== 'function') {
+      arg['choices'] = async () => choices
     }
     return arg
   }
