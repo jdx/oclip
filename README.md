@@ -1,5 +1,7 @@
 # oclip
 
+![Node.js CI](https://github.com/oclif/oclip/workflows/Node.js%20CI/badge.svg)
+
 This is a CLI flag parsing library. It's similar to [yargs](https://www.npmjs.com/package/yargs) in feature scope but written with a focus on TypeScript.
 
 It's designed as a replacement for the initial parser in [oclif](https://oclif.io/). Use this library if you want a simple parser and use oclif if you want a fully fledged CLI framework.
