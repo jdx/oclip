@@ -1,25 +1,30 @@
 {
   "name": "oclip",
   "version": "0.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "author": "Jeff Dickey (@jdxcode)",
+  "bugs": {
+    "url": "https://github.com/oclif/oclip/issues"
   },
+  "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.17.0",
+    "@typescript-eslint/parser": "^2.17.0"
+  },
+  "devDependencies": {
+    "@types/node": "^13.5.0",
+    "eslint": "^6.8.0",
+    "ts-node": "^8.6.2",
+    "typescript": "^3.8.0-beta"
+  },
+  "homepage": "https://github.com/oclif/oclip#readme",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/oclif/oclip.git"
   },
-  "author": "Jeff Dickey (@jdxcode)",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/oclif/oclip/issues"
-  },
-  "homepage": "https://github.com/oclif/oclip#readme",
-  "devDependencies": {
-    "typescript": "^3.7.5"
-  },
-  "dependencies": {
-    "reflect-metadata": "^0.1.13"
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "rm -rf lib && tsc -b"
   }
 }
