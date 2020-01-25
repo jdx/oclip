@@ -5,26 +5,28 @@
   "bugs": {
     "url": "https://github.com/oclif/oclip/issues"
   },
-  "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^2.17.0",
-    "@typescript-eslint/parser": "^2.17.0"
-  },
   "devDependencies": {
     "@types/node": "^13.5.0",
+    "@typescript-eslint/eslint-plugin": "^2.17.0",
+    "@typescript-eslint/parser": "^2.17.0",
     "eslint": "^6.8.0",
+    "jest": "^25.1.0",
     "ts-node": "^8.6.2",
     "typescript": "^3.8.0-beta"
   },
+  "files": [
+    "/lib"
+  ],
   "homepage": "https://github.com/oclif/oclip#readme",
   "license": "MIT",
   "main": "lib/index.js",
-  "types": "lib/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/oclif/oclip.git"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "rm -rf lib && tsc -b"
-  }
+    "prepare": "rm -rf lib tsconfig.tsbuildinfo && tsc -b",
+    "test": "jest"
+  },
+  "types": "lib/index.d.ts"
 }
