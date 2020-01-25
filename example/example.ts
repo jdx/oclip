@@ -1,15 +1,15 @@
-import {oclip, arg, flag} from 'oclip'
+import {topic, command, arg, flag} from 'oclip'
 
-oclip({
+topic({
   children: {
-    serve: oclip({
+    serve: command({
       args: [arg('port')],
       flags: {verbose: flag.bool()},
       run({args: [port], flags}) {
         console.dir({type: 'serve', port, flags})
       }
     }),
-    kill: oclip({
+    kill: command({
       args: [arg('port')],
       flags: {verbose: flag.bool()},
       run({args: [port], flags}) {
