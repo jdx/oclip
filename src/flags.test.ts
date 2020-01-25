@@ -21,6 +21,14 @@ describe('boolean', () => {
         run: ({flags}) => expect(flags).toMatchObject({foo: false}),
       }).exec(['--no-foo'])
     })
+    test('sets to true normally', () => {
+      return oclip({
+        flags: {
+          foo: flag.boolean({allowNo: true})
+        },
+        run: ({flags}) => expect(flags).toMatchObject({foo: true}),
+      }).exec(['--foo'])
+    })
   })
 })
 
@@ -48,5 +56,16 @@ describe('option', () => {
       },
       run: ({flags}) => expect(flags).toMatchObject({foo: 'bar'}),
     }).exec(['--foobar'])
+  })
+
+  describe('parse', () => {
+    test('parses', async () => {
+      return oclip({
+        flags: {
+          foo: flag.input({parse: s => parseInt(s)})
+        },
+        run: ({flags}) => expect(flags).toMatchObject({foo: 123}),
+      }).exec(['--foo=123'])
+    })
   })
 })

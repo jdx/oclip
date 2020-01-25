@@ -1,7 +1,7 @@
 import { Command, FullOptions } from './command'
 import { validateArgs, Arg } from './args'
 import { Flags, Flag } from './flags'
-import { flag } from '.'
+import assert from './assert'
 
 interface ParseResult<F extends Flags> {
   args: any[]
@@ -48,11 +48,7 @@ export default async function parse<A extends Arg<any>[], F extends Flags>(optio
   const flags: {[name: string]: any} = {}
   for (const [flag, a, b] of flagArgs) {
     if (flag.type === 'boolean') {
-      if (flag.allowNo && `--no-${flag.name}` === a) {
-        flags[flag.name] = false
-      } else {
-        flags[flag.name] = true
-      }
+      flags[flag.name] = a
       continue
     }
     if (flag.multiple) {
@@ -61,6 +57,12 @@ export default async function parse<A extends Arg<any>[], F extends Flags>(optio
       continue
     }
     flags[flag.name] = b
+  }
+
+  for (const [name, val] of Object.entries(flags)) {
+    const flag = flagDefs[name]
+    assert(flag)
+    flags[name] = await flag.parse(val)
   }
 
   const {subcommand} = await validateArgs(options, args)

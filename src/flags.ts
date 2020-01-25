@@ -4,12 +4,16 @@ export type Flags = {[id: string]: Flag<any>}
 
 export type Flag<T> = BooleanFlag<T> | InputFlag<T>
 
+export type FlagValues<F extends Flags> = {[K in keyof F]?: UnwrapPromise<ReturnType<F[K]['parse']>> }
+
+export type UnwrapPromise<T> = T extends Promise<infer U> ? U : T
+
 export interface FlagOpts<T> {
   required?: boolean
   dependsOn?: string[]
   exclusive?: string[]
   hidden?: boolean
-  parse?: () => (T | Promise<T>)
+  parse?: ((input: string) => T) | ((input: string) => Promise<T>)
   choices?: string[] | (() => string[] | Promise<string[]>)
   default?: T | (() => T | Promise<T>)
 }
@@ -31,7 +35,7 @@ export interface FlagBase<T> {
   dependsOn?: string[]
   exclusive?: string[]
   hidden?: boolean
-  parse(): (T | Promise<T>)
+  parse: ((input: string) => T) | ((input: string) => Promise<T>)
   choices?: string[] | (() => string[] | Promise<string[]>)
   default?: T | (() => T | Promise<T>)
 }
@@ -58,18 +62,25 @@ export function boolean (opts: BooleanFlagOpts<any> = {}): BooleanFlag<any> {
   return {
     allowNo: false,
     required: false,
-    parse: () => true,
+    parse(input) {
+      if (this.allowNo && input === `--no-${this.name}`) {
+        return false
+      }
+      return true
+    },
     ...opts,
     name: '',
     type: 'boolean',
   }
 }
 
+export function input<T> (opts: InputFlagOpts<T>): InputFlag<T>
+export function input (opts?: InputFlagOpts<string>): InputFlag<string>
 export function input<T=string> (opts: InputFlagOpts<T> = {}): InputFlag<T> {
   return {
     required: false,
     multiple: false,
-    parse: ((s: string) => s) as any,
+    parse: (s: string) => s as any,
     ...opts,
     name: '',
     type: 'input',

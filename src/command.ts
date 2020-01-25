@@ -1,5 +1,5 @@
 import { Arg, RestArg, validateArgDefs, } from './args'
-import { Flags } from './flags'
+import { Flags, FlagValues } from './flags'
 import parse from './parse'
 import { VersionSignal } from './version'
 import { Context } from './context'
@@ -78,6 +78,6 @@ export interface RunFunc<AParams extends any[], F extends Flags, R> {
 }
 export interface RunParams<TArgs extends any[], F extends Flags, R> {
   args: TArgs
-  flags: {}
+  flags: FlagValues<F>
   ctx: Context<F, R>
 }
