@@ -32,7 +32,7 @@ describe('boolean', () => {
   })
 })
 
-describe('option', () => {
+describe('input', () => {
   test('sets a flag', async () => {
     return oclip({
       flags: {
@@ -66,6 +66,32 @@ describe('option', () => {
         },
         run: ({flags}) => expect(flags).toMatchObject({foo: 123}),
       }).exec(['--foo=123'])
+    })
+  })
+  describe('multiple', () => {
+    test('returns empty array with nothing', async () => {
+      return oclip({
+        flags: {
+          foo: flag.input({multiple: true})
+        },
+        run: ({flags}) => expect(flags).toMatchObject({foo: []}),
+      }).exec([])
+    })
+    test('gets multiple', async () => {
+      return oclip({
+        flags: {
+          foo: flag.input({multiple: true})
+        },
+        run: ({flags}) => expect(flags).toMatchObject({foo: ['123', '1234']}),
+      }).exec(['--foo=123', '--foo', '1234'])
+    })
+    test('parses individually', async () => {
+      return oclip({
+        flags: {
+          foo: flag.input({multiple: true, parse: s => s.length})
+        },
+        run: ({flags}) => expect(flags).toMatchObject({foo: [3, 4]}),
+      }).exec(['--foo=123', '--foo', '1234'])
     })
   })
 })

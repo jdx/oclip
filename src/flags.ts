@@ -77,7 +77,7 @@ export function boolean (opts: BooleanFlagOpts<any> = {}): BooleanFlag<any> {
 export function input<T> (opts: InputFlagOpts<T>): InputFlag<T>
 export function input (opts?: InputFlagOpts<string>): InputFlag<string>
 export function input<T=string> (opts: InputFlagOpts<T> = {}): InputFlag<T> {
-  return {
+  const flag: InputFlag<T> = {
     required: false,
     multiple: false,
     parse: (s: string) => s as any,
@@ -85,4 +85,6 @@ export function input<T=string> (opts: InputFlagOpts<T> = {}): InputFlag<T> {
     name: '',
     type: 'input',
   }
+  if (flag.multiple && flag.default === undefined) flag.default = (async () => [] as any)
+  return flag
 }

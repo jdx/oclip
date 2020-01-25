@@ -52,7 +52,7 @@ export default async function parse<A extends Arg<any>[], F extends Flags>(optio
       continue
     }
     if (flag.multiple) {
-      flags[flag.name] (flags[flag.name] || [])
+      flags[flag.name] = (flags[flag.name] || [])
       flags[flag.name].push(b)
       continue
     }
@@ -62,7 +62,18 @@ export default async function parse<A extends Arg<any>[], F extends Flags>(optio
   for (const [name, val] of Object.entries(flags)) {
     const flag = flagDefs[name]
     assert(flag)
+    if (flag.type === 'input' && flag.multiple) {
+      for (let i=0; i<flags[name].length; i++) {
+        flags[name][i] = await flag.parse(flags[name][i])
+      }
+      continue
+    }
     flags[name] = await flag.parse(val)
+  }
+
+  const defsNotAdded = Object.entries(flagDefs).filter(([name]) => !(name in flags))
+  for (const [name, def] of defsNotAdded) {
+    flags[name] = typeof def.default === 'function' ? (await def.default()) : def.default
   }
 
   const {subcommand} = await validateArgs(options, args)
