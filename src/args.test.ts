@@ -8,7 +8,7 @@ describe('required', () => {
       run({args}) {
         expect(args).toEqual(['foo'])
       }
-    }).parse(['foo'])
+    }).exec(['foo'])
   })
   test('parses 2 args', async () => {
     await oclip({
@@ -16,26 +16,26 @@ describe('required', () => {
       run({args}) {
         expect(args).toEqual(['foo', 'bar'])
       }
-    }).parse(['foo', 'bar'])
+    }).exec(['foo', 'bar'])
   })
   test('throws on missing arg', async () => {
-    const cmd = oclip({args: [arg('FOO'), arg('BAR')], run: () => {}}).parse(['foo'])
+    const cmd = oclip({args: [arg('FOO'), arg('BAR')], run: () => {}}).exec(['foo'])
     await expect(cmd).rejects.toThrowError(RequiredArgsError)
   })
   test('throws on missing arg', async () => {
-    const cmd = oclip({args: [arg.required('FOO'), arg.required('BAR')], run: () => {}}).parse(['foo'])
+    const cmd = oclip({args: [arg.required('FOO'), arg.required('BAR')], run: () => {}}).exec(['foo'])
     await expect(cmd).rejects.toThrowError(/Missing 1 required arg:\nBAR/)
   })
   test('throws on missing arg and optional', async () => {
-    const cmd = oclip({args: [arg.required('FOO'), arg.required('BAR'), arg.optional('BAZ')], run: () => {}}).parse(['foo'])
+    const cmd = oclip({args: [arg.required('FOO'), arg.required('BAR'), arg.optional('BAZ')], run: () => {}}).exec(['foo'])
     await expect(cmd).rejects.toThrowError(/Missing 1 required arg:\nBAR/)
   })
   test('required by default', async () => {
-    const cmd = oclip({args: [arg('FOO'), arg('BAR')], run: () => {}}).parse(['foo'])
+    const cmd = oclip({args: [arg('FOO'), arg('BAR')], run: () => {}}).exec(['foo'])
     await expect(cmd).rejects.toThrowError(/Missing 1 required arg:\nBAR/)
   })
   test('throws when extra arg', async () => {
-    const cmd = oclip({args: [arg('FOO')], run: () => {}}).parse(['foo', 'bar'])
+    const cmd = oclip({args: [arg('FOO')], run: () => {}}).exec(['foo', 'bar'])
     await expect(cmd).rejects.toThrowError(/Unexpected argument: bar/)
   })
 })
@@ -45,19 +45,25 @@ describe('optional', () => {
     await oclip({
       args: [arg.optional('FOO')],
       run: ({args}) => expect(args).toEqual(['foo'])
-    }).parse(['foo'])
+    }).exec(['foo'])
   })
   test('parses 2 args', async () => {
     await oclip({
       args: [arg.optional('FOO'), arg.optional('BAR')],
       run: ({args}) => expect(args).toEqual(['foo', 'bar'])
-    }).parse(['foo', 'bar'])
+    }).exec(['foo', 'bar'])
   })
   test('ignores missing arg', async () => {
     await oclip({
       args: [arg('FOO'), arg.optional('BAR')],
       run: ({args}) => expect(args).toEqual(['foo']),
-    }).parse(['foo'])
+    }).exec(['foo'])
+  })
+  test('required after optional is invalid', () => {
+    return expect(() => oclip({
+      args: [arg('FOO'), arg.optional('BAR'), arg.required('BAZ')],
+      run: ({args}) => expect(args).toEqual(['foo']),
+    })).toThrowError(/required arguments may not follow optional arguments/)
   })
 })
 
@@ -66,19 +72,19 @@ describe('rest', () => {
     return oclip({
       args: [arg.rest('FOO')],
       run: ({args}) => expect(args).toEqual(['foo'])
-    }).parse(['foo'])
+    }).exec(['foo'])
   })
   test('parses 2 args', () => {
     return oclip({
       args: [arg.rest('FOO')],
       run: ({args}) => expect(args).toEqual(['foo', 'bar']),
-    }).parse(['foo', 'bar'])
+    }).exec(['foo', 'bar'])
   })
   test('parses rest args after normal arg', () => {
     return oclip({
       args: [arg('FOO'), arg.rest('BAR')],
       run: ({args}) => expect(args).toEqual(['foo', 'bar', 'baz'])
-    }).parse(['foo', 'bar', 'baz'])
+    }).exec(['foo', 'bar', 'baz'])
   })
 })
 
@@ -87,7 +93,7 @@ describe('parse', () => {
     return oclip({
       args: [arg('FOO', {parse: s => parseInt(s)})],
       run: ({args}) => expect(args).toEqual([123])
-    }).parse(['123'])
+    }).exec(['123'])
   })
 })
 
@@ -96,13 +102,13 @@ describe('argBuilder', () => {
     return oclip({
       args: [arg('FOO')],
       run: ({ctx}) => expect(ctx.command.options.args[0]).toMatchObject({name: 'FOO'})
-    }).parse(['foo'])
+    }).exec(['foo'])
   })
   test('name/desc', () => {
     return oclip({
       args: [arg('FOO', 'DESC')],
       run: ({ctx}) => expect(ctx.command.options.args[0]).toMatchObject({name: 'FOO', description: 'DESC'}),
-    }).parse(['foo'])
+    }).exec(['foo'])
   })
   test('name/desc/options', () => {
     return oclip({
@@ -111,7 +117,7 @@ describe('argBuilder', () => {
         expect(args).toEqual([123])
         expect(ctx.command.options.args[0]).toMatchObject({name: 'FOO', description: 'DESC'})
       }
-    }).parse(['123'])
+    }).exec(['123'])
   })
   test('undefined options', () => {
     return oclip({
@@ -120,7 +126,7 @@ describe('argBuilder', () => {
         expect(args).toEqual(['foo'])
         expect(ctx.command.options.args[0]).toMatchObject({name: 'FOO', description: 'DESC'})
       }
-    }).parse(['foo'])
+    }).exec(['foo'])
   })
   test('name/options', () => {
     return oclip({
@@ -129,13 +135,13 @@ describe('argBuilder', () => {
         expect(args).toEqual([123])
         expect(ctx.command.options.args[0]).toMatchObject({name: 'FOO'})
       }
-    }).parse(['123'])
+    }).exec(['123'])
   })
   test('options only', () => {
     return oclip({
       args: [arg({parse: s => parseInt(s)})],
       run: ({args}) => expect(args).toEqual([123])
-    }).parse(['123'])
+    }).exec(['123'])
   })
   test('extend', () => {
     const numArg = arg.extend({parse: s => parseInt(s)})
@@ -145,6 +151,44 @@ describe('argBuilder', () => {
         expect(args).toEqual([123])
         expect(ctx.command.options.args[0]).toMatchObject({name: 'FOO'})
       }
-    }).parse(['123'])
+    }).exec(['123'])
+  })
+})
+
+
+describe('default', () => {
+  test('basic default', () => {
+    return oclip({
+      args: [arg('FOO', {default: 123})],
+      run: ({args}) => expect(args).toEqual([123])
+    }).exec([])
+  })
+  test('basic default overridden by input', () => {
+    return oclip({
+      args: [arg('FOO', {default: 123})],
+      run: ({args}) => expect(args).toEqual(['foo'])
+    }).exec(['foo'])
+  })
+  test('default as function', () => {
+    return oclip({
+      args: [arg('FOO', {default: () => 123})],
+      run: ({args}) => expect(args).toEqual([123])
+    }).exec([])
+  })
+  test('default as async function', () => {
+    return oclip({
+      args: [arg('FOO', {default: async () => 123})],
+      run: ({args}) => expect(args).toEqual([123])
+    }).exec([])
+  })
+  test('default with undefined in the middle', () => {
+    return oclip({
+      args: [
+        arg('A'),
+        arg.optional('B', {default: () => undefined}),
+        arg('C', {default: () => 123}),
+      ],
+      run: ({args}) => expect(args).toEqual(['a', undefined, 123])
+    }).exec(['a'])
   })
 })

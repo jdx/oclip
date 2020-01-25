@@ -1,4 +1,4 @@
-import { Arg, RestArg, } from './args'
+import { Arg, RestArg, validateArgDefs, } from './args'
 import { Flags } from './flags'
 import parse from './parse'
 import * as os from 'os'
@@ -12,10 +12,11 @@ export class Command<F extends Flags, R> {
       ...options,
     }
     this.runOrSubcommandsCheck()
+    validateArgDefs(this.options)
   }
   readonly options: FullOptions<any, F, R, []>
 
-  async parse(argv = process.argv.slice(2)) {
+  async exec(argv = process.argv.slice(2)) {
     try {
       const {args, flags, subcommand} = await parse(this.options, argv) as any
       const ctx = {

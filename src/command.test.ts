@@ -10,20 +10,20 @@ describe('run', () => {
     const fn = jest.fn()
     await oclip({
       run: () => fn('abc')
-    }).parse()
+    }).exec()
     expect(fn).toBeCalledWith('abc')
   })
 
   test('passes through return value', () => {
     return expect(oclip({
       run: () => 123
-    }).parse([])).resolves.toEqual(123)
+    }).exec([])).resolves.toEqual(123)
   })
 
   test('gets homedir', () => {
     return oclip({
       run: ({ctx}) => expect(ctx.dirs.home).toMatch(/^\//)
-    }).parse([])
+    }).exec([])
   })
 })
 
@@ -32,7 +32,7 @@ describe('subcommands', () => {
     const fn = jest.fn()
     await oclip({subcommands: {foo: oclip({
       run: () => fn(),
-    })}}).parse(['foo'])
+    })}}).exec(['foo'])
     expect(fn).toBeCalledTimes(1)
   })
   test('runs subcommand with arg', async () => {
@@ -42,7 +42,7 @@ describe('subcommands', () => {
         args: [arg('BAR')],
         run: ({args}) => fn(args),
       })
-    }}).parse(['foo', 'bar'])
+    }}).exec(['foo', 'bar'])
     expect(fn).toBeCalledWith(['bar'])
   })
 })
