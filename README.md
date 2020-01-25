@@ -4,6 +4,8 @@ This is a CLI flag parsing library. It's similar to [yargs](https://www.npmjs.co
 
 It's designed as a replacement for the initial parser in [oclif](https://oclif.io/). Use this library if you want a simple parser and use oclif if you want a fully fledged CLI framework.
 
+_This under heavy WIP._
+
 ## Getting Started
 
 In a new or existing node project, first add oclip: `npm i oclip` or `yarn add oclip`. Then create a basic hello, world CLI:
