@@ -1,7 +1,31 @@
-import type { Arg, RestArg } from './args'
-import type { Flags } from './flags'
-import type { Options } from './options'
+import { Arg, RestArg } from './args'
+import { Flags } from './flags'
+import { Options } from './options'
 import parse from './parse'
+
+export class Command<TArgs extends any[]> {
+  constructor(readonly options: Options<any, any>) {
+    options.args = options.args || []
+  }
+
+  async run<TReturn>(argv: string[], run?: CommandRun<TArgs, TReturn>): Promise<TReturn>
+  async run<TReturn>(run?: CommandRun<TArgs, TReturn>): Promise<TReturn>
+  async run<TReturn>(argv?: string[] | CommandRun<TArgs, TReturn>, run?: CommandRun<TArgs, TReturn>): Promise<TReturn> {
+    if (typeof argv === 'function') {
+      run = argv
+      argv = process.argv
+    }
+    if (!argv) argv = process.argv
+    if (argv === process.argv) argv = argv.slice(2)
+    const {args, flags} = await parse(this.options, argv) as any
+    const ctx = {
+      command: this,
+    }
+    if (!run) return undefined as any
+    const result = await run({args, flags, ctx})
+    return result
+  }
+}
 
 export type ArgVal<A extends Arg<any>> = A extends {required: false} ? ReturnType<A['parse']> | undefined : ReturnType<A['parse']>
 
@@ -20,27 +44,18 @@ export interface Oclip {
   <TFlags extends Flags, A extends Arg<any>>(options?: Options<A[], TFlags>): Command<ArgVal<A>[]>
 }
 
-export interface Command<TArgs extends any[]> {
-  run(argv: string[], run?: CommandRun<TArgs>): void
-  run(run?: CommandRun<TArgs>): void
+export interface CommandRun<TArgs extends any[], TReturn> {
+  (params: RunParams<TArgs>): Promise<TReturn> | TReturn
 }
 
-export interface CommandRun<TArgs extends any[]> {
-  (params: {args: TArgs, flags: {}}): any
+export interface RunParams<TArgs extends any[]> {
+  args: TArgs
+  flags: {}
+  ctx: RunContext<TArgs>
 }
 
-export const oclip: Oclip = (options: Options<any, any> = {}) => {
-  return {
-    async run(argv: string[] | CommandRun<any> = process.argv, run?: CommandRun<any>) {
-      if (typeof argv === 'function') {
-        run = argv
-        argv = process.argv
-      }
-      if (!run) return
-      if (argv === process.argv) argv = argv.slice(2)
-      const {args, flags} = await parse(options, argv)
-      const result = await run({args, flags})
-      return result
-    }
-  }
+export interface RunContext<TArgs extends any[]> {
+  command: Command<TArgs>
 }
+
+export const oclip: Oclip = (options: Options<any, any> = {}) => new Command(options) as any

@@ -73,3 +73,16 @@ function argBuilder<T>(defaultOptions: ArgOpts<T> & {parse: (input: string) => T
 }
 
 export const arg = argBuilder({parse: s => s})
+
+export const parseArgs = async (input: string[], args: Arg<any>[]): Promise<any[]> => {
+  const output = [] as any[]
+  for (let i=0; i<input.length; i++) {
+    let o = input[i]
+    const arg = args[i] || args[args.length-1]
+    if (o !== undefined && arg) {
+      o = arg.parse(o)
+    }
+    output.push(o)
+  }
+  return output
+}

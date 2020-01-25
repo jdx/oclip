@@ -1,4 +1,4 @@
-import type { Arg } from './args'
+import { Arg } from './args'
 
 export class OclipError extends Error {
   constructor(options: { message: string }) {
