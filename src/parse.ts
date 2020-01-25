@@ -1,6 +1,6 @@
-import { Options } from './options'
 import { Arg, parseArgs } from './args'
 import { UnexpectedArgsError, RequiredArgsError } from './errors'
+import { Options } from './command'
 
 interface ParseResult {
   args: any[]
@@ -10,7 +10,7 @@ interface ParseResult {
 const numRequiredArgs = (args: Arg<any>[]) => args.reduce((total, arg) => arg.required ? total + 1 : total, 0)
 const numOptionalArgs = (args: Arg<any>[]) => args.reduce((total, arg) => arg.rest ? -1 : total + 1, 0)
 
-export default async function parse(options: Options<any, any>, argv: string[]): Promise<ParseResult> {
+export default async function parse(options: Options<any, any, any, any>, argv: string[]): Promise<ParseResult> {
   argv = argv.slice()
   const argDefs = options.args
   const minArgs = numRequiredArgs(argDefs)
