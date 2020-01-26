@@ -65,6 +65,8 @@ topic({
     refresh: command({/*...*/})
   }
 }).exec()
+
+// run these with `$ mycli refresh` or `$ mycli auth login`
 ```
 
 `command()` is just like we saw above. Topics allow us to add hierarchy and nest either subtopics or subcommands. We will not be supporting "topic-commands" (commands that are also a topic) like oclif does because it causes a lot of problem with space-separated commands—vs oclif's colon separated.
