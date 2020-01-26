@@ -34,15 +34,35 @@ Arguments are required by default, use `.optional()` to make them optional:
 ```typescript
 import {command, arg} from 'oclip'
 
+// $ mycli argOne argTwo
 command({
   args: [
     arg('ARG_ONE'),
     arg.optional('ARG_TWO'),
   ],
-  run({args}) {
-    const [argOne, argTwo] = args
+  run({args: [argOne, argTwo]}) {
     console.log(`argOne: ${argOne}`)
     console.log(`argTwo: ${argTwo}`)
+  }
+}).exec()
+```
+
+### Parsing Flags
+
+```typescript
+import {command, flag} from 'oclip'
+
+// $ mycli --verbose --file=FILENAME
+// TypeScript is able to infer that `verbose` is a boolean and `file` is a string.
+command({
+  flags: {
+    // -v for a short char and help description
+    verbose: flag.boolean('v', 'show extra output'),
+    file: file.input('f', 'file to read from')
+  },
+  run({flags: {verbose, file}}) {
+    console.log(`verbose: ${verbose}`)
+    console.log(`file: ${file}`)
   }
 }).exec()
 ```
@@ -54,6 +74,7 @@ Unlike oclif, oclip is designed for space-separated commands:
 ```typescript
 import {command, topic, arg} from 'oclip'
 
+// run these with `$ mycli refresh` or `$ mycli auth login`
 topic({
   children: {
     auth: topic({
@@ -66,8 +87,6 @@ topic({
     refresh: command({/*...*/})
   }
 }).exec()
-
-// run these with `$ mycli refresh` or `$ mycli auth login`
 ```
 
 `command()` is just like we saw above. Topics allow us to add hierarchy and nest either subtopics or subcommands. We will not be supporting "topic-commands" (commands that are also a topic) like oclif does because it causes a lot of problem with space-separated commands—vs oclif's colon separated.
