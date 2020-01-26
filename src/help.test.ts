@@ -1,7 +1,6 @@
 import { command } from './command'
 import { arg } from './args'
 import { flag } from '.'
-import { setFlagsFromString } from 'v8'
 import { Context } from './context'
 import { commandHelp } from './help'
 import path = require('path')
@@ -27,6 +26,17 @@ Options:
 
 
 describe('command', () => {
+  test('renders arg description', () => {
+    const cmd = command({
+      args: [arg('arg-name', 'description')],
+      run: () => {}
+    })
+    const ctx = new Context(cmd)
+    expect(commandHelp(ctx, cmd)).toEqual(`Usage: node ${proc} <ARG-NAME>
+
+Arguments:
+  ARG-NAME          # description
+`)})
   test('renders flag description', () => {
     const cmd = command({
       flags: {foo: flag.input('a', 'description')},

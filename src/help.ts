@@ -30,7 +30,7 @@ export function commandHelp(ctx: Context, command: Command) {
     lines.push('')
   }
   const flags = Object.values(command.flags).filter(f => !f.hidden)
-  if (flags) {
+  if (flags.length) {
     lines.push('Options:')
     for (let flag of flags) {
       lines.push('  ' + flag.toString().padEnd(17) + ' # ' + flag.description)
