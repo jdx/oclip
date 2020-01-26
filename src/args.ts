@@ -69,9 +69,6 @@ function argBuilder<T>(defaultOptions: ArgOpts<T> & {parse: (input: string) => T
         if (this.name) {
           s += `${this.name.toUpperCase()}`
         }
-        if (!usage && this.description) {
-          s += ` - ${this.description}`
-        }
         if (!usage) return s
         s = '<' + (s || 'UNKNOWN ARGUMENT') + '>'
         if (!this.required) s = `[${s}]`

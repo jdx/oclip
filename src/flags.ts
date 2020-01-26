@@ -98,7 +98,7 @@ export interface FlagBase<T> {
   default?: T | (() => T | Promise<T>)
   /** pretty print flag
    * mainly for use in help and error messages */
-  toString({description}?: {description?: boolean}): string
+  toString(): string
 }
 
 export interface BooleanFlag<T> extends FlagBase<T> {
@@ -138,17 +138,14 @@ export function boolean (char?: Alphabet | BooleanFlagOpts<any>, description?: s
   return {
     allowNo: false,
     required: false,
-    toString({description}: {description?: boolean} = {}) {
-      console.log(this)
+    toString() {
       let types = []
       if (this.char) types.push(`-${this.char}`)
       if (this.name) {
         types.push(`--${this.name}`)
         if (this.allowNo) types.push(`--no-${this.name}`)
       }
-      let s = types.join(', ') || 'UNKNOWN FLAG'
-      if (!description || !this.description) return s
-      return [s, this.description].join(' - ')
+      return types.join(', ') || 'UNKNOWN FLAG'
     },
     parse(input) {
       if (this.allowNo && input === `--no-${this.name}`) {
@@ -197,15 +194,13 @@ export function input<T=string> (char?: Alphabet | InputFlagOpts<T>, description
   const flag: InputFlag<T> = {
     required: false,
     multiple: false,
-    toString({description}: {description?: boolean} = {}) {
+    toString() {
       let types = []
       if (this.char) types.push(`-${this.char}`)
       if (this.name) {
         types.push(`--${this.name}`)
       }
-      const s = types.join(', ') || 'UNKNOWN FLAG'
-      if (!description || !this.description) return s
-      return [s, this.description].join(' - ')
+      return types.join(', ') || 'UNKNOWN FLAG'
     },
     parse: (s: string) => s as any,
     char: char as Alphabet,
