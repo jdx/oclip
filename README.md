@@ -5,7 +5,7 @@
 
 This is a CLI flag parsing library. It's similar to [yargs](https://www.npmjs.com/package/yargs) in feature scope but written with a focus on TypeScript developers. Type Inference works very well in oclip and you won't have to manually specify types hardly ever.
 
-The purpose for this project is two-fold: First to provide users that don't need a full fledged framework a simpler way to write TypeScript CLIs, and second to replace the original parser in [oclif](https://oclif.io/): [`@oclif/parser/`](https://github.com/oclif/parser).
+The purpose for this project is two-fold: First to provide users that don't need a full fledged framework a simpler way to write TypeScript CLIs, and second to replace the original parser in [oclif](https://oclif.io/): [`@oclif/parser`](https://github.com/oclif/parser).
 
 This will have much more functionality than the current parser. It will include support for topics and subcommands so you can use it standalone for even reasonably complex CLIs. This overlaps with oclif a bit but I feel that's ok.
 
