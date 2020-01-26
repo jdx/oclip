@@ -1,7 +1,6 @@
 import { Context } from './context'
 import { Command } from './command'
 import { Topic } from './topic'
-import { flag } from '.'
 
 export class HelpSignal extends Error {
   constructor(readonly ctx: Context) {

@@ -43,3 +43,22 @@ oclip({
   }
 }).parse()
 ```
+
+## TODO
+
+- [ ] topic help listing
+- [ ] normalized filepath arg/flag
+- [ ] integer arg/flag
+- [ ] env var arg/flag
+- [ ] lazy-loading files via strings in topic files
+- [ ] manifest file to help with ^^ and make help fast
+- [ ] help examples
+- [ ] `mycli help foo`
+- [ ] `--`
+- [ ] style errors
+- [ ] hooks/middleware?
+- [ ] oclif integration
+- [ ] global flags
+- [ ] completions
+- [ ] grouping in help
+- [ ] countable booleans (e.g.: -vvv)
