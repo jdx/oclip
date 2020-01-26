@@ -1,3 +1,4 @@
+export type Alphabet = AlphabetLowercase | AlphabetUppercase
 export type AlphabetUppercase =
   | 'A'
   | 'B'

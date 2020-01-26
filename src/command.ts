@@ -48,7 +48,7 @@ export class Command {
   }
 
   usage() {
-    const args = this.args.map(a => a.toString({usageDocopt: true}))
+    const args = this.args.map(a => a.toString({usage: true}))
     return [this.commandPath(this), ...args].join(' ')
   }
 

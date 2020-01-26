@@ -34,7 +34,7 @@ export class Topic {
   parent?: Topic
 
   exec(argv = process.argv.slice(2)): any {
-    console.log(argv)
+    //console.log(argv)
     argv.slice()
     const cmd = argv.shift()
     if (cmd) return this.children[cmd].exec(argv)

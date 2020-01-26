@@ -4,17 +4,17 @@ topic({
   children: {
     serve: command({
       args: [
-        arg('port'),
+        arg('port', 'a desc of port'),
         arg.optional('filename'),
       ],
-      flags: {verbose: flag.boolean()},
+      flags: {verbose: flag.boolean('v', 'show more output')},
       run({args: [port], flags}) {
         console.dir({type: 'serve', port, flags})
       }
     }),
     kill: command({
       args: [arg('port')],
-      flags: {verbose: flag.boolean()},
+      flags: {verbose: flag.boolean('v', 'show more output')},
       run({args: [port], flags}) {
         console.dir({type: 'kill', port, flags})
       }

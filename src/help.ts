@@ -1,7 +1,6 @@
 import { Context } from './context'
 import { Command } from './command'
 import { Topic } from './topic'
-import * as path from 'path'
 
 export class HelpSignal extends Error {
   constructor(readonly ctx: Context) {
@@ -18,15 +17,22 @@ export class HelpSignal extends Error {
 }
 
 function commandHelp(ctx: Context, command: Command) {
-  console.log(ctx)
-  console.log(command)
   const lines = []
   if (command.description) lines.push(command.description, '')
   lines.push('Usage: ' + command.usage(), '')
-  if (command.args.length) {
+  const argsWithDescription = command.args.filter(a => !a.hidden && a.description)
+  if (argsWithDescription.length) {
     lines.push('Arguments:')
-    for (let arg of command.args) {
-      lines.push('    ' + arg.toString().padStart(4))
+    for (let arg of argsWithDescription) {
+      lines.push('  ' + arg.toString().padStart(4))
+    }
+    lines.push()
+  }
+  const flags = Object.values(command.flags).filter(f => !f.hidden)
+  if (flags) {
+    lines.push('Options:')
+    for (let flag of flags) {
+      lines.push('  ' + flag.toString({description: true}).padStart(4))
     }
     lines.push()
   }
