@@ -17,7 +17,7 @@ export class HelpSignal extends Error {
   }
 }
 
-function commandHelp(ctx: Context, command: Command) {
+export function commandHelp(ctx: Context, command: Command) {
   const lines = []
   if (command.description) lines.push(command.description, '')
   lines.push('Usage: ' + command.usage(), '')
@@ -40,7 +40,7 @@ function commandHelp(ctx: Context, command: Command) {
   return lines.join('\n')
 }
 
-function topicHelp(ctx: Context, topic: Topic) {
+export function topicHelp(ctx: Context, topic: Topic) {
   console.log(ctx)
   console.log(topic)
   return 'fooo'

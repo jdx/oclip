@@ -1,6 +1,12 @@
 import { command } from './command'
 import { arg } from './args'
 import { flag } from '.'
+import { setFlagsFromString } from 'v8'
+import { Context } from './context'
+import { commandHelp } from './help'
+import path = require('path')
+
+const proc = path.basename(process.argv[1])
 
 test('help signal', async () => {
   const spy = jest.spyOn(console, 'log').mockImplementationOnce(() => {})
@@ -12,5 +18,24 @@ test('help signal', async () => {
     },
     run: () => {}
   }).exec(['--help'])
-  expect(spy).toHaveBeenCalledWith('oclip version:')
+  expect(spy).toHaveBeenCalledWith(`Usage: node ${proc} <REQUIRED_ARG> [<OPTIONAL_ARG>] [<REST_ARG>]
+
+Options:
+  --foo             # a boolean flag
+  --bar             # an input flag
+`)})
+
+
+describe('command', () => {
+  test('renders flag description', () => {
+    const cmd = command({
+      flags: {foo: flag.input('a', 'description')},
+      run: () => {}
+    })
+    const ctx = new Context(cmd)
+    expect(commandHelp(ctx, cmd)).toEqual(`Usage: node ${proc}
+
+Options:
+  -a                # description
+`)})
 })

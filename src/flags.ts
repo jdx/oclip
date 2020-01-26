@@ -214,6 +214,10 @@ export function input<T=string> (char?: Alphabet | InputFlagOpts<T>, description
 }
 
 const getParams = <T extends object>(char?: Alphabet | T, description?: string | T, options?: T): [Alphabet | undefined, string | undefined, T] => {
+  if (!description && typeof char === 'string' && char.length > 1) {
+    description = char
+    char = undefined
+  }
   if (typeof char === 'object') return [undefined, undefined, char]
   if (typeof description === 'object') return [char, undefined, description]
   return [char, description, options || {} as T]
