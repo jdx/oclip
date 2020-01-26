@@ -1,6 +1,8 @@
 import { Command } from './command'
 import { VersionSignal } from './version'
 import { RequiredArgsError, UnexpectedArgsError } from './errors'
+import { HelpSignal } from './help'
+import { Context } from './context'
 
 export interface Arg<T> {
   id: number
@@ -12,6 +14,7 @@ export interface Arg<T> {
   parse(input: string): T
   choices?: string[] | (() => string[] | Promise<string[]>)
   default?: () => Promise<T>
+  toString(settings?: {usageDocopt?: boolean}): string
 }
 export type RestArg<T> = Arg<T> & {rest: true, required: false}
 export type OptionalArg<T> = Arg<T> & {required: false}
@@ -23,7 +26,7 @@ export interface ArgOpts<T> {
   description?: string
   parse?: (input: string) => T | Promise<T>
   choices?: string[] | (() => string[] | Promise<string[]>)
-  default?: T | (() => T | Promise<T>)
+  default?: T | (() => T) | (() => Promise<T>)
 }
 
 export interface ArgBuilder<U=string> {
@@ -50,7 +53,21 @@ const getParams = (name?: string | ArgOpts<any>, options?: ArgOpts<any>): [strin
 function argBuilder<T>(defaultOptions: ArgOpts<T> & {parse: (input: string) => T}): ArgBuilder<T> {
   const arg: ArgBuilder = (name?: string | ArgOpts<any>, options: ArgOpts<any> = {}): Arg<any> => {
     [name, options] = getParams(name, options)
-    const arg = {
+    const arg: Arg<T> = {
+      toString({usageDocopt = false}: {usageDocopt?: boolean} = {}) {
+        let s = ''
+        if (this.hidden) return s
+        if (this.name) {
+          s += `${this.name.toUpperCase()}`
+        }
+        if (this.description) {
+          s += ` - ${this.description}`
+        }
+        if (!usageDocopt) return s
+        s = '<' + (s || 'UNKNOWN ARGUMENT') + '>'
+        if (!this.required) s = `[${s}]`
+        return s
+      },
       ...defaultOptions,
       required: true,
       ...options,
@@ -59,7 +76,7 @@ function argBuilder<T>(defaultOptions: ArgOpts<T> & {parse: (input: string) => T
     }
     if ('default' in arg && typeof arg['default'] !== 'function') {
       const val = arg['default']
-      arg['default'] = async () => val
+      arg['default'] = async () => val as any
     }
     return arg
   }
@@ -114,13 +131,14 @@ export const validateArgDefs = (argDefs: Args) => {
   validateNothingRequiredAfterOptional(argDefs)
 }
 
-export const validateArgs = async (defs: Args, args: any[]) => {
+export const validateArgs = async (ctx: Context, defs: Args, args: any[]) => {
   addIdToArgs(defs)
   let maxArgs = numOptionalArgs(defs)
 
   let subcommand: Command | undefined
   if (args[0]) {
     if (args[0] === '--version' || args[0] === '-v') throw new VersionSignal()
+    if (args[0] === '--help' || args[0] === '-v') throw new HelpSignal(ctx)
     // if (options.subcommands) {
     //   subcommand = options.subcommands[args[0]]
     //   if (subcommand) {

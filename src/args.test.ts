@@ -101,7 +101,7 @@ describe('argBuilder', () => {
   test('name only', () => {
     return command({
       args: [arg('FOO')],
-      run: ({ctx}) => expect(ctx.command.args[0]).toMatchObject({name: 'FOO'})
+      run: ({ctx}) => expect(ctx.command!.args[0]).toMatchObject({name: 'FOO'})
     }).exec(['foo'])
   })
   test('name/options', () => {
@@ -109,7 +109,7 @@ describe('argBuilder', () => {
       args: [arg('FOO', {parse: s => parseInt(s), description: 'DESC'})],
       run: ({args, ctx}) => {
         expect(args).toEqual([123])
-        expect(ctx.command.args[0]).toMatchObject({name: 'FOO', description: 'DESC'})
+        expect(ctx.command!.args[0]).toMatchObject({name: 'FOO', description: 'DESC'})
       }
     }).exec(['123'])
   })
@@ -118,7 +118,7 @@ describe('argBuilder', () => {
       args: [arg('FOO', undefined)],
       run: ({args, ctx}) => {
         expect(args).toEqual(['foo'])
-        expect(ctx.command.args[0]).toMatchObject({name: 'FOO'})
+        expect(ctx.command!.args[0]).toMatchObject({name: 'FOO'})
       }
     }).exec(['foo'])
   })
@@ -127,7 +127,7 @@ describe('argBuilder', () => {
       args: [arg('FOO', {parse: s => parseInt(s)})],
       run: ({args, ctx}) => {
         expect(args).toEqual([123])
-        expect(ctx.command.args[0]).toMatchObject({name: 'FOO'})
+        expect(ctx.command!.args[0]).toMatchObject({name: 'FOO'})
       }
     }).exec(['123'])
   })
@@ -143,7 +143,7 @@ describe('argBuilder', () => {
       args: [numArg('FOO')],
       run: ({args, ctx}) => {
         expect(args).toEqual([123])
-        expect(ctx.command.args[0]).toMatchObject({name: 'FOO'})
+        expect(ctx.command!.args[0]).toMatchObject({name: 'FOO'})
       }
     }).exec(['123'])
   })

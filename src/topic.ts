@@ -9,6 +9,7 @@ export type Options<A extends Args = any[], F extends Flags = any, R=any, TArgs 
 export interface BaseOptions<A extends Args = any[], F extends Flags = any> {
   args?: A
   flags?: F
+  description?: string
 }
 
 export interface TopicOptions extends BaseOptions {
@@ -20,11 +21,17 @@ export class Topic {
     this.args = options.args || []
     this.flags = options.flags
     this.children = options.children
+    for (let [id, c] of Object.entries(this.children)) {
+      c.id = id
+      c.parent = this
+    }
   }
 
   readonly args: Args
   readonly flags: Flags
   readonly children: {[id: string]: Topic | Command}
+  id?: string
+  parent?: Topic
 
   exec(argv = process.argv.slice(2)): any {
     console.log(argv)

@@ -3,6 +3,7 @@ import { Flags, Flag } from './flags'
 import assert from './assert'
 import { RequiredFlagError } from './errors'
 import { Command } from './command'
+import { Context } from './context'
 
 interface ParseResult<F extends Flags> {
   args: any[]
@@ -10,7 +11,7 @@ interface ParseResult<F extends Flags> {
   subcommand?: Command
 }
 
-export default async function parse<F extends Flags>(argv: string[], argDefs: Args, flagDefs: F): Promise<ParseResult<F>> {
+export default async function parse<F extends Flags>(ctx: Context, argv: string[], argDefs: Args, flagDefs: F): Promise<ParseResult<F>> {
   initFlags(flagDefs)
   argv = argv.slice()
   const args = [] as any
@@ -82,7 +83,7 @@ export default async function parse<F extends Flags>(argv: string[], argDefs: Ar
     flags[name] = typeof def.default === 'function' ? (await def.default()) : def.default
   }
 
-  const {subcommand} = await validateArgs(argDefs, args)
+  const {subcommand} = await validateArgs(ctx, argDefs, args)
 
   return {args, flags: flags as {[K in keyof F]?: any}, subcommand}
 }
