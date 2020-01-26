@@ -1,6 +1,7 @@
 # oclip
 
 ![Node.js CI](https://github.com/oclif/oclip/workflows/Node.js%20CI/badge.svg)
+[![codecov](https://codecov.io/gh/oclif/oclip/branch/master/graph/badge.svg)](https://codecov.io/gh/oclif/oclip)
 
 This is a CLI flag parsing library. It's similar to [yargs](https://www.npmjs.com/package/yargs) in feature scope but written with a focus on TypeScript developers. Type Inference works very well in oclip and you won't have to manually specify types hardly ever.
 
