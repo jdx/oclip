@@ -1,12 +1,10 @@
-export class OclipError extends Error {
+export abstract class OclipError extends Error {
   constructor(options: { message: string }) {
     options.message += '\nSee more help with --help'
     super(options.message)
   }
 
-  render() {
-    return this.message
-  }
+  abstract render(): string
 }
 
 export function unhandledRejectionHandler(reason: unknown) {
