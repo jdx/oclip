@@ -1,8 +1,10 @@
 import Context from '../context'
+import { Signal } from '.'
 
-export class VersionSignal extends Error {
-  constructor() {super('VersionSignal')}
-  render(ctx: Context) {
-    return `${ctx.name} version: ${ctx.version}`
+export class VersionSignal extends Signal {
+  constructor(ctx: Context) { super(ctx, 'version') }
+  code = 0
+  render() {
+    return `${this.ctx.name} version: ${this.ctx.version}`
   }
 }

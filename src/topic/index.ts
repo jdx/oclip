@@ -1,7 +1,7 @@
 import { Flags } from '../parsing/flags'
 import { Args } from '../parsing/args'
 import { CommandOptions, Command } from '../command'
-import { HelpSignal } from '../signals'
+import { HelpSignal, VersionSignal } from '../signals'
 import Context from '../context'
 import assert from '../util/assert'
 
@@ -67,12 +67,10 @@ export class Topic {
     const ctx = new Context(this)
     argv.slice()
     const cmd = argv.shift()
+    if (cmd === '-v' || cmd === '--version') throw new VersionSignal(ctx)
     const c = this.getChild(cmd!)
-    if (c) {
-      return c.exec(argv)
-    } else {
-      throw new HelpSignal(ctx)
-    }
+    if (!c || cmd === '-h' || cmd === '--help') throw new HelpSignal(ctx)
+    return c.exec(argv)
   }
 
   usage(ctx: Context) {

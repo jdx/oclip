@@ -309,6 +309,13 @@ test('prints to stdout', async () => {
 })
 ```
 
+## Error status codes
+
+Error codes 190-199 are reserved for oclif use.
+
+* **190**: unhandled exception
+* **191**: help signal
+
 ## FAQs
 
 ### What's the difference between this and oclif?

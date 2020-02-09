@@ -6,11 +6,11 @@ const {version} = require('../../package.json')
 
 test('signal', async () => {
   await expect(command({run: () => {}}).exec(['--version']))
-    .rejects.toThrowError('VersionSignal')
+    .rejects.toThrowError('version signal')
 })
 
 test('render', () => {
-  const vs = new VersionSignal()
   const ctx = new Context(command({run() {}}))
-  expect(vs.render(ctx)).toEqual(`oclip version: ${version}`)
+  const vs = new VersionSignal(ctx)
+  expect(vs.render()).toEqual(`oclip version: ${version}`)
 })

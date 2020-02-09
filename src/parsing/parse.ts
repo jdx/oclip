@@ -84,7 +84,7 @@ export default async function parse<F extends Flags>(ctx: Context, argv: string[
     flags[name] = typeof def.default === 'function' ? (await def.default()) : def.default
   }
 
-  if (args[0] === '--version' || args[0] === '-v') throw new VersionSignal()
+  if (args[0] === '--version' || args[0] === '-v') throw new VersionSignal(ctx)
   if (args[0] === '--help' || args[0] === '-v') throw new HelpSignal(ctx)
 
   const {subcommand} = await validateArgs(ctx, argDefs, args)
