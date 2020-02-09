@@ -132,4 +132,10 @@ describe('input', () => {
       }).exec(['--foo=123'])).rejects.toThrowError(/Missing required flag: --bar/)
     })
   })
+  describe('builders', () => {
+    test('desc only', () => {
+      const foo = flag.input('mydesc' as any)
+      expect(foo.description).toEqual('mydesc')
+    })
+  })
 })
