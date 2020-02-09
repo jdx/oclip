@@ -67,7 +67,7 @@ command({
 }).exec()
 ```
 
-### Subcommands/Subtopics
+## Subcommands/Subtopics
 
 Break up your CLI into separate commands:
 
@@ -106,6 +106,51 @@ topic({
 ```
 
 > Note: We will not be supporting "topic-commands" (commands that are also a topic) like oclif does because it is not compatible with space-separated commands.
+
+## Testing and Running Command Programmatically
+
+The `.exec()` method on a command/topic are simply functions that return a promise. By default, they will use `process.argv` as their input, but this can be modified. Usually you'll want to do this when writing a test or calling a command from another command. Here is a Jest test example:
+
+```typescript
+test('--verbose', async () => {
+  await command({
+    flags: { verbose: flag.boolean('v') },
+    run: ({flags}) => {
+      expect(flags).toMatchObject({verbose: true})
+    }
+  }).exec(['-v'])
+})
+```
+
+If it errors it will reject the promise it returns:
+
+```typescript
+test('errors if flag is not valid', async () => {
+  const cmd = command({
+    flags: { verbose: flag.boolean('v') },
+    run: ({flags}) => {
+      expect(flags).toMatchObject({verbose: true})
+    }
+  })
+  await expect(cmd.exec(['--invalid-flag']))
+    .rejects.toThrowError(/Unexpected argument: --invalid-flag/)
+})
+```
+
+Use [`stdout-stderr`](https://github.com/jdxcode/stdout-stderr) if you want to check output:
+
+```typescript
+import {stdout} from 'stdout-stderr'
+
+test('prints to stdout', async () => {
+  stdout.start()
+  await command({
+    run: () => console.log('sample text')
+  }).exec([])
+  stdout.stop()
+  expect(stdout.output).toEqual('sample text\n')
+})
+```
 
 ## TODO
 
