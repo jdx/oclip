@@ -1,10 +1,10 @@
-import { validateArgDefs, Args, Arg, RestArg } from './args'
-import parse from './parse'
-import { VersionSignal } from './version'
-import { Context } from './context'
-import { Flags, FlagValues } from './flags'
-import { BaseOptions, Topic } from './topic'
-import { HelpSignal } from './help'
+import { validateArgDefs, Args, Arg, RestArg } from '../parsing/args'
+import parse from '../parsing/parse'
+import { VersionSignal } from '../signals'
+import Context from '../context'
+import { Flags, FlagValues } from '../parsing/flags'
+import { BaseOptions, Topic } from '../topic'
+import { HelpSignal } from '../signals'
 import path = require('path')
 
 export interface CommandOptions<A extends Args = any[], F extends Flags = any, TArgs extends any[] = any[], R=any> extends BaseOptions<A, F> {
@@ -30,9 +30,9 @@ export class Command {
   parent?: Topic
 
   async exec(argv = process.argv.slice(2)) {
+    const ctx = new Context(this)
     try {
       const {args, flags, subcommand} = await parse(this.ctx, argv, this.args, this.flags)
-      const ctx = new Context(this)
       if (subcommand) {
         const result: any = await subcommand.exec(args)
         return result
@@ -41,7 +41,7 @@ export class Command {
       return result
     } catch (err) {
       if (err instanceof VersionSignal || err instanceof HelpSignal) {
-        console.log(err.render())
+        console.log(err.render(ctx))
         return
       }
       throw err

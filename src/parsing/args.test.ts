@@ -1,5 +1,5 @@
-import {arg, command} from '.'
-import { RequiredArgsError } from './errors'
+import {arg, command} from '..'
+import { RequiredArgsError } from '../errors/args'
 
 describe('required', () => {
   test('parses single arg', async () => {

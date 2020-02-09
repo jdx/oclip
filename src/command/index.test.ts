@@ -1,6 +1,6 @@
-import {arg} from './args'
-import { command } from './command'
-import { topic } from './topic'
+import {arg} from '../parsing/args'
+import { command } from '.'
+import { topic } from '../topic'
 
 const argv = process.argv
 

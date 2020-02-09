@@ -1,4 +1,4 @@
-import {flag, command} from '.'
+import {flag, command} from '..'
 
 describe('boolean', () => {
   test('sets true', async () => {

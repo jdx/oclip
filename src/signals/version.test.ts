@@ -1,6 +1,6 @@
-import { command } from './command'
+import { command } from '../command'
 
-const {version} = require('../package.json')
+const {version} = require('../../package.json')
 
 test('version', async () => {
   const spy = jest.spyOn(console, 'log').mockImplementationOnce(() => {})

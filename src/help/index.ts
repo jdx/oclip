@@ -1,20 +1,6 @@
-import { Context } from './context'
-import { Command } from './command'
-import { Topic } from './topic'
-
-export class HelpSignal extends Error {
-  constructor(readonly ctx: Context) {
-    super('help signal')
-  }
-
-  render() {
-    if (this.ctx.helpSubject instanceof Command) {
-      return commandHelp(this.ctx, this.ctx.helpSubject)
-    } else {
-      return topicHelp(this.ctx, this.ctx.helpSubject)
-    }
-  }
-}
+import Context  from '../context'
+import { Command } from '../command'
+import { Topic } from '../topic'
 
 export function commandHelp(ctx: Context, command: Command) {
   const lines = []

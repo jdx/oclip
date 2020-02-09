@@ -1,6 +1,6 @@
-import { Command } from './command'
-import { RequiredArgsError, UnexpectedArgsError } from './errors'
-import { Context } from './context'
+import { Command } from '../command'
+import { RequiredArgsError, UnexpectedArgsError } from '../errors/args'
+import  Context  from '../context'
 
 export interface Arg<T> {
   id: number

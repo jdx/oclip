@@ -1,8 +1,8 @@
-import { command } from './command'
-import { arg } from './args'
-import { flag, topic } from '.'
-import { Context } from './context'
-import { commandHelp, topicHelp } from './help'
+import { command } from '../command'
+import { arg } from '../parsing/args'
+import { flag, topic } from '..'
+import Context from '../context'
+import { commandHelp, topicHelp } from '.'
 import path = require('path')
 
 const proc = path.basename(process.argv[1])
@@ -82,7 +82,7 @@ Commands:
   test('renders commands lazily', () => {
     const t = topic({
       children: {
-        foo: path.join(__dirname, '../test/fixtures/command.js')
+        foo: path.join(__dirname, '../../test/fixtures/command.js')
       }
     })
     const ctx = new Context(t)

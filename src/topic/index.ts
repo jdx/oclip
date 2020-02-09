@@ -1,9 +1,8 @@
-import { Flags } from './flags'
-import { Args } from './args'
-import { CommandOptions, Command } from './command'
-import { HelpSignal } from './help'
-import { Context } from './context'
-import { VersionSignal } from './version'
+import { Flags } from '../parsing/flags'
+import { Args } from '../parsing/args'
+import { CommandOptions, Command } from '../command'
+import { HelpSignal, VersionSignal } from '../signals'
+import  Context  from '../context'
 import * as path from 'path'
 
 export type Options<A extends Args = any[], F extends Flags = any, R=any, TArgs extends any[] = any[]> =
@@ -52,20 +51,19 @@ export class Topic {
   parent?: Topic
 
   exec(argv = process.argv.slice(2)): any {
+    const ctx = new Context(this)
     try {
-      //console.log(argv)
       argv.slice()
       const cmd = argv.shift()
       if (cmd && cmd in this.children) {
         const c = this.children[cmd].load()
         return c.exec(argv)
       } else {
-        const ctx = new Context(this)
         throw new HelpSignal(ctx)
       }
     } catch (err) {
       if (err instanceof VersionSignal || err instanceof HelpSignal) {
-        console.log(err.render())
+        console.log(err.render(ctx))
         return
       }
       console.error(err.stack || err)

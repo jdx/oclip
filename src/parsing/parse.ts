@@ -1,11 +1,10 @@
 import { validateArgs, Args } from './args'
 import { Flags, Flag } from './flags'
-import assert from './assert'
-import { RequiredFlagError } from './errors'
-import { Command } from './command'
-import { Context } from './context'
-import { VersionSignal } from './version'
-import { HelpSignal } from './help'
+import assert from '../util/assert'
+import { RequiredFlagError } from '../errors/flags'
+import { Command } from '../command'
+import  Context  from '../context'
+import { VersionSignal, HelpSignal } from '../signals'
 
 interface ParseResult<F extends Flags> {
   args: any[]
