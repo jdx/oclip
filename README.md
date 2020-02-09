@@ -237,7 +237,7 @@ topic({
 }).exec()
 ```
 
-And here is `getChild()`. Note that these won't be able to be seen in the help but the builder ones will:
+And here is `getChild()`. Note that these can't be displayed in the help without customizing the topic's help manually.
 
 ```typescript
 import {command, topic} from 'oclip'
