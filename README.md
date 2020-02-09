@@ -67,9 +67,9 @@ command({
 }).exec()
 ```
 
-### Subcommands
+### Subcommands/Subtopics
 
-Unlike oclif, oclip is designed for space-separated commands:
+Break up your CLI into separate commands:
 
 ```typescript
 import {command, topic, arg} from 'oclip'
@@ -89,15 +89,37 @@ topic({
 }).exec()
 ```
 
-`command()` is just like we saw above. Topics allow us to add hierarchy and nest either subtopics or subcommands. We will not be supporting "topic-commands" (commands that are also a topic) like oclif does because it causes a lot of problem with space-separated commands—vs oclif's colon separated.
+Or you can also have subtopics which can sit next to commands:
+
+```typescript
+import {command, topic, arg} from 'oclip'
+
+// run these with `$ mycli auth login` or `$ mycli auth token get`
+topic({
+  children: {
+    auth: topic({
+      children: {
+        login: command({/*...*/}),
+        logout: command({/*...*/}),
+        token: topic({
+          get: command({/*...*/}),
+          reset: command({/*...*/}),
+        })
+      }
+    }),
+  }
+}).exec()
+```
+
+> Note: We will not be supporting "topic-commands" (commands that are also a topic) like oclif does because it is not compatible with space-separated commands.
 
 ## TODO
 
-- [ ] topic help listing
+- [x] topic help listing
 - [ ] normalized filepath arg/flag
 - [ ] integer arg/flag
 - [ ] env var arg/flag
-- [ ] lazy-loading files via strings in topic files
+- [x] lazy-loading files via strings in topic files
 - [ ] manifest file to help with ^^ and make help fast
 - [ ] help examples
 - [ ] `mycli help foo`
