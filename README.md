@@ -30,7 +30,7 @@ command({
 
 > Note: You can also clone the [example template](https://github.com/oclif/oclip-example)
 
-Run this with `node path/to/script` (for JS) or `ts-node path/to/script` (for TS). `command()` creates a command and calling `.exec()` on it causes it to read `process.argv` and run it command. You can specify alternate arguments by passing them into parse: `.parse(['some', 'custom', 'arguments'])`.
+Run this with `node path/to/script` (for JS) or `ts-node path/to/script` (for TS). `command()` creates a command and calling `.exec()` on it causes it to read `process.argv`, parse the args/flags, and pass them to the command.
 
 ### Parsing Arguments
 
@@ -93,6 +93,14 @@ Options:
 ```
 
 [See below for more flag functionality](#flags).
+
+## Background
+
+oclip is the result of years of development on the Heroku CLI, then [oclif](https://oclif.io)—the framework extracted from the Heroku CLI. Unlike those projects, the goal of this project is not to be a platform for a specific CLI but to offer the best CLI experience in Node possible. [See below for more on the differences between this and oclif](#faqs).
+
+oclif was very close but some of the opinions it made were not suitable for everyone and would be too difficult to change while supporting the (now) loads of CLIs depending on that behavior.
+
+We plan on using oclip inside of oclif to replace its parser and improve oclif's type inference.
 
 ## Project Scope
 
@@ -225,14 +233,6 @@ test('prints to stdout', async () => {
   expect(stdout.output).toEqual('sample text\n')
 })
 ```
-
-## Background
-
-oclip is the result of years of development on the Heroku CLI, then [oclif](https://oclif.io)—the framework extracted from the Heroku CLI. Unlike those projects, the goal of this project is not to be a platform for a specific CLI but to offer the best CLI experience in Node possible. [See below for more on the differences between this and oclif](#faqs).
-
-oclif was very close but some of the opinions it made were not suitable for everyone and would be too difficult to change while supporting the (now) loads of CLIs depending on that behavior.
-
-We plan on using oclip inside of oclif to replace its parser and improve oclif's type inference.
 
 ## FAQs
 
