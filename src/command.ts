@@ -24,6 +24,7 @@ export class Command {
   readonly ctx: Context
   readonly args: Args
   readonly flags: Flags
+  type = 'command' as const
   description?: string
   id?: string
   parent?: Topic

@@ -1,8 +1,8 @@
 import { command } from './command'
 import { arg } from './args'
-import { flag } from '.'
+import { flag, topic } from '.'
 import { Context } from './context'
-import { commandHelp } from './help'
+import { commandHelp, topicHelp } from './help'
 import path = require('path')
 
 const proc = path.basename(process.argv[1])
@@ -47,5 +47,22 @@ Arguments:
 
 Options:
   -a                # description
+`)})
+})
+
+describe('topic', () => {
+  test('renders commands', () => {
+    const t = topic({
+      children: {
+        foo: command({
+          run: () => {},
+        })
+      }
+    })
+    const ctx = new Context(t)
+    expect(topicHelp(ctx, t)).toEqual(`Usage: node ${proc}
+
+Commands:
+  foo
 `)})
 })

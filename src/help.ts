@@ -40,7 +40,12 @@ export function commandHelp(ctx: Context, command: Command) {
 }
 
 export function topicHelp(ctx: Context, topic: Topic) {
-  console.log(ctx)
-  console.log(topic)
-  return 'fooo'
+  const lines = []
+  lines.push('Usage: ' + topic.usage(), '')
+  lines.push('Commands:')
+  for (const [k, child] of Object.entries(topic.children)) {
+    lines.push(`  ${k}`)
+  }
+  lines.push('')
+  return lines.join('\n')
 }
