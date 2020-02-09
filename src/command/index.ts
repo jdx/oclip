@@ -15,12 +15,10 @@ export class Command {
     this.run = options.run
     this.args = options.args || []
     this.flags = options.flags || {}
-    this.ctx = new Context(this as any)
     this.description = options.description
     validateArgDefs(this.args)
   }
   readonly run: (params: RunParams<any[], any>) => any
-  readonly ctx: Context
   readonly args: Args
   readonly flags: Flags
   type = 'command' as const
@@ -31,7 +29,7 @@ export class Command {
   async exec(argv = process.argv.slice(2)) {
     const ctx = new Context(this)
     try {
-      const {args, flags, subcommand} = await parse(this.ctx, argv, this.args, this.flags)
+      const {args, flags, subcommand} = await parse(ctx, argv, this.args, this.flags)
       if (subcommand) {
         const result: any = await subcommand.exec(args)
         return result
@@ -49,7 +47,7 @@ export class Command {
 
   usage(ctx: Context) {
     const args = this.args.map(a => a.toString({usage: true}))
-    return [ctx.subjectPath(this), ...args].join(' ')
+    return [ctx.subjectPath(), ...args].join(' ')
   }
 }
 

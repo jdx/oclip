@@ -6,7 +6,9 @@ export function findNearestPJSON(p?: string): PJSON {
   assert(_parent)
   if (!p) p = path.dirname(_parent.filename)
   try {
-    return require(path.join(p, 'package.json'))
+    const pjson = require(path.join(p, 'package.json'))
+    pjson.oclip = pjson.oclip || {}
+    return pjson
   } catch (err) {
     if (err.code === 'MODULE_NOT_FOUND' && path.dirname(p) !== p) {
       return findNearestPJSON(path.dirname(p))
@@ -18,4 +20,7 @@ export function findNearestPJSON(p?: string): PJSON {
 export interface PJSON {
   name: string
   version: string
+  oclip: {
+    bin?: string
+  }
 }

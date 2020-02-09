@@ -2,7 +2,8 @@ import { Flags } from '../parsing/flags'
 import { Args } from '../parsing/args'
 import { CommandOptions, Command } from '../command'
 import { HelpSignal, VersionSignal } from '../signals'
-import  Context  from '../context'
+import Context from '../context'
+import assert from '../util/assert'
 
 export type Options<A extends Args = any[], F extends Flags = any, R=any, TArgs extends any[] = any[]> =
   | CommandOptions<A, F, TArgs, R>
@@ -30,11 +31,14 @@ export class Topic {
     this.args = options.args || []
     this.flags = options.flags
     for (let [id, c] of Object.entries(options.children)) {
-      const load = typeof c === 'string'
-        ? (() => require(c as string).default)
-        : (() => c)
       this.children[id] = {
-        load,
+        load: () => {
+          if (typeof c === 'string') c = require(c).default
+          assert(typeof c === 'object')
+          c.id = id
+          c.parent = this
+          return c
+        },
         id,
         parent: this,
       }
@@ -72,7 +76,7 @@ export class Topic {
 
   usage(ctx: Context) {
     const args = this.args.map(a => a.toString({usage: true}))
-    return [ctx.subjectPath(this), ...args].join(' ')
+    return [ctx.subjectPath(), ...args].join(' ')
   }
 }
 

@@ -1,8 +1,6 @@
 import {OclipError, unhandledRejectionHandler} from './oclip'
 
-class TestError extends OclipError {
-  render() { return 'foo' }
-}
+class TestError extends OclipError {}
 
 describe('unhandledRejectionHandler', () => {
   test('handles ocliperror', () => {

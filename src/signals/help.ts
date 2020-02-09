@@ -8,10 +8,10 @@ export class HelpSignal extends Error {
   }
 
   render() {
-    if (this.ctx.helpSubject instanceof Command) {
-      return commandHelp(this.ctx, this.ctx.helpSubject)
+    if (this.ctx.subject instanceof Command) {
+      return commandHelp(this.ctx, this.ctx.subject)
     } else {
-      return topicHelp(this.ctx, this.ctx.helpSubject)
+      return topicHelp(this.ctx, this.ctx.subject)
     }
   }
 }

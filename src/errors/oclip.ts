@@ -4,7 +4,7 @@ export abstract class OclipError extends Error {
     super(options.message)
   }
 
-  abstract render(): string
+  render() { return this.message }
 }
 
 export function unhandledRejectionHandler(reason: unknown) {
