@@ -9,7 +9,7 @@ const proc = path.basename(process.argv[1])
 
 test('help signal', async () => {
   await expect(command({
-    args: [arg('required_arg'), arg.optional('optional_arg'), arg.rest('rest_arg')],
+    args: [arg('required_arg'), arg.optional('optional_arg'), arg.multiple('rest_arg')],
     flags: {
       foo: flag.boolean({description: 'a boolean flag'}),
       bar: flag.input({description: 'an input flag'}),

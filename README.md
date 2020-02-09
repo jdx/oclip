@@ -129,6 +129,26 @@ Anti-goals include:
 
 ## Arguments
 
+### Multiple/Rest Args
+
+Label an argument as `multiple` to allow N number arguments at the end:
+
+```typescript
+// $ mycli source destination_1 destination_2 destination_3
+command({
+  args: [
+    arg('source'),
+    arg.multiple('destination')
+  ],
+  run({args: [source, ...destinations]}) {
+    console.log(`source: ${source}`)
+    for (const destination of destinations) {
+      console.log(`destination: ${destination}`)
+    }
+  }
+}).exec()
+```
+
 ## Flags
 
 ## Subcommands/Subtopics

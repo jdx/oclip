@@ -7,7 +7,7 @@ export interface Arg<T> {
   name?: string
   description?: string
   required: boolean
-  rest?: boolean
+  multiple?: boolean
   hidden?: boolean;
   parse(input: string): T
   choices?: string[] | (() => string[] | Promise<string[]>)
@@ -18,7 +18,7 @@ export interface Arg<T> {
    */
   toString(settings?: {usage?: boolean}): string
 }
-export type RestArg<T> = Arg<T> & {rest: true, required: false}
+export type MultipleArg<T> = Arg<T> & {multiple: true, required: false}
 export type OptionalArg<T> = Arg<T> & {required: false}
 export type RequiredArg<T> = Arg<T> & {required: true}
 
@@ -44,9 +44,9 @@ export interface ArgBuilder<U=string> {
   optional <T=U>(name: string, options?: ArgOpts<T>): OptionalArg<T>
   optional <T=U>(options?: ArgOpts<T>): OptionalArg<T>
 
-  rest <T=U>(name: string, description: string, options?: ArgOpts<T>): RestArg<T>
-  rest <T=U>(name: string, options?: ArgOpts<T>): RestArg<T>
-  rest <T=U>(options?: ArgOpts<T>): RestArg<T>
+  multiple <T=U>(name: string, description: string, options?: ArgOpts<T>): MultipleArg<T>
+  multiple <T=U>(name: string, options?: ArgOpts<T>): MultipleArg<T>
+  multiple <T=U>(options?: ArgOpts<T>): MultipleArg<T>
 
   extend <T=U>(options?: ArgOpts<T>): ArgBuilder<T>
 }
@@ -94,9 +94,9 @@ function argBuilder<T>(defaultOptions: ArgOpts<T> & {parse: (input: string) => T
     [name, description, options] = getParams(name, description, options)
     return arg(name, {...defaultOptions, description, ...options, required: false}) as any
   }
-  arg.rest = (name?: any, description?: any, options: any = {}): RestArg<any> => {
+  arg.multiple = (name?: any, description?: any, options: any = {}): MultipleArg<any> => {
     [name, description, options] = getParams(name, description, options)
-    return arg(name, {...defaultOptions, description, ...options, required: false, rest: true}) as any
+    return arg(name, {...defaultOptions, description, ...options, required: false, multiple: true}) as any
   }
   arg.extend = (options: any = {}) => argBuilder({...defaultOptions, ...options})
 
@@ -112,25 +112,25 @@ const addIdToArgs = (args: Arg<any>[]) => {
 }
 
 const validateNothingRequiredAfterOptional = (defs: Arg<any>[]) => {
-  let state: 'required' | 'optional' | 'rest' = 'required'
+  let state: 'required' | 'optional' | 'multiple' = 'required'
   for (const def of defs) {
     switch(state) {
     case 'required':
-      if (def.rest) state = 'rest'
+      if (def.multiple) state = 'multiple'
       else if (!def.required) state = 'optional'
       break
     case 'optional':
       if (def.required) throw new Error('required arguments may not follow optional arguments')
-      if (def.rest === true) state = 'rest'
+      if (def.multiple === true) state = 'multiple'
       break
-    case 'rest':
-      throw new Error('rest args must be the last ones defined')
+    case 'multiple':
+      throw new Error('multiple args must be the last ones defined')
     }
   }
 }
 
 // const numRequiredArgs = (args: Arg<any>[]) => args.reduce((total, arg) => arg.required ? total+1 : total, 0)
-const numOptionalArgs = (args: Arg<any>[]) => args.reduce((total, arg) => arg.rest ? -1 : total + 1, 0)
+const numOptionalArgs = (args: Arg<any>[]) => args.reduce((total, arg) => arg.multiple ? -1 : total + 1, 0)
 
 export const validateArgDefs = (argDefs: Args) => {
   validateNothingRequiredAfterOptional(argDefs)

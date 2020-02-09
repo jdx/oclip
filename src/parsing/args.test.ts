@@ -2,12 +2,12 @@ import {arg, command} from '..'
 import { RequiredArgsError } from '../errors/args'
 
 describe('builders', () => {
-  test('ensures rest is not in the middle', () => {
+  test('ensures multiple is not in the middle', () => {
     expect(() => command({
-      args: [arg.rest(), arg()],
+      args: [arg.multiple(), arg()],
       run() {},
     }))
-      .toThrow('rest args must be the last ones defined')
+      .toThrow('multiple args must be the last ones defined')
   })
 })
 
@@ -77,22 +77,22 @@ describe('optional', () => {
   })
 })
 
-describe('rest', () => {
+describe('multiple', () => {
   test('parses single arg', () => {
     return command({
-      args: [arg.rest('FOO')],
+      args: [arg.multiple('FOO')],
       run: ({args}) => expect(args).toEqual(['foo'])
     }).exec(['foo'])
   })
   test('parses 2 args', () => {
     return command({
-      args: [arg.rest('FOO')],
+      args: [arg.multiple('FOO')],
       run: ({args}) => expect(args).toEqual(['foo', 'bar']),
     }).exec(['foo', 'bar'])
   })
-  test('parses rest args after normal arg', () => {
+  test('parses multiple args after normal arg', () => {
     return command({
-      args: [arg('FOO'), arg.rest('BAR')],
+      args: [arg('FOO'), arg.multiple('BAR')],
       run: ({args}) => expect(args).toEqual(['foo', 'bar', 'baz'])
     }).exec(['foo', 'bar', 'baz'])
   })
@@ -195,10 +195,10 @@ describe('default', () => {
       run: ({args}) => expect(args).toEqual(['a', undefined, 123])
     }).exec(['a'])
   })
-  test('default rest argument', () => {
+  test('default multiple argument', () => {
     return command({
       args: [
-        arg.rest('C', {default: 123}),
+        arg.multiple('C', {default: 123}),
       ],
       run: ({args}) => expect(args).toEqual([123])
     }).exec([])
