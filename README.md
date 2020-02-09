@@ -125,7 +125,7 @@ Anti-goals include:
 * project generators—if we need that then we're doing something too complex
 * repls—like [vorpal](https://www.npmjs.com/package/vorpal)
 * Building this in another language
-* Anything involving classes, decorators, or any other kind of alternate syntaxes. We need to support the ability to be flexible, but the way things are done must be consistent
+* Classes, decorators, or any other kind of alternate syntaxes. We need to support the ability to be flexible, but the way things are done must be consistent
 * Doing really anything after the command starts
 
 ## Arguments
