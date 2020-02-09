@@ -7,7 +7,7 @@ oclip is a new Node CLI flag parser. It has the following killer features of whi
 
 * **lazy-loading** commands out of the box means oclip will have the lowest overhead possible. This becomes paramount as CLIs grow.
 * **type inference** TypeScript is not required, but when it is used oclip will be able to infer all the details about flags and args. You'll rarely ever have to specify types manually.
-* **0 dependencies** You don't need a single runtime or even development dependency other than `oclip` itself. Currently oclip only [costs ~10kB](https://bundlephobia.com/result?p=oclip@0.0.3).
+* **0 dependencies** You don't need a single runtime or even development dependency other than `oclip` itself. Currently oclip only [costs ~10kB](https://bundlephobia.com/result?p=oclip@0.0.3). This is particularly great for [`npx`](https://www.npmjs.com/package/npx) which typically will reinstall a CLI everytime it's run. Try it yourself with `npx oclip-example`.
 
 _Feel free to play around with this code all you like but anticipate heavily breaking changes until we release 1.x._
 
