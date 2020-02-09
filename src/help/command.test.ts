@@ -32,7 +32,7 @@ Arguments:
 `)})
 test('renders flag description', () => {
   const cmd = command({
-    flags: {foo: flag.input('a', 'description')},
+    flags: {foo: flag.input({char: 'a', description: 'description'})},
     run: () => {}
   })
   const ctx = new Context(cmd)

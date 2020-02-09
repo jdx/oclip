@@ -12,7 +12,7 @@ describe('boolean', () => {
       expect(f.toString()).toEqual('--foo')
     })
     test('short', () => {
-      const f = flag.boolean('f')
+      const f = flag.boolean({char: 'f'})
       f.name = 'foo'
       expect(f.toString()).toEqual('-f, --foo')
     })
@@ -50,7 +50,7 @@ describe('boolean', () => {
   test('short flags', () => {
     return command({
       flags: {
-        foo: flag.boolean('f')
+        foo: flag.boolean({char: 'f'})
       },
       run: ({flags}) => expect(flags).toMatchObject({foo: true}),
     }).exec(['-f'])
@@ -59,7 +59,7 @@ describe('boolean', () => {
   test('can handle -v without showing version', () => {
     return command({
       flags: {
-        verbose: flag.boolean('v')
+        verbose: flag.boolean({char: 'v'})
       },
       run: ({flags}) => expect(flags).toMatchObject({verbose: true}),
     }).exec(['-v'])
@@ -146,12 +146,6 @@ describe('input', () => {
         },
         run: ({flags}) => expect(flags).toMatchObject({foo: '123'}),
       }).exec(['--foo=123'])).rejects.toThrowError(/Missing required flag: --bar/)
-    })
-  })
-  describe('builders', () => {
-    test('desc only', () => {
-      const foo = flag.input('mydesc' as any)
-      expect(foo.description).toEqual('mydesc')
     })
   })
 })

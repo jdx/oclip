@@ -16,6 +16,8 @@ export type Required<T> = T & {required: true}
 export type UnwrapPromise<T> = T extends Promise<infer U> ? U : T
 
 export interface FlagOpts<T> {
+  /** a single character short flag (e.g.: -f) */
+  char?: Alphabet
   /** a short description of what this flag does for help */
   description?: string
   /** set to true to require the flag to be set on a command */
@@ -123,18 +125,11 @@ export interface InputFlag<T> extends FlagBase<T> {
 /**
  * A simple flag that just allows the user to set a boolean. `allowNo` enabled "false" support with:
  * --no-flagname
- * @param char A short flag name (e.g.: `-f` instead of `--file`)
- * @param description short description of what this flag does for help
  * @param opts See BooleanFlagOpts and FlagOpts for available options
  */
-export function boolean<T> (char: Alphabet, description: string, opts: BooleanFlagOpts<T>): BooleanFlag<T>
-export function boolean<T> (char: Alphabet, opts: BooleanFlagOpts<T>): BooleanFlag<T>
 export function boolean<T> (opts: BooleanFlagOpts<T>): BooleanFlag<T>
-export function boolean (char?: Alphabet, description?: string, opts?: BooleanFlagOpts<boolean>): BooleanFlag<boolean>
-export function boolean (char?: Alphabet, opts?: BooleanFlagOpts<boolean>): BooleanFlag<boolean>
 export function boolean (opts?: BooleanFlagOpts<boolean>): BooleanFlag<boolean>
-export function boolean (char?: Alphabet | BooleanFlagOpts<any>, description?: string | BooleanFlagOpts<any>, opts: BooleanFlagOpts<any> = {}): BooleanFlag<any> {
-  [char, description, opts] = getParams(char, description, opts)
+export function boolean (opts: BooleanFlagOpts<any> = {}): BooleanFlag<any> {
   return {
     allowNo: false,
     required: false,
@@ -153,8 +148,8 @@ export function boolean (char?: Alphabet | BooleanFlagOpts<any>, description?: s
       }
       return true
     },
-    char: char as Alphabet,
-    description: description as string,
+    char: opts.char,
+    description: opts.description,
     ...opts,
     name: '',
     type: 'boolean',
@@ -164,33 +159,16 @@ export function boolean (char?: Alphabet | BooleanFlagOpts<any>, description?: s
 /**
  * A flag that allows the user to input data. e.g.: `--file=FILENAME`. Can also be specified with
  * `--file FILENAME`, `-f FILENAME`, `-fFILENAME`.
- * @param char A short flag name (e.g.: `-f` instead of `--file`)
- * @param description short description of what this flag does for help
- * @param opts See InputFlagOpts and FlagOpts for available options
+ * @param {InputFlagOpts} opts See InputFlagOpts and FlagOpts for available options
  */
-export function input<T> (char: Alphabet, description: string, opts: Multiple<InputFlagOpts<T>> & {parse: ((input: string) => T) | ((input: string) => Promise<T>)}): Multiple<InputFlag<T>>
-export function input<T> (char: Alphabet, opts: Multiple<InputFlagOpts<T>> & {parse: ((input: string) => T) | ((input: string) => Promise<T>)}): Multiple<InputFlag<T>>
 export function input<T> (opts: Multiple<InputFlagOpts<T>> & {parse: ((input: string) => T) | ((input: string) => Promise<T>)}): Multiple<InputFlag<T>>
-export function input<T> (char: Alphabet, description: string, opts: Required<InputFlagOpts<T>> & {parse: ((input: string) => T) | ((input: string) => Promise<T>)}): Required<InputFlag<T>>
-export function input<T> (char: Alphabet, opts: Required<InputFlagOpts<T>> & {parse: ((input: string) => T) | ((input: string) => Promise<T>)}): Required<InputFlag<T>>
 export function input<T> (opts: Required<InputFlagOpts<T>> & {parse: ((input: string) => T) | ((input: string) => Promise<T>)}): Required<InputFlag<T>>
-export function input<T> (char: Alphabet, description: string, opts: InputFlagOpts<T> & {parse: ((input: string) => T) | ((input: string) => Promise<T>)}): InputFlag<T>
-export function input<T> (char: Alphabet, opts: InputFlagOpts<T> & {parse: ((input: string) => T) | ((input: string) => Promise<T>)}): InputFlag<T>
 export function input<T> (opts: InputFlagOpts<T> & {parse: ((input: string) => T) | ((input: string) => Promise<T>)}): InputFlag<T>
-export function input (char: Alphabet, description: string, opts: Multiple<InputFlagOpts<any>>): Multiple<InputFlag<string>>
-export function input (char: Alphabet, opts: Multiple<InputFlagOpts<any>>): Multiple<InputFlag<string>>
 export function input (opts: Multiple<InputFlagOpts<any>>): Multiple<InputFlag<string>>
-export function input (char: Alphabet, description: string, opts: Required<InputFlagOpts<any>>): Required<InputFlag<string>>
-export function input (char: Alphabet, opts: Required<InputFlagOpts<any>>): Required<InputFlag<string>>
 export function input (opts: Required<InputFlagOpts<any>>): Required<InputFlag<string>>
 export function input (opts: InputFlagOpts<any>): InputFlag<string>
-export function input (char: Alphabet, description: string, opts: InputFlagOpts<any>): InputFlag<string>
-export function input (char: Alphabet, opts: InputFlagOpts<any>): InputFlag<string>
-export function input (char?: Alphabet, description?: string, opts?: InputFlagOpts<string>): InputFlag<string>
-export function input (char?: Alphabet, opts?: InputFlagOpts<string>): InputFlag<string>
 export function input (opts?: InputFlagOpts<string>): InputFlag<string>
-export function input<T=string> (char?: Alphabet | InputFlagOpts<T>, description?: string | InputFlagOpts<T>, opts?: InputFlagOpts<T>): InputFlag<T> {
-  [char, description, opts] = getParams(char, description, opts)
+export function input<T=string> (opts: InputFlagOpts<T> = {}): InputFlag<T> {
   const flag: InputFlag<T> = {
     required: false,
     multiple: false,
@@ -203,22 +181,12 @@ export function input<T=string> (char?: Alphabet | InputFlagOpts<T>, description
       return types.join(', ') || 'UNKNOWN FLAG'
     },
     parse: (s: string) => s as any,
-    char: char as Alphabet,
-    description: description as string,
+    char: opts.char,
+    description: opts.description,
     ...opts,
     name: '',
     type: 'input',
   }
   if (flag.multiple && flag.default === undefined) flag.default = (async () => [] as any)
   return flag
-}
-
-const getParams = <T extends object>(char?: Alphabet | T, description?: string | T, options?: T): [Alphabet | undefined, string | undefined, T] => {
-  if (!description && typeof char === 'string' && char.length > 1) {
-    description = char
-    char = undefined
-  }
-  if (typeof char === 'object') return [undefined, undefined, char]
-  if (typeof description === 'object') return [char, undefined, description]
-  return [char, description, options || {} as T]
 }
