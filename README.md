@@ -71,8 +71,8 @@ import {command, flag} from 'oclip'
 command({
   flags: {
     // -v for a short char and help description
-    verbose: flag.boolean('v', 'show extra output'),
-    file: flag.input('f', 'file to read from')
+    verbose: flag.boolean({char: 'v', description: 'show extra output'}),
+    file: flag.input({char: 'f', description: 'file to read from'})
   },
   run({flags: {verbose, file}}) {
     console.log(`verbose: ${verbose}`)
@@ -136,8 +136,6 @@ Anti-goals include:
 Break up your CLI into separate commands:
 
 ```typescript
-import {command, topic, arg} from 'oclip'
-
 // run these with `$ mycli login` or `$ mycli refresh`
 topic({
   children: {
@@ -152,8 +150,6 @@ topic({
 Or you can also have subtopics which can sit next to commands:
 
 ```typescript
-import {command, topic, arg} from 'oclip'
-
 // run these with `$ mycli auth login` or `$ mycli auth token get`
 topic({
   children: {
@@ -186,8 +182,6 @@ You can either specify the path that a topic/command is in or a directory root o
 In this case, imagine we've defined the CLI root at `./src/cli.ts`. We have 2 commands we want to nest that are at `./src/topics/auth/login.ts` and `./src/topics/auth/logout.ts`.
 
 ```typescript
-import {command, topic} from 'oclip'
-
 topic({
   children: {
     auth: topic({
@@ -207,8 +201,6 @@ topic({
 Alternatively, we can set the `commandRoot` option of a topic to have it add topics and commands from a directory. Directories are subtopics and `ts|js` files are commands. Using the same file structure as above, we can get the same result with this:
 
 ```typescript
-import {command, topic} from 'oclip'
-
 topic({
   commandRoot: path.join(__dirname, '/topics')
 }).exec()
@@ -223,8 +215,6 @@ For some use-cases commands are not static but generated in code. There are 2 wa
 Here is an example of building the children:
 
 ```typescript
-import {command, topic} from 'oclip'
-
 const commandNames = ['foo', 'bar', 'baz']
 const commands = commandNames.map(name => [name, command({
   run() {
@@ -240,15 +230,6 @@ topic({
 And here is `getChild()`. Note that these can't be displayed in the help without customizing the topic's help manually.
 
 ```typescript
-import {command, topic} from 'oclip'
-
-const commandNames = ['foo', 'bar', 'baz']
-const commands = commandNames.map(name => [name, command({
-  run() {
-    console.log(`running command: ${name}`)
-  }
-})])
-
 topic({
   getChild(name) {
     // this essentially acts as a catch-all handler
