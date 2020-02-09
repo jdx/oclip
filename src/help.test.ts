@@ -82,7 +82,7 @@ Commands:
   test('renders commands lazily', () => {
     const t = topic({
       children: {
-        foo: path.join(__dirname, 'test/fixtures/command.ts')
+        foo: path.join(__dirname, '../test/fixtures/command.js')
       }
     })
     const ctx = new Context(t)

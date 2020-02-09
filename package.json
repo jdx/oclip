@@ -29,8 +29,7 @@
   "scripts": {
     "clean": "rm -rf lib tsconfig.tsbuildinfo",
     "lint": "tsc -p . && eslint --ext ts ./src && cd example && eslint --ext ts .",
-    "prepublish": "yarn clean",
-    "prepare": "tsc -b",
+    "prepare": "yarn clean && tsc -b",
     "test": "jest"
   },
   "types": "lib/index.d.ts"

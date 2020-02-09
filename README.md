@@ -3,20 +3,23 @@
 ![Node.js CI](https://github.com/oclif/oclip/workflows/Node.js%20CI/badge.svg)
 [![codecov](https://codecov.io/gh/oclif/oclip/branch/master/graph/badge.svg)](https://codecov.io/gh/oclif/oclip)
 
-This is a CLI flag parsing library. It's similar to [yargs](https://www.npmjs.com/package/yargs) in feature scope but written with a focus on TypeScript developers. Type Inference works very well in oclip and you won't have to manually specify types hardly ever.
+oclip is a new Node CLI flag parser. It has the following killer features of which not a single one can be found in another popular CLI parser.
 
-The purpose for this project is two-fold: First to provide users that don't need a full fledged framework a simpler way to write TypeScript CLIs, and second to replace the original parser in [oclif](https://oclif.io/): [`@oclif/parser`](https://github.com/oclif/parser).
-
-This will have much more functionality than the current parser. It will include support for topics and subcommands so you can use it standalone for even reasonably complex CLIs. This overlaps with oclif a bit but I feel that's ok.
+* **lazy-loading** commands out of the box means oclip will have the lowest overhead possible. This becomes paramount as CLIs grow.
+* **type inference** TypeScript is not required, but when it is used oclip will be able to infer all the details about flags and args. You'll rarely ever have to specify types manually.
+* **0 dependencies** You don't need a single runtime or even development dependency other than `oclip` itself[^1]. Currently oclip only [costs ~10kB](https://bundlephobia.com/result?p=oclip@0.0.3).
 
 _Feel free to play around with this code all you like but anticipate heavily breaking changes until we release 1.x._
 
-## Getting Started
+## Quick Start
 
 In a new or existing node project, first add oclip: `npm i oclip` or `yarn add oclip`. Then create a basic hello, world CLI:
 
 ```typescript
+// typescript
 import {command} from 'oclip'
+// javascript
+const {command} = require('oclip')
 
 command({
   run() {
@@ -25,7 +28,9 @@ command({
 }).exec()
 ```
 
-Run it with `node path/to/script` or `ts-node path/to/script`. `command()` creates a command and calling `.exec()` on it causes it to read `process.argv` and run it command. You can specify alternate arguments by passing them into parse: `.parse(['some', 'custom', 'arguments'])`.
+> Note: You can also clone the [example template](https://github.com/oclif/oclip-example)
+
+Run this with `node path/to/script` (for JS) or `ts-node path/to/script` (for TS). `command()` creates a command and calling `.exec()` on it causes it to read `process.argv`[^process.argv] and run it command. You can specify alternate arguments by passing them into parse: `.parse(['some', 'custom', 'arguments'])`.
 
 ### Parsing Arguments
 
@@ -47,6 +52,8 @@ command({
 }).exec()
 ```
 
+[See below for more argument functionality](#arguments).
+
 ### Parsing Flags
 
 ```typescript
@@ -66,6 +73,37 @@ command({
   }
 }).exec()
 ```
+
+[See below for more flag functionality](#flag).
+
+## Project Scope
+
+Main goals:
+
+* To be the tool of choice for the Node community's CLIs in TS and JS
+* Option/flag parsing in the GNU style[^2]
+* Powerful args/flags functionality that can be extended for resuable custom behavior/types
+* Subcommand dispatching with lazy-loading
+* In-CLI help output
+* Completions for bash/zsh/fish
+* Man-page CLI doc generation
+* Never requiring a dependency, internal or external
+* Doing whatever we can to make TypeScript inference and types as helpful as possible
+* Providing configuration support
+* Middleware hooks
+
+Anti-goals include:
+
+* plugin support—this is oclif's domain
+* loading commands from a directory—again: oclif
+* project generators—if we need that then we're doing something too complex
+* repls—like [vorpal](https://www.npmjs.com/package/vorpal)
+* Building this in another language[^3]
+* Anything involving classes or decorators[^4]
+
+## Arguments
+
+## Flags
 
 ## Subcommands/Subtopics
 
@@ -152,6 +190,49 @@ test('prints to stdout', async () => {
 })
 ```
 
+## Background
+
+oclip is the result of years of development on the Heroku CLI, then [oclif](https://oclif.io)—the framework extracted from the Heroku CLI. Unlike those projects, the goal of this project is not to be a platform for a specific CLI but to offer the best CLI experience in Node possible. [See below for more on the differences between this and oclif](#faqs).
+
+oclif was very close but some of the opinions it made were not suitable for everyone and would be too difficult to change while supporting the (now) loads of CLIs depending on that behavior.
+
+We plan on using oclip inside of oclif to replace its parser and improve oclif's type inference.
+
+
+## FAQs
+
+### What's the difference between this and oclif?
+
+oclif is a full-fledged CLI framework that will soon be using oclip under the hood. In particular, the [plugin functionality](https://oclif.io/docs/plugins) lets users add plugins to extend functionality. oclif is an opinionated framework that requires you to follow its conventions for how commands are organized.
+
+oclip is a much simpler project. It was built to take advantage of newer parts of TypeScript so it has better type inference than oclif's classes. It makes no opinions of structure and does not require a generator to build a project.
+
+Both oclif and oclip are built for speed. They both support lazy-loading commands which is something no other Node CLI parser offers and crucial for medium–large CLIs. oclif only has a handful of dependencies and oclip has exactly 0.
+
+As a departure from oclif, oclip will support space-separated arguments. Later we plan to add colon-separated arguments like in oclif.
+
+Use oclif if:
+
+* You want plugins
+* You want commands represented as classes
+* You want colon-separated arguments
+* You prefer an opinionated setup
+
+Use oclip if:
+
+* You want things to be simple (oclip has 0 dependencies)
+* You need more control for things like dynamically generated commands
+* You want space-separated arguments
+* You want the best type inference available for TypeScript CLIs
+
+### Can I convert from oclif to oclip?
+
+Short answer is no. oclip will never reach feature parity with oclif—chiefly plugins.
+
+For consistency we'd like oclif to use oclip under the hood. This is a change that will be opt-in as the parser is completely modular in oclif and even now can be swapped out for anything. So the improved type inference will at some point come to oclif.
+
+If you currently have an oclif CLI and want some of the functionality of oclip (like dynamic commands, for example), you're going to have to manually rewrite all the commands. It might also be possible to craft a base class that uses oclip.
+
 ## TODO
 
 - [x] topic help listing
@@ -170,3 +251,18 @@ test('prints to stdout', async () => {
 - [ ] completions
 - [ ] grouping in help
 - [ ] countable booleans (e.g.: -vvv)
+- [ ] js example
+- [ ] "did you mean?"
+- [ ] config support
+- [ ] onload middleware
+- [ ] onparse middleware
+- [ ] onerror middleware
+- [ ] onexit middleware
+
+## Footnotes
+
+[^1]: With the obvious exception of TypeScript for TS CLIs. Only for development though.
+[^2]: GNU style just means where you can do `--file` or `-f`. Same as git.
+[^3]: Maybe that seems silly to point out but it's unreal how many times people have asked if we could do this in Python or Go.
+[^4]: We can't get the same level of type inference with classes and it's too verbose. Decorators involve too much manual typing.
+[^process.argv]: Technically it's `process.argv.slice(2)` because we don't want to pass argv0 (`node`) or argv1 (the run script).
