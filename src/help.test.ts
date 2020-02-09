@@ -65,4 +65,16 @@ describe('topic', () => {
 Commands:
   foo
 `)})
+  test('renders commands lazily', () => {
+    const t = topic({
+      children: {
+        foo: path.join(__dirname, 'test/fixtures/command.ts')
+      }
+    })
+    const ctx = new Context(t)
+    expect(topicHelp(ctx, t)).toEqual(`Usage: node ${proc}
+
+Commands:
+  foo # sample command
+`)})
 })

@@ -44,7 +44,10 @@ export function topicHelp(ctx: Context, topic: Topic) {
   lines.push('Usage: ' + topic.usage(), '')
   lines.push('Commands:')
   for (const [k, child] of Object.entries(topic.children)) {
-    lines.push(`  ${k}`)
+    const c = child.load()
+    let cmd = `  ${k}`
+    if (c.description) cmd += ` # ${c.description}`
+    lines.push(cmd)
   }
   lines.push('')
   return lines.join('\n')
