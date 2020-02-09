@@ -143,17 +143,6 @@ export const validateArgs = async (ctx: Context, defs: Args, args: any[]) => {
   let maxArgs = numOptionalArgs(defs)
 
   let subcommand: Command | undefined
-  if (args[0]) {
-    if (args[0] === '--version' || args[0] === '-v') throw new VersionSignal()
-    if (args[0] === '--help' || args[0] === '-v') throw new HelpSignal(ctx)
-    // if (options.subcommands) {
-    //   subcommand = options.subcommands[args[0]]
-    //   if (subcommand) {
-    //     maxArgs = -1
-    //     args.shift()
-    //   }
-    // }
-  }
 
   for (let def of defs.slice(0, args.length)) {
     const input = args[def.id]

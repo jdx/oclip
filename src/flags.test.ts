@@ -30,6 +30,24 @@ describe('boolean', () => {
       }).exec(['--foo'])
     })
   })
+
+  test('short flags', () => {
+    return command({
+      flags: {
+        foo: flag.boolean('f')
+      },
+      run: ({flags}) => expect(flags).toMatchObject({foo: true}),
+    }).exec(['-f'])
+  })
+
+  test('can handle -v without showing version', () => {
+    return command({
+      flags: {
+        verbose: flag.boolean('v')
+      },
+      run: ({flags}) => expect(flags).toMatchObject({verbose: true}),
+    }).exec(['-v'])
+  })
 })
 
 describe('input', () => {
