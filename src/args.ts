@@ -1,7 +1,5 @@
 import { Command } from './command'
-import { VersionSignal } from './version'
 import { RequiredArgsError, UnexpectedArgsError } from './errors'
-import { HelpSignal } from './help'
 import { Context } from './context'
 
 export interface Arg<T> {

@@ -7,7 +7,7 @@ oclip is a new Node CLI flag parser. It has the following killer features of whi
 
 * **lazy-loading** commands out of the box means oclip will have the lowest overhead possible. This becomes paramount as CLIs grow.
 * **type inference** TypeScript is not required, but when it is used oclip will be able to infer all the details about flags and args. You'll rarely ever have to specify types manually.
-* **0 dependencies** You don't need a single runtime or even development dependency other than `oclip` itself[^1]. Currently oclip only [costs ~10kB](https://bundlephobia.com/result?p=oclip@0.0.3).
+* **0 dependencies** You don't need a single runtime or even development dependency other than `oclip` itself. Currently oclip only [costs ~10kB](https://bundlephobia.com/result?p=oclip@0.0.3).
 
 _Feel free to play around with this code all you like but anticipate heavily breaking changes until we release 1.x._
 
@@ -30,7 +30,7 @@ command({
 
 > Note: You can also clone the [example template](https://github.com/oclif/oclip-example)
 
-Run this with `node path/to/script` (for JS) or `ts-node path/to/script` (for TS). `command()` creates a command and calling `.exec()` on it causes it to read `process.argv`[^process.argv] and run it command. You can specify alternate arguments by passing them into parse: `.parse(['some', 'custom', 'arguments'])`.
+Run this with `node path/to/script` (for JS) or `ts-node path/to/script` (for TS). `command()` creates a command and calling `.exec()` on it causes it to read `process.argv` and run it command. You can specify alternate arguments by passing them into parse: `.parse(['some', 'custom', 'arguments'])`.
 
 ### Parsing Arguments
 
@@ -52,6 +52,13 @@ command({
 }).exec()
 ```
 
+If you run this script with `--help` you'll see the following:
+
+```sh-session
+$ ts-node src/cli.ts --help
+Usage: mycli <ARG_ONE> [<ARG_TWO>]
+```
+
 [See below for more argument functionality](#arguments).
 
 ### Parsing Flags
@@ -65,7 +72,7 @@ command({
   flags: {
     // -v for a short char and help description
     verbose: flag.boolean('v', 'show extra output'),
-    file: file.input('f', 'file to read from')
+    file: flag.input('f', 'file to read from')
   },
   run({flags: {verbose, file}}) {
     console.log(`verbose: ${verbose}`)
@@ -74,14 +81,25 @@ command({
 }).exec()
 ```
 
-[See below for more flag functionality](#flag).
+If you run this script with `--help` you'll see the following:
+
+```sh-session
+$ ts-node src/cli.ts --help
+Usage: mycli
+
+Options:
+  -v, --verbose     # show extra output
+  -f, --file        # file to read from
+```
+
+[See below for more flag functionality](#flags).
 
 ## Project Scope
 
 Main goals:
 
 * To be the tool of choice for the Node community's CLIs in TS and JS
-* Option/flag parsing in the GNU style[^2]
+* Option/flag parsing in the GNU style
 * Powerful args/flags functionality that can be extended for resuable custom behavior/types
 * Subcommand dispatching with lazy-loading
 * In-CLI help output
@@ -98,8 +116,9 @@ Anti-goals include:
 * loading commands from a directory—again: oclif
 * project generators—if we need that then we're doing something too complex
 * repls—like [vorpal](https://www.npmjs.com/package/vorpal)
-* Building this in another language[^3]
-* Anything involving classes or decorators[^4]
+* Building this in another language
+* Anything involving classes, decorators, or any other kind of alternate syntaxes. We need to support the ability to be flexible, but the way things are done must be consistent
+* Doing really anything after the command starts
 
 ## Arguments
 
@@ -145,7 +164,24 @@ topic({
 
 > Note: We will not be supporting "topic-commands" (commands that are also a topic) like oclif does because it is not compatible with space-separated commands.
 
-## Testing and Running Command Programmatically
+## Running Commands Programmatically
+
+The `.exec()` method on a command/topic are simply functions that return a promise. By default, they will use `process.argv` as their input, but this can be modified.
+
+As an example:
+
+```typescript
+const cmd = command({
+  flags: { verbose: flag.boolean('v') },
+  run: async ({flags}) => {
+    return flags.verbose
+  }
+})
+const p = cmd.exec(['-v']) // p is a promise that evaluates to true
+const q = cmd.exec([])     // q is a promise that evaluates to false
+```
+
+## Testing
 
 The `.exec()` method on a command/topic are simply functions that return a promise. By default, they will use `process.argv` as their input, but this can be modified. Usually you'll want to do this when writing a test or calling a command from another command. Here is a Jest test example:
 
@@ -197,7 +233,6 @@ oclip is the result of years of development on the Heroku CLI, then [oclif](http
 oclif was very close but some of the opinions it made were not suitable for everyone and would be too difficult to change while supporting the (now) loads of CLIs depending on that behavior.
 
 We plan on using oclip inside of oclif to replace its parser and improve oclif's type inference.
-
 
 ## FAQs
 
@@ -258,11 +293,4 @@ If you currently have an oclif CLI and want some of the functionality of oclip (
 - [ ] onparse middleware
 - [ ] onerror middleware
 - [ ] onexit middleware
-
-## Footnotes
-
-[^1]: With the obvious exception of TypeScript for TS CLIs. Only for development though.
-[^2]: GNU style just means where you can do `--file` or `-f`. Same as git.
-[^3]: Maybe that seems silly to point out but it's unreal how many times people have asked if we could do this in Python or Go.
-[^4]: We can't get the same level of type inference with classes and it's too verbose. Decorators involve too much manual typing.
-[^process.argv]: Technically it's `process.argv.slice(2)` because we don't want to pass argv0 (`node`) or argv1 (the run script).
+- [ ] override CLI bin name
