@@ -5,5 +5,7 @@ test('asserts ok', () => {
 })
 
 test('asserts fail', () => {
-  assert(false)
+  expect(() => {
+    assert(false)
+  }).toThrowError('assertion failed')
 })
