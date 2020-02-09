@@ -5,7 +5,7 @@ import { Topic } from '../topic'
 export function commandHelp(ctx: Context, command: Command) {
   const lines = []
   if (command.description) lines.push(command.description, '')
-  lines.push('Usage: ' + command.usage(), '')
+  lines.push('Usage: ' + command.usage(ctx), '')
   const argsWithDescription = command.args.filter(a => !a.hidden && a.description)
   if (argsWithDescription.length) {
     lines.push('Arguments:')
@@ -27,7 +27,7 @@ export function commandHelp(ctx: Context, command: Command) {
 
 export function topicHelp(ctx: Context, topic: Topic) {
   const lines = []
-  lines.push('Usage: ' + topic.usage(), '')
+  lines.push('Usage: ' + topic.usage(ctx), '')
   lines.push('Commands:')
   for (const [k, child] of Object.entries(topic.children)) {
     const c = child.load()

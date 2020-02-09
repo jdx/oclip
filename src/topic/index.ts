@@ -3,7 +3,6 @@ import { Args } from '../parsing/args'
 import { CommandOptions, Command } from '../command'
 import { HelpSignal, VersionSignal } from '../signals'
 import  Context  from '../context'
-import * as path from 'path'
 
 export type Options<A extends Args = any[], F extends Flags = any, R=any, TArgs extends any[] = any[]> =
   | CommandOptions<A, F, TArgs, R>
@@ -71,20 +70,9 @@ export class Topic {
     }
   }
 
-  usage() {
+  usage(ctx: Context) {
     const args = this.args.map(a => a.toString({usage: true}))
-    return [this.topicPath(this), ...args].join(' ')
-  }
-
-  private topicPath(subject: Command | Topic | undefined) {
-    const p = []
-    while (subject?.id) {
-      p.unshift(subject.id)
-      subject = subject.parent
-    }
-    p.unshift(path.basename(process.argv[1]))
-    p.unshift(path.basename(process.argv[0]))
-    return p.join(' ')
+    return [ctx.subjectPath(this), ...args].join(' ')
   }
 }
 

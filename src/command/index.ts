@@ -5,7 +5,6 @@ import Context from '../context'
 import { Flags, FlagValues } from '../parsing/flags'
 import { BaseOptions, Topic } from '../topic'
 import { HelpSignal } from '../signals'
-import path = require('path')
 
 export interface CommandOptions<A extends Args = any[], F extends Flags = any, TArgs extends any[] = any[], R=any> extends BaseOptions<A, F> {
   run(params: RunParams<TArgs, F>): Promise<R> | R
@@ -48,20 +47,9 @@ export class Command {
     }
   }
 
-  usage() {
+  usage(ctx: Context) {
     const args = this.args.map(a => a.toString({usage: true}))
-    return [this.commandPath(this), ...args].join(' ')
-  }
-
-  private commandPath(subject: Command | Topic | undefined) {
-    const p = []
-    while (subject?.id) {
-      p.unshift(subject.id)
-      subject = subject.parent
-    }
-    p.unshift(path.basename(process.argv[1]))
-    p.unshift(path.basename(process.argv[0]))
-    return p.join(' ')
+    return [ctx.subjectPath(this), ...args].join(' ')
   }
 }
 

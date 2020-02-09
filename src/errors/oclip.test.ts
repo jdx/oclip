@@ -6,6 +6,7 @@ class TestError extends OclipError {
 
 describe('unhandledRejectionHandler', () => {
   test('handles ocliperror', () => {
+    jest.spyOn(console, 'error').mockImplementationOnce(() => {})
     jest.spyOn(process, 'exit').mockImplementationOnce(() => {throw new Error('xxx')})
     expect(() => unhandledRejectionHandler(new TestError({message: 'foobar'})))
       .toThrowError('xxx')
