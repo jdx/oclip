@@ -74,17 +74,11 @@ Break up your CLI into separate commands:
 ```typescript
 import {command, topic, arg} from 'oclip'
 
-// run these with `$ mycli refresh` or `$ mycli auth login`
+// run these with `$ mycli login` or `$ mycli refresh`
 topic({
   children: {
-    auth: topic({
-      children: {
-        login: command({/*...*/})
-        logout: command({/*...*/})
-        token: command({/*...*/})
-      }
-    }),
-    refresh: command({/*...*/})
+    login: command({/*...*/}),
+    refresh: command({/*...*/}),
   }
 }).exec()
 ```
