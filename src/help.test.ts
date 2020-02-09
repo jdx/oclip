@@ -7,25 +7,25 @@ import path = require('path')
 
 const proc = path.basename(process.argv[1])
 
-test('help signal', async () => {
-  const spy = jest.spyOn(console, 'log').mockImplementationOnce(() => {})
-  await command({
-    args: [arg('required_arg'), arg.optional('optional_arg'), arg.rest('rest_arg')],
-    flags: {
-      foo: flag.boolean({description: 'a boolean flag'}),
-      bar: flag.input({description: 'an input flag'}),
-    },
-    run: () => {}
-  }).exec(['--help'])
-  expect(spy).toHaveBeenCalledWith(`Usage: node ${proc} <REQUIRED_ARG> [<OPTIONAL_ARG>] [<REST_ARG>]
+describe('command', () => {
+  test('help signal', async () => {
+    const spy = jest.spyOn(console, 'log').mockImplementationOnce(() => {})
+    await command({
+      args: [arg('required_arg'), arg.optional('optional_arg'), arg.rest('rest_arg')],
+      flags: {
+        foo: flag.boolean({description: 'a boolean flag'}),
+        bar: flag.input({description: 'an input flag'}),
+      },
+      run: () => {}
+    }).exec(['--help'])
+    expect(spy).toHaveBeenCalledWith(`Usage: node ${proc} <REQUIRED_ARG> [<OPTIONAL_ARG>] [<REST_ARG>]
 
 Options:
   --foo             # a boolean flag
   --bar             # an input flag
-`)})
+`)
+  })
 
-
-describe('command', () => {
   test('renders arg description', () => {
     const cmd = command({
       args: [arg('arg-name', 'description')],
@@ -51,6 +51,20 @@ Options:
 })
 
 describe('topic', () => {
+  test('help signal', async () => {
+    const spy = jest.spyOn(console, 'log').mockImplementationOnce(() => {})
+    await topic({
+      children: {
+        foo: command({run() {}})
+      }
+    }).exec([])
+    expect(spy).toHaveBeenCalledWith(`Usage: node ${proc}
+
+Commands:
+  foo
+`)
+  })
+
   test('renders commands', () => {
     const t = topic({
       children: {

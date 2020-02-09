@@ -56,14 +56,12 @@ export class Topic {
       //console.log(argv)
       argv.slice()
       const cmd = argv.shift()
-      if (cmd) {
-        if (cmd in this.children) {
-          const c = this.children[cmd].load()
-          return c.exec(argv)
-        } else {
-          const ctx = new Context(this)
-          throw new HelpSignal(ctx)
-        }
+      if (cmd && cmd in this.children) {
+        const c = this.children[cmd].load()
+        return c.exec(argv)
+      } else {
+        const ctx = new Context(this)
+        throw new HelpSignal(ctx)
       }
     } catch (err) {
       if (err instanceof VersionSignal || err instanceof HelpSignal) {
