@@ -1,6 +1,22 @@
 import {flag, command} from '..'
 
 describe('boolean', () => {
+  describe('toString', () => {
+    test('unknown flag', () => {
+      const f = flag.boolean()
+      expect(f.toString()).toEqual('UNKNOWN FLAG')
+    })
+    test('simple', () => {
+      const f = flag.boolean()
+      f.name = 'foo'
+      expect(f.toString()).toEqual('--foo')
+    })
+    test('short', () => {
+      const f = flag.boolean('f')
+      f.name = 'foo'
+      expect(f.toString()).toEqual('-f, --foo')
+    })
+  })
   test('sets true', async () => {
     const run = jest.fn()
     await command({

@@ -1,6 +1,16 @@
 import {arg, command} from '..'
 import { RequiredArgsError } from '../errors/args'
 
+describe('builders', () => {
+  test('ensures rest is not in the middle', () => {
+    expect(() => command({
+      args: [arg.rest(), arg()],
+      run() {},
+    }))
+      .toThrow('rest args must be the last ones defined')
+  })
+})
+
 describe('required', () => {
   test('parses single arg', async () => {
     await command({

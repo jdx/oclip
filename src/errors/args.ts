@@ -12,6 +12,7 @@ export class RequiredArgsError extends OclipError {
       const list = namedArgs.map(a => [a.name, a.description])
       message += `:\n${list}`
     }
+    message += '\nSee more help with --help'
     super({message})
     this.args = args
   }
@@ -21,7 +22,8 @@ export class UnexpectedArgsError extends OclipError {
   public args: string[]
 
   constructor({args}: { args: string[] }) {
-    const message = `Unexpected argument${args.length === 1 ? '' : 's'}: ${args.join(', ')}`
+    let message = `Unexpected argument${args.length === 1 ? '' : 's'}: ${args.join(', ')}`
+    message += '\nSee more help with --help'
     super({message})
     this.args = args
   }

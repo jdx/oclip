@@ -2,27 +2,21 @@ import { command } from '../command'
 import { arg } from '../parsing/args'
 import { flag, } from '..'
 import Context from '../context'
-import { commandHelp, } from '.'
+import { commandHelp, } from './command'
 import path = require('path')
 
 const proc = path.basename(process.argv[1])
 
 test('help signal', async () => {
-  const spy = jest.spyOn(console, 'log').mockImplementationOnce(() => {})
-  await command({
+  await expect(command({
     args: [arg('required_arg'), arg.optional('optional_arg'), arg.rest('rest_arg')],
     flags: {
       foo: flag.boolean({description: 'a boolean flag'}),
       bar: flag.input({description: 'an input flag'}),
     },
     run: () => {}
-  }).exec(['--help'])
-  expect(spy).toHaveBeenCalledWith(`Usage: ${proc} <REQUIRED_ARG> [<OPTIONAL_ARG>] [<REST_ARG>]
-
-Options:
-  --foo             # a boolean flag
-  --bar             # an input flag
-`)
+  }).exec(['--help']))
+    .rejects.toThrowError('help signal')
 })
 
 test('renders arg description', () => {

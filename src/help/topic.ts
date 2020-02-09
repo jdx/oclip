@@ -5,9 +5,11 @@ export function topicHelp(ctx: Context, topic: Topic) {
   const lines = []
   lines.push('Usage: ' + topic.usage(ctx), '')
   lines.push('Commands:')
-  for (const [k, child] of Object.entries(topic.children)) {
-    const c = child.load()
-    let cmd = `  ${k}`
+  const children = Object.values(topic.children).map(c => c.load())
+  const commands = children.filter(c => c.type === 'command')
+  if (commands.length === 0) lines.push('  [this topic has no commands]')
+  for (const c of commands) {
+    let cmd = `  ${c.id}`
     if (c.description) cmd += ` # ${c.description}`
     lines.push(cmd)
   }

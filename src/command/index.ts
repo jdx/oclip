@@ -1,10 +1,8 @@
 import { validateArgDefs, Args, Arg, RestArg } from '../parsing/args'
 import parse from '../parsing/parse'
-import { VersionSignal } from '../signals'
 import Context from '../context'
 import { Flags, FlagValues } from '../parsing/flags'
 import { BaseOptions, Topic } from '../topic'
-import { HelpSignal } from '../signals'
 
 export interface CommandOptions<A extends Args = any[], F extends Flags = any, TArgs extends any[] = any[], R=any> extends BaseOptions<A, F> {
   run(params: RunParams<TArgs, F>): Promise<R> | R
@@ -28,21 +26,9 @@ export class Command {
 
   async exec(argv = process.argv.slice(2)) {
     const ctx = new Context(this)
-    try {
-      const {args, flags, subcommand} = await parse(ctx, argv, this.args, this.flags)
-      if (subcommand) {
-        const result: any = await subcommand.exec(args)
-        return result
-      }
-      const result: any = await this.run({args: args as any, flags: flags as any, ctx})
-      return result
-    } catch (err) {
-      if (err instanceof VersionSignal || err instanceof HelpSignal) {
-        console.log(err.render(ctx))
-        return
-      }
-      throw err
-    }
+    const {args, flags} = await parse(ctx, argv, this.args, this.flags)
+    const result: any = await this.run({args: args as any, flags: flags as any, ctx})
+    return result
   }
 
   usage(ctx: Context) {

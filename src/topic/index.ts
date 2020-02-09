@@ -1,7 +1,7 @@
 import { Flags } from '../parsing/flags'
 import { Args } from '../parsing/args'
 import { CommandOptions, Command } from '../command'
-import { HelpSignal, VersionSignal } from '../signals'
+import { HelpSignal } from '../signals'
 import Context from '../context'
 import assert from '../util/assert'
 
@@ -17,6 +17,7 @@ export interface BaseOptions<A extends Args = any[], F extends Flags = any> {
 
 export interface TopicOptions extends BaseOptions {
   children: {[id: string]: Topic | Command | string}
+  getChild?: (id: string) => (Topic | Command | undefined)
 }
 
 export interface Child {
@@ -45,6 +46,15 @@ export class Topic {
     }
   }
 
+  getChild(id: string): Topic | Command | undefined {
+    if (!id) return
+    if (id in this.children) {
+      return this.children[id].load()
+    }
+    if (!this.options.getChild) return
+    return this.options.getChild(id)
+  }
+
   readonly args: Args
   readonly flags: Flags
   readonly description?: string
@@ -53,24 +63,15 @@ export class Topic {
   id?: string
   parent?: Topic
 
-  exec(argv = process.argv.slice(2)): any {
+  async exec(argv = process.argv.slice(2)): Promise<any> {
     const ctx = new Context(this)
-    try {
-      argv.slice()
-      const cmd = argv.shift()
-      if (cmd && cmd in this.children) {
-        const c = this.children[cmd].load()
-        return c.exec(argv)
-      } else {
-        throw new HelpSignal(ctx)
-      }
-    } catch (err) {
-      if (err instanceof VersionSignal || err instanceof HelpSignal) {
-        console.log(err.render(ctx))
-        return
-      }
-      console.error(err.stack || err)
-      process.exit(191)
+    argv.slice()
+    const cmd = argv.shift()
+    const c = this.getChild(cmd!)
+    if (c) {
+      return c.exec(argv)
+    } else {
+      throw new HelpSignal(ctx)
     }
   }
 

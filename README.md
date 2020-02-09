@@ -121,7 +121,6 @@ Main goals:
 Anti-goals include:
 
 * plugin support—this is oclif's domain
-* loading commands from a directory—again: oclif
 * project generators—if we need that then we're doing something too complex
 * repls—like [vorpal](https://www.npmjs.com/package/vorpal)
 * Building this in another language
@@ -148,6 +147,8 @@ topic({
 }).exec()
 ```
 
+### Subtopics
+
 Or you can also have subtopics which can sit next to commands:
 
 ```typescript
@@ -171,6 +172,99 @@ topic({
 ```
 
 > Note: We will not be supporting "topic-commands" (commands that are also a topic) like oclif does because it is not compatible with space-separated commands.
+
+### Lazy-loading subtopics/subcommands
+
+Node takes a comparatively long time to require modules. Because the convention is to place `require()`s at the top of the file, if you simply do this at the top for all of the commands it would force the CLI to load all the scripts and all the dependencies before doing anything.
+
+That results in very poor performance for CLIs and is one of the main things that oclip solves for you.
+
+You can either specify the path that a topic/command is in or a directory root of topics/commands.
+
+#### Lazy-loading with module path
+
+In this case, imagine we've defined the CLI root at `./src/cli.ts`. We have 2 commands we want to nest that are at `./src/topics/auth/login.ts` and `./src/topics/auth/logout.ts`.
+
+```typescript
+import {command, topic} from 'oclip'
+
+topic({
+  children: {
+    auth: topic({
+      children: {
+        login: path.join(__dirname, '/topics/auth/login'),
+        logout: path.join(__dirname, '/topics/auth/logout'),
+      }
+    }),
+  }
+}).exec()
+```
+
+> Note: `__dirname` is the directory of the script. It's handy in this case since we usually want to load scripts relative to the current path.
+
+#### Lazy-loading with command root
+
+Alternatively, we can set the `commandRoot` option of a topic to have it add topics and commands from a directory. Directories are subtopics and `ts|js` files are commands. Using the same file structure as above, we can get the same result with this:
+
+```typescript
+import {command, topic} from 'oclip'
+
+topic({
+  commandRoot: path.join(__dirname, '/topics')
+}).exec()
+```
+
+> Note: It's possible to define both a `commandRoot` and `children`. This means they could conflict. oclip will attemp to merge the 2 and if there is a conflict, `children` always wins.
+
+### Dynamically Generated Commands
+
+For some use-cases commands are not static but generated in code. There are 2 ways of doing this, either by building the commands and passing them in as children or specifying a `getChild()` function.
+
+Here is an example of building the children:
+
+```typescript
+import {command, topic} from 'oclip'
+
+const commandNames = ['foo', 'bar', 'baz']
+const commands = commandNames.map(name => [name, command({
+  run() {
+    console.log(`running command: ${name}`)
+  }
+})])
+
+topic({
+  children: Object.fromEntries(commands)
+}).exec()
+```
+
+And here is `getChild()`. Note that these won't be able to be seen in the help but the builder ones will:
+
+```typescript
+import {command, topic} from 'oclip'
+
+const commandNames = ['foo', 'bar', 'baz']
+const commands = commandNames.map(name => [name, command({
+  run() {
+    console.log(`running command: ${name}`)
+  }
+})])
+
+topic({
+  getChild(name) {
+    // this essentially acts as a catch-all handler
+    // it can return a topic, command, or nothing
+    return command({
+      run() {
+        console.log(`running command: ${name}`)
+      }
+    })
+  }
+}).exec()
+```
+
+> Note: I do not recommend dynamic at all as it has to execute all of the commands and topics so you lose all the performance benefits from the lazy-loading.
+> If you're considering this approach, I would first consider if you could generate the commands in a build step before releasing a new version of the CLI rather than having the client generate them.
+> Being mindful of start time is super important in Node CLIs and work like this that's done before every run (including `--help`) is usually pretty damaging.
 
 ## Running Commands Programmatically
 
@@ -270,11 +364,11 @@ If you currently have an oclif CLI and want some of the functionality of oclip (
 
 ## TODO
 
-- [x] topic help listing
 - [ ] normalized filepath arg/flag
 - [ ] integer arg/flag
 - [ ] env var arg/flag
-- [x] lazy-loading files via strings in topic files
+- [ ] commandPath
+- [ ] commandPath deep merging of topics
 - [ ] manifest file to help with ^^ and make help fast
 - [ ] help examples
 - [ ] `mycli help foo`
