@@ -75,6 +75,7 @@ export default async function parse<F extends Flags>(ctx: Context, argv: string[
         flagChoices[flag.name] = await flag.choices()
       }
       const choices = flagChoices[flag.name]
+      assert(b)
       if (!choices.includes(b)) {
         throw new InvalidChoiceError(flag, choices, b)
       }

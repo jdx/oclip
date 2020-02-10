@@ -154,7 +154,7 @@ describe('input', () => {
       return command({
         flags: {
           foo: flag(),
-          bar: flag({required: true})
+          bar: flag({required: true}),
         },
         run: ({flags}) => expect(flags).toMatchObject({foo: '123', bar: '234'}),
       }).exec(['--foo=123', '--bar', '234'])
@@ -163,7 +163,7 @@ describe('input', () => {
       return expect(command({
         flags: {
           foo: flag(),
-          bar: flag({required: true})
+          bar: flag.required(),
         },
         run: ({flags}) => expect(flags).toMatchObject({foo: '123'}),
       }).exec(['--foo=123'])).rejects.toThrowError(/Missing required flag: --bar/)
@@ -194,6 +194,17 @@ describe('input', () => {
         run: ({flags}) => expect(flags).toMatchObject({foo: 'a'}),
       }).exec(['--foo=a']))
         .rejects.toThrow('Expected a to be one of: b')
+    })
+  })
+  describe('optional', () => {
+    test('still works', () => {
+      return command({
+        flags: {
+          foo: flag.optional(),
+          bar: flag.optional(),
+        },
+        run: ({flags}) => expect(flags).toMatchObject({foo: 'a'}),
+      }).exec(['--foo=a'])
     })
   })
 })
