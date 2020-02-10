@@ -3,7 +3,7 @@
 ![Node.js CI](https://github.com/oclif/oclip/workflows/Node.js%20CI/badge.svg)
 [![codecov](https://codecov.io/gh/oclif/oclip/branch/master/graph/badge.svg)](https://codecov.io/gh/oclif/oclip)
 
-oclip is a new Node CLI flag parser. It has the following killer features of which not one can be found in another popular CLI parser.
+oclip is a new Node CLI flag parser. It has these killer features which you won't find in any other popular CLI tool:
 
 * **lazy-loading** commands out of the box means oclip will have the lowest overhead possible. This becomes paramount as CLIs grow.
 * **type inference** TypeScript is not required, but when it is used oclip will be able to infer all the details about flags and args. You'll rarely ever have to specify types manually.
@@ -93,14 +93,6 @@ Options:
 ```
 
 [See below for more flag functionality](#flags).
-
-## Background
-
-oclip is the result of years of development on the Heroku CLI, then [oclif](https://oclif.io)—the framework extracted from the Heroku CLI. Unlike those projects, the goal of this project is not to be a platform for a specific CLI but to offer the best CLI experience in Node possible. [See below for more on the differences between this and oclif](#faqs).
-
-oclif was very close but some of the opinions it made were not suitable for everyone and would be too difficult to change while supporting the (now) loads of CLIs depending on that behavior.
-
-We plan on using oclip inside of oclif to replace its parser and improve oclif's type inference.
 
 ## Project Scope
 
