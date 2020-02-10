@@ -178,6 +178,14 @@ describe('input', () => {
         run: ({flags}) => expect(flags).toMatchObject({foo: 'a'}),
       }).exec(['--foo=a'])
     })
+    test('accepts input as () => promise', () => {
+      return command({
+        flags: {
+          foo: flag({choices: async () => ['a']}),
+        },
+        run: ({flags}) => expect(flags).toMatchObject({foo: 'a'}),
+      }).exec(['--foo=a'])
+    })
     test('fails if missing', () => {
       return expect(command({
         flags: {
