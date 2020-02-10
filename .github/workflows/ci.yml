@@ -39,6 +39,7 @@ jobs:
         yarn link
         cd example
         yarn link oclip
+        yarn
         npx ts-node src/cli.ts serve 20000
         yarn pack
         tar -xvzf oclip-example-*.tgz
