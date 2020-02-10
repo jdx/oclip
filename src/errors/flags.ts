@@ -13,3 +13,19 @@ export class RequiredFlagError extends OclipError {
     this.flags = flags
   }
 }
+
+export class InvalidChoiceError extends OclipError {
+  flag: Flag<any>
+  choices: string[]
+  arg: string
+  constructor(flag: Flag<any>, choices: string[], arg: string) {
+    const choiceOutput = choices.slice(-100)
+    if (choiceOutput.length === 100) choiceOutput.push('...')
+    let message = `Expected ${arg} to be one of: ${choiceOutput.join(', ')}`
+    message += '\nSee more help with --help'
+    super({message})
+    this.flag = flag
+    this.choices = choices
+    this.arg = arg
+  }
+}

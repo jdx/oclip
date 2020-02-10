@@ -1,7 +1,7 @@
 import { validateArgs, Args } from './args'
 import { Flags, Flag } from './flags'
 import assert from '../util/assert'
-import { RequiredFlagError } from '../errors/flags'
+import { RequiredFlagError, InvalidChoiceError } from '../errors/flags'
 import { Command } from '../command'
 import  Context  from '../context'
 import { VersionSignal, HelpSignal } from '../signals'
@@ -56,6 +56,7 @@ export default async function parse<F extends Flags>(ctx: Context, argv: string[
   }
 
   const flags: {[name: string]: any} = {}
+  const flagChoices: {[name: string]: string[]} = {}
   const multipleFlags = Object.values(flagDefs).filter(f => f.multiple)
   for (const flagDef of multipleFlags) {
     flags[flagDef.name] = flagDef.type === 'boolean' ? 0 : []
@@ -68,6 +69,15 @@ export default async function parse<F extends Flags>(ctx: Context, argv: string[
         flags[flag.name] = a
       }
       continue
+    }
+    if (flag.choices) {
+      if (!(flag.name in flagChoices)) {
+        flagChoices[flag.name] = await flag.choices()
+      }
+      const choices = flagChoices[flag.name]
+      if (!choices.includes(b)) {
+        throw new InvalidChoiceError(flag, choices, b)
+      }
     }
     if (flag.multiple) {
       flags[flag.name].push(b)

@@ -169,4 +169,23 @@ describe('input', () => {
       }).exec(['--foo=123'])).rejects.toThrowError(/Missing required flag: --bar/)
     })
   })
+  describe('choices', () => {
+    test('accepts input', () => {
+      return command({
+        flags: {
+          foo: flag({choices: ['a']}),
+        },
+        run: ({flags}) => expect(flags).toMatchObject({foo: 'a'}),
+      }).exec(['--foo=a'])
+    })
+    test('fails if missing', () => {
+      return expect(command({
+        flags: {
+          foo: flag({choices: ['b']}),
+        },
+        run: ({flags}) => expect(flags).toMatchObject({foo: 'a'}),
+      }).exec(['--foo=a']))
+        .rejects.toThrow('Expected a to be one of: b')
+    })
+  })
 })
