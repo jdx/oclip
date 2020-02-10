@@ -58,6 +58,25 @@ describe('bool', () => {
     }).exec(['-fb'])
   })
 
+  describe('default', () => {
+    test('gets by value', () => {
+      return command({
+        flags: {
+          foo: flag({default: 'bar'}),
+        },
+        run: ({flags}) => expect(flags).toMatchObject({foo: 'bar'}),
+      }).exec([])
+    })
+    test('gets by func', () => {
+      return command({
+        flags: {
+          foo: flag({default: async () => 'bar'}),
+        },
+        run: ({flags}) => expect(flags).toMatchObject({foo: 'bar'}),
+      }).exec([])
+    })
+  })
+
   describe('multibool', () => {
     test('gets 0 by default', () => {
       return command({
