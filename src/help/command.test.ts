@@ -1,6 +1,6 @@
 import { command } from '../command'
 import { arg } from '../parsing/args'
-import { flag, } from '..'
+import { flag } from '..'
 import Context from '../context'
 import { commandHelp, } from './command'
 import path = require('path')
@@ -11,8 +11,8 @@ test('help signal', async () => {
   await expect(command({
     args: [arg('required_arg'), arg.optional('optional_arg'), arg.multiple('rest_arg')],
     flags: {
-      foo: flag.boolean({description: 'a boolean flag'}),
-      bar: flag.input({description: 'an input flag'}),
+      foo: flag.bool({description: 'a boolean flag'}),
+      bar: flag({description: 'an input flag'}),
     },
     run: () => {}
   }).exec(['--help']))
@@ -32,7 +32,7 @@ Arguments:
 `)})
 test('renders flag description', () => {
   const cmd = command({
-    flags: {foo: flag.input({char: 'a', description: 'description'})},
+    flags: {foo: flag({char: 'a', description: 'description'})},
     run: () => {}
   })
   const ctx = new Context(cmd)

@@ -1,4 +1,4 @@
-import { validateArgDefs, Args, Arg, RestArg } from '../parsing/args'
+import { validateArgDefs, Args, Arg, MultipleArg } from '../parsing/args'
 import parse from '../parsing/parse'
 import Context from '../context'
 import { Flags, FlagValues } from '../parsing/flags'
@@ -44,7 +44,7 @@ export interface RunParams<TArgs extends any[], F extends Flags> {
 }
 
 export function command<F extends Flags, A1 extends Arg<any>, A2 extends Arg<any>, R>(options: CommandOptions<[A1, A2], F, [ArgVal<A1>, ArgVal<A2>], R>): Command
-export function command<F extends Flags, A1 extends RestArg<any>, R>(options: CommandOptions<[A1], F, ArgVal<A1>[], R>): Command
+export function command<F extends Flags, A1 extends MultipleArg<any>, R>(options: CommandOptions<[A1], F, ArgVal<A1>[], R>): Command
 export function command<F extends Flags, A1 extends Arg<any>, R>(options: CommandOptions<[A1], F, [ArgVal<A1>], R>): Command
 export function command<F extends Flags, R>(options: CommandOptions<[], F, [], R>): Command
 export function command<F extends Flags, A extends Arg<any>, R>(options: CommandOptions<A[], F, ArgVal<A>[], R>): Command

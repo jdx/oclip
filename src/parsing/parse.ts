@@ -29,6 +29,14 @@ export default async function parse<F extends Flags>(ctx: Context, argv: string[
     }
     const flag = findFlagMatchingArg(flagDefs, arg)
     if (flag) {
+      if (flag.char && arg.startsWith('-' + flag.char) && arg.length > 2) {
+        if (flag.type === 'boolean') {
+          argv.unshift(`-${arg.slice(2)}`)
+        } else {
+          argv.unshift(arg.slice(2))
+        }
+        arg = arg.slice(-2)
+      }
       if (arg.includes('=')) {
         let [a, ...rest] = arg.split('=')
         arg = a
@@ -48,13 +56,16 @@ export default async function parse<F extends Flags>(ctx: Context, argv: string[
   }
 
   const flags: {[name: string]: any} = {}
+  const multipleFlags = Object.values(flagDefs).filter(f => f.multiple)
+  for (const flagDef of multipleFlags) {
+    flags[flagDef.name] = flagDef.type === 'boolean' ? 0 : []
+  }
   for (const [flag, a, b] of flagArgs) {
     if (flag.type === 'boolean') {
       flags[flag.name] = a
       continue
     }
     if (flag.multiple) {
-      flags[flag.name] = (flags[flag.name] || [])
       flags[flag.name].push(b)
       continue
     }
@@ -62,7 +73,7 @@ export default async function parse<F extends Flags>(ctx: Context, argv: string[
   }
 
   const missingRequiredFlags = Object.values(flagDefs)
-    .filter(flag => !(flag.name in flags) && flag.required && !flag.default)
+    .filter(flag => !(flag.name in flags) && flag.required && (flag.type === 'boolean' || !flag.default))
   if (missingRequiredFlags.length) {
     throw new RequiredFlagError({flags: missingRequiredFlags})
   }
@@ -70,6 +81,13 @@ export default async function parse<F extends Flags>(ctx: Context, argv: string[
   for (const [name, val] of Object.entries(flags)) {
     const flag = flagDefs[name]
     assert(flag)
+    if (flag.type === 'boolean') {
+      flags[name] = true
+      if (flag.allowNo && val === `--no-${flag.name}`) {
+        flags[name] = false
+      }
+      continue
+    }
     if (flag.type === 'input' && flag.multiple) {
       for (let i=0; i<flags[name].length; i++) {
         flags[name][i] = await flag.parse(flags[name][i])
@@ -81,7 +99,8 @@ export default async function parse<F extends Flags>(ctx: Context, argv: string[
 
   const defsNotAdded = Object.entries(flagDefs).filter(([name]) => !(name in flags))
   for (const [name, def] of defsNotAdded) {
-    flags[name] = typeof def.default === 'function' ? (await def.default()) : def.default
+    if (def.type !== 'input' || !def.default) continue
+    flags[name] = await def.default()
   }
 
   if (args[0] === '--version' || args[0] === '-v') throw new VersionSignal(ctx)
@@ -104,7 +123,7 @@ function findFlagMatchingArg(flagDefs: Flags, arg: string | undefined, {partial 
     return findFlagMatchingArg(flagDefs, arg.split('=')[0])
   }
   for (const flag of Object.values(flagDefs)) {
-    if (flag.char && ('-' + flag.char) === arg) return flag
+    if (flag.char && arg.startsWith('-' + flag.char)) return flag
     if ('--' + flag.name === arg) return flag
     if (flag.type === 'boolean') {
       if (flag.allowNo && '--no-' + flag.name === arg) return flag

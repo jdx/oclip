@@ -1,7 +1,7 @@
 import {command} from './command'
 import {topic} from './topic'
 import {arg} from './parsing/args'
-import * as flag from './parsing/flags'
+import {flag} from './parsing/flags'
 import * as errors from './errors'
 
 export let _parent: NodeModule['parent'] | undefined

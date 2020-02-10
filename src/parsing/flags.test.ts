@@ -1,18 +1,19 @@
-import {flag, command} from '..'
+import {flag} from './flags'
+import {command} from '..'
 
-describe('boolean', () => {
+describe('bool', () => {
   describe('toString', () => {
     test('unknown flag', () => {
-      const f = flag.boolean()
+      const f = flag.bool()
       expect(f.toString()).toEqual('UNKNOWN FLAG')
     })
     test('simple', () => {
-      const f = flag.boolean()
+      const f = flag.bool()
       f.name = 'foo'
       expect(f.toString()).toEqual('--foo')
     })
     test('short', () => {
-      const f = flag.boolean({char: 'f'})
+      const f = flag.bool('f')
       f.name = 'foo'
       expect(f.toString()).toEqual('-f, --foo')
     })
@@ -21,7 +22,7 @@ describe('boolean', () => {
     const run = jest.fn()
     await command({
       flags: {
-        foo: flag.boolean()
+        foo: flag.bool()
       },
       run,
     }).exec(['--foo'])
@@ -32,7 +33,7 @@ describe('boolean', () => {
     test('sets to false on --no-foo', () => {
       return command({
         flags: {
-          foo: flag.boolean({allowNo: true})
+          foo: flag.bool({allowNo: true})
         },
         run: ({flags}) => expect(flags).toMatchObject({foo: false}),
       }).exec(['--no-foo'])
@@ -40,7 +41,7 @@ describe('boolean', () => {
     test('sets to true normally', () => {
       return command({
         flags: {
-          foo: flag.boolean({allowNo: true})
+          foo: flag.bool({allowNo: true})
         },
         run: ({flags}) => expect(flags).toMatchObject({foo: true}),
       }).exec(['--foo'])
@@ -50,7 +51,7 @@ describe('boolean', () => {
   test('short flags', () => {
     return command({
       flags: {
-        foo: flag.boolean({char: 'f'})
+        foo: flag.bool('f')
       },
       run: ({flags}) => expect(flags).toMatchObject({foo: true}),
     }).exec(['-f'])
@@ -59,7 +60,7 @@ describe('boolean', () => {
   test('can handle -v without showing version', () => {
     return command({
       flags: {
-        verbose: flag.boolean({char: 'v'})
+        verbose: flag.bool({char: 'v'})
       },
       run: ({flags}) => expect(flags).toMatchObject({verbose: true}),
     }).exec(['-v'])
@@ -70,7 +71,7 @@ describe('input', () => {
   test('sets a flag', async () => {
     return command({
       flags: {
-        foo: flag.input()
+        foo: flag()
       },
       run: ({flags}) => expect(flags).toMatchObject({foo: 'bar'}),
     }).exec(['--foo', 'bar'])
@@ -78,7 +79,7 @@ describe('input', () => {
   test('sets a flag with `=`', async () => {
     return command({
       flags: {
-        foo: flag.input()
+        foo: flag()
       },
       run: ({flags}) => expect(flags).toMatchObject({foo: 'bar'}),
     }).exec(['--foo=bar'])
@@ -86,7 +87,7 @@ describe('input', () => {
   test('sets a flag with no space', async () => {
     return command({
       flags: {
-        foo: flag.input()
+        foo: flag()
       },
       run: ({flags}) => expect(flags).toMatchObject({foo: 'bar'}),
     }).exec(['--foobar'])
@@ -96,7 +97,7 @@ describe('input', () => {
     test('parses', async () => {
       return command({
         flags: {
-          foo: flag.input({parse: s => parseInt(s)})
+          foo: flag({parse: s => parseInt(s)})
         },
         run: ({flags}) => expect(flags).toMatchObject({foo: 123}),
       }).exec(['--foo=123'])
@@ -106,7 +107,7 @@ describe('input', () => {
     test('returns empty array with nothing', async () => {
       return command({
         flags: {
-          foo: flag.input({multiple: true})
+          foo: flag.multiple()
         },
         run: ({flags}) => expect(flags).toMatchObject({foo: []}),
       }).exec([])
@@ -114,7 +115,7 @@ describe('input', () => {
     test('gets multiple', async () => {
       return command({
         flags: {
-          foo: flag.input({multiple: true})
+          foo: flag.multiple()
         },
         run: ({flags}) => expect(flags).toMatchObject({foo: ['123', '1234']}),
       }).exec(['--foo=123', '--foo', '1234'])
@@ -122,18 +123,18 @@ describe('input', () => {
     test('parses individually', async () => {
       return command({
         flags: {
-          foo: flag.input({multiple: true, parse: s => s.length})
+          foo: flag.multiple('x', {parse: s => s.length})
         },
-        run: ({flags}) => expect(flags).toMatchObject({foo: [3, 4]}),
-      }).exec(['--foo=123', '--foo', '1234'])
+        run: ({flags}) => expect(flags).toMatchObject({foo: [3, 4, 5]}),
+      }).exec(['--foo=123', '--foo', '1234', '-x12345'])
     })
   })
   describe('required', () => {
     test('accepts input', () => {
       return command({
         flags: {
-          foo: flag.input(),
-          bar: flag.input({required: true})
+          foo: flag(),
+          bar: flag({required: true})
         },
         run: ({flags}) => expect(flags).toMatchObject({foo: '123', bar: '234'}),
       }).exec(['--foo=123', '--bar', '234'])
@@ -141,8 +142,8 @@ describe('input', () => {
     test('fails if missing', () => {
       return expect(command({
         flags: {
-          foo: flag.input(),
-          bar: flag.input({required: true})
+          foo: flag(),
+          bar: flag({required: true})
         },
         run: ({flags}) => expect(flags).toMatchObject({foo: '123'}),
       }).exec(['--foo=123'])).rejects.toThrowError(/Missing required flag: --bar/)
