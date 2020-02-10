@@ -2,9 +2,9 @@ import type { Alphabet } from './alphabet'
 
 export type Flags = {[id: string]: Flag<any>}
 
-export type Flag<T> = BooleanFlag | InputFlag<T>
+export type Flag<T> = BoolFlag | InputFlag<T>
 
-export type BooleanFlagValue<F extends BooleanFlag> =
+export type BoolFlagValue<F extends BoolFlag> =
   F extends {multiple: true}
   ? number
   : F extends {required: true}
@@ -18,11 +18,12 @@ export type InputFlagValue<F extends InputFlag<any>> =
   : (UnwrapPromise<F['parse']> | undefined)
 
 export type FlagValue<F extends Flag<any>> = F extends InputFlag<any> ? InputFlagValue<F> :
-  F extends BooleanFlag ? BooleanFlagValue<F> : never
+  F extends BoolFlag ? BoolFlagValue<F> : never
 
 export type FlagValues<F extends Flags> = {[K in keyof F]: FlagValue<F[K]>}
 
 export type MultipleFlag<T> = Flag<T> & {multiple: true}
+export type MultiBoolFlag = BoolFlag & {multiple: true}
 export type RequiredFlag<T> = Flag<T> & {required: true}
 export type OptionalFlag<T> = Flag<T> & {required: false}
 
@@ -47,7 +48,7 @@ export interface FlagOpts {
   hidden?: boolean
 }
 
-export interface BooleanFlagOpts extends FlagOpts {
+export interface BoolFlagOpts extends FlagOpts {
   /** allow the user to set `--no-thisflag` to set it to false */
   allowNo?: boolean
 }
@@ -97,7 +98,7 @@ export interface FlagBase {
   multiple: boolean
 }
 
-export interface BooleanFlag extends FlagBase {
+export interface BoolFlag extends FlagBase {
   type: 'boolean'
   /** allow the user to also run: --no-flag-name in order to set the flag to false */
   allowNo: boolean
@@ -189,17 +190,21 @@ const getParams = <T extends {char?: string, description?: string}>(char: undefi
 }
 
 export const flag: FlagBuilder & {
-  bool(char: Alphabet, description: string, options?: BooleanFlagOpts): BooleanFlag
-  bool(char: Alphabet, options?: BooleanFlagOpts): BooleanFlag
-  bool(options?: BooleanFlagOpts): BooleanFlag
+  multibool(char: Alphabet, description: string, options?: BoolFlagOpts): MultiBoolFlag
+  multibool(char: Alphabet, options?: BoolFlagOpts): MultiBoolFlag
+  multibool(options?: BoolFlagOpts): MultiBoolFlag
+
+  bool(char: Alphabet, description: string, options?: BoolFlagOpts): BoolFlag
+  bool(char: Alphabet, options?: BoolFlagOpts): BoolFlag
+  bool(options?: BoolFlagOpts): BoolFlag
 } = flagBuilder({parse: (s: string) => s}) as any
 
 /**
  * A simple flag that just allows the user to set a boolean. `allowNo` enabled "false" support with:
  * --no-flagname
- * @param {BooleanFlagOpts} opts
+ * @param {BoolFlagOpts} opts
  */
-flag.bool = (char?: Alphabet | BooleanFlagOpts, description?: string | BooleanFlagOpts, opts: BooleanFlagOpts = {}) => {
+flag.bool = (char?: Alphabet | BoolFlagOpts, description?: string | BoolFlagOpts, opts: BoolFlagOpts = {}) => {
   opts = getParams(char, description, opts)
   return {
     allowNo: false,
@@ -218,6 +223,15 @@ flag.bool = (char?: Alphabet | BooleanFlagOpts, description?: string | BooleanFl
     name: '',
     type: 'boolean' as const,
   }
+}
+
+/**
+ * A simple flag that just allows the user to set a boolean. `allowNo` enabled "false" support with:
+ * --no-flagname
+ * @param {BoolFlagOpts} opts
+ */
+flag.multibool = (char?: Alphabet | BoolFlagOpts, description?: string | BoolFlagOpts, opts: BoolFlagOpts = {}) => {
+  return {...flag.bool(char as Alphabet, description as string, opts), multiple: true} as any
 }
 
 /**

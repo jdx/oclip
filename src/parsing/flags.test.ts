@@ -51,10 +51,30 @@ describe('bool', () => {
   test('short flags', () => {
     return command({
       flags: {
-        foo: flag.bool('f')
+        foo: flag.bool('f'),
+        bar: flag.bool('b'),
       },
-      run: ({flags}) => expect(flags).toMatchObject({foo: true}),
-    }).exec(['-f'])
+      run: ({flags}) => expect(flags).toMatchObject({foo: true, bar: true}),
+    }).exec(['-fb'])
+  })
+
+  describe('multibool', () => {
+    test('gets 0 by default', () => {
+      return command({
+        flags: {
+          verbose: flag.multibool(),
+        },
+        run: ({flags}) => expect(flags).toMatchObject({verbose: 0}),
+      }).exec([])
+    })
+    test('gets 4', () => {
+      return command({
+        flags: {
+          verbose: flag.multibool('v'),
+        },
+        run: ({flags}) => expect(flags).toMatchObject({verbose: 4}),
+      }).exec(['-v', '--verbose', '-vv'])
+    })
   })
 
   test('can handle -v without showing version', () => {

@@ -62,7 +62,11 @@ export default async function parse<F extends Flags>(ctx: Context, argv: string[
   }
   for (const [flag, a, b] of flagArgs) {
     if (flag.type === 'boolean') {
-      flags[flag.name] = a
+      if (flag.multiple) {
+        flags[flag.name]++
+      } else {
+        flags[flag.name] = a
+      }
       continue
     }
     if (flag.multiple) {
@@ -82,6 +86,7 @@ export default async function parse<F extends Flags>(ctx: Context, argv: string[
     const flag = flagDefs[name]
     assert(flag)
     if (flag.type === 'boolean') {
+      if (flag.multiple) continue
       flags[name] = true
       if (flag.allowNo && val === `--no-${flag.name}`) {
         flags[name] = false
