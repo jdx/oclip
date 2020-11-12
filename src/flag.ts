@@ -67,3 +67,10 @@ export interface InputFlagOpts<T> extends FlagOpts {
 
 export type Flag<T> = BoolFlag | InputFlag<T>;
 export type Flags = { [name: string]: Flag<any> };
+
+interface Opts {
+  flags: Flags;
+  flagArr: Flag<any>[];
+  name?: string;
+  main: boolean;
+}
