@@ -8,12 +8,12 @@ import {
   UnexpectedArgsError,
 } from "./error.ts";
 
-export type Type = "required" | "optional" | "multiple";
+export type ArgType = "required" | "optional" | "multiple";
 
 export interface ArgBase<T> {
   name: string;
   description?: string;
-  type: Type;
+  type: ArgType;
   parse: (input: string) => T;
   toString(): string;
   order: number;
@@ -21,7 +21,7 @@ export interface ArgBase<T> {
   choices?: (string[]) | (() => Promise<string[]> | string[]);
 }
 
-export interface Options<T> {
+export interface ArgOptions<T> {
   description?: string;
   default?: T | (() => Promise<T> | T);
   parse?: (input: string) => Promise<T> | T;
@@ -36,11 +36,11 @@ export type List = readonly Arg<unknown>[];
 
 function build<T>(
   name: string,
-  type: Type,
-  options: Options<T> & { parse: (input: string) => T },
+  type: ArgType,
+  options: ArgOptions<T> & { parse: (input: string) => T },
 ): Arg<T>;
-function build(name: string, type: Type, options?: Options<any>): Arg<string>;
-function build(name: string, type: Type, options: Options<any> = {}): Arg<any> {
+function build(name: string, type: ArgType, options?: ArgOptions<any>): Arg<string>;
+function build(name: string, type: ArgType, options: ArgOptions<any> = {}): Arg<any> {
   return {
     name,
     type,
@@ -63,15 +63,15 @@ function build(name: string, type: Type, options: Options<any> = {}): Arg<any> {
 
 export const required = <T>(
   name: string,
-  options: Options<T> = {},
+  options: ArgOptions<T> = {},
 ): RequiredArg<T> => build(name, "required", options) as any;
 export const optional = <T>(
   name: string,
-  options: Options<T> = {},
+  options: ArgOptions<T> = {},
 ): OptionalArg<T> => build(name, "optional", options) as any;
 export const multiple = <T>(
   name: string,
-  options: Options<T> = {},
+  options: ArgOptions<T> = {},
 ): MultipleArg<T> => build(name, "multiple", options) as any;
 
 export type ArgToResult<A> = A extends OptionalArg<infer T> ? T | undefined
@@ -83,7 +83,7 @@ export type ListToResults<A> = {
 };
 
 export function validate(argDefs: List) {
-  let state: Type = "required";
+  let state: ArgType = "required";
   let prev: Arg<any> | undefined;
   for (const def of argDefs) {
     switch (state) {

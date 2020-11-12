@@ -1,16 +1,16 @@
 // deno-lint-ignore-file no-explicit-any
 
-import * as arg from "./lib/arg.ts";
+import * as arg from "./arg.ts";
 
-export type RunFn<A, R> = (args: arg.ListToResults<A>) => Promise<R> | R;
-export interface Options<A extends arg.List, R> {
+export type CommandRunFn<A, R> = (args: arg.ListToResults<A>) => Promise<R> | R;
+export interface CommandOptions<A extends arg.List, R> {
   args?: A;
   description?: string;
-  run: RunFn<A, R>;
+  run: CommandRunFn<A, R>;
 }
 
 export class Command<R> {
-  constructor(options: Options<any, R>) {
+  constructor(options: CommandOptions<any, R>) {
     this.description = options.description;
     this.args = options.args || [];
     this.run = options.run;
@@ -18,7 +18,7 @@ export class Command<R> {
   }
   readonly description?: string;
   readonly args: arg.List;
-  private readonly run: RunFn<any, R>;
+  private readonly run: CommandRunFn<any, R>;
 
   async exec(argv = Deno.args): Promise<R> {
     const argResults = await arg.parse(argv, this.args);
@@ -31,9 +31,7 @@ export class Command<R> {
  * Defines a CLI command
  */
 export function command<A extends arg.List, R>(
-  options: Options<A, R>,
+  options: CommandOptions<A, R>,
 ): Command<R> {
   return new Command(options);
 }
-
-export { arg };

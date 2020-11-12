@@ -5,8 +5,8 @@ import {
   RequiredArgAfterOptionalValidationError,
   RequiredArgsError,
   UnexpectedArgsError,
-} from "../lib/error.ts";
-import { arg, command } from "../crane.ts";
+} from "../mod.ts";
+import { arg, command } from "../mod.ts";
 
 Deno.test("single arg", async () => {
   const cmd = command({
