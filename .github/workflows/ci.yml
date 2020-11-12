@@ -13,8 +13,5 @@ jobs:
           deno-version: v1.x
       - run: |
           deno --version
-          ./scripts/lint.ts
+          ./bin/lint
           deno test
-      # - run: bash <(curl -s https://codecov.io/bash)
-      #   env:
-      #     CODECOV_TOKEN: 5183f977-3ea8-48b1-87a0-0a5114afabf0
