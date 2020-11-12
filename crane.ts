@@ -1,4 +1,6 @@
-import * as arg from './lib/arg.ts';
+// deno-lint-ignore-file no-explicit-any
+
+import * as arg from "./lib/arg.ts";
 
 export type RunFn<A, R> = (args: arg.ListToResults<A>) => Promise<R> | R;
 export interface Options<A extends arg.List, R> {
@@ -28,8 +30,10 @@ export class Command<R> {
 /**
  * Defines a CLI command
  */
-export function command<A extends arg.List, R>(options: Options<A, R>): Command<R> {
+export function command<A extends arg.List, R>(
+  options: Options<A, R>,
+): Command<R> {
   return new Command(options);
 }
 
-export {arg}
+export { arg };

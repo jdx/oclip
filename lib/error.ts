@@ -1,3 +1,5 @@
+// deno-lint-ignore-file no-explicit-any
+
 import * as arg from "./arg.ts";
 
 export abstract class OclipError extends Error {}
@@ -28,37 +30,41 @@ Currently "${next}" follows that multiple argument. It's not possible for the pa
 an argument should be part of the multiple or the next argument in this case.
 
 Remove "${next}" or swap it with "${arg}".
-`)
+`);
   }
 }
 export class RequiredArgsError extends OclipError {
-  public args: arg.List
+  public args: arg.List;
 
   constructor(args: arg.List) {
-    let message = `Missing ${args.length} required arg${args.length === 1 ? '' : 's'}`
-    const list = args.map(a => a.toString());
-    message += `:\n${list}`
-    super(message)
-    this.args = args
+    let message = `Missing ${args.length} required arg${
+      args.length === 1 ? "" : "s"
+    }`;
+    const list = args.map((a) => a.toString());
+    message += `:\n${list}`;
+    super(message);
+    this.args = args;
   }
 }
 
 export class UnexpectedArgsError extends OclipError {
-  public args: string[]
+  public args: string[];
 
   constructor(args: string[]) {
-    super(`Unexpected argument${args.length === 1 ? '' : 's'}: ${args.join(', ')}`);
+    super(
+      `Unexpected argument${args.length === 1 ? "" : "s"}: ${args.join(", ")}`,
+    );
     this.args = args;
   }
 }
 
 export class InvalidChoiceError extends OclipError {
-  public choices: string[]
-  public input: string
+  public choices: string[];
+  public input: string;
 
   constructor(choices: string[], input: string) {
     super(`Expected "${input}" to be one of:
-${choices.join('\n')}
+${choices.join("\n")}
 `);
     this.choices = choices;
     this.input = input;

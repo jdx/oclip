@@ -1,10 +1,10 @@
-#!/usr/bin/env -S deno run --allow-run
+#!/usr/bin/env deno run --allow-run
 
-import exec from "../lib/exec.ts";
+import { run } from "../lib/exec.ts";
 
 try {
-  await exec(["deno", "lint", "--unstable"]);
-  await exec(["deno", "fmt", "--check"]);
+  await run(["deno", "lint", "--unstable", "--ignore=node_modules"]);
+  await run(["deno", "fmt", "--check", "--unstable", "--ignore=node_modules"]);
 } catch {
   Deno.exit(1);
 }

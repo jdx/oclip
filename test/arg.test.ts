@@ -25,7 +25,7 @@ Deno.test("single arg", async () => {
 
 Deno.test("single number arg", async () => {
   const cmd = command({
-    args: [arg.required("num", {parse: (i: string) => parseInt(i)})] as const,
+    args: [arg.required("num", { parse: (i: string) => parseInt(i) })] as const,
     run(args) {
       return args[0];
     },
@@ -135,7 +135,9 @@ Deno.test("default as value", async () => {
 
 Deno.test("custom parser", async () => {
   const cmd = command({
-    args: [arg.optional("a", { parse: (i: string) => i.toUpperCase() })] as const,
+    args: [
+      arg.optional("a", { parse: (i: string) => i.toUpperCase() }),
+    ] as const,
     run(args) {
       return args;
     },
@@ -146,7 +148,9 @@ Deno.test("custom parser", async () => {
 
 Deno.test("custom async parser", async () => {
   const cmd = command({
-    args: [arg.optional("a", { parse: async (i: string) => i.toUpperCase() })] as const,
+    args: [
+      arg.optional("a", { parse: async (i: string) => i.toUpperCase() }),
+    ] as const,
     run(args) {
       return args;
     },
@@ -157,7 +161,9 @@ Deno.test("custom async parser", async () => {
 
 Deno.test("custom parser for multi", async () => {
   const cmd = command({
-    args: [arg.multiple("m", { parse: (i: string) => i.toUpperCase() })] as const,
+    args: [
+      arg.multiple("m", { parse: (i: string) => i.toUpperCase() }),
+    ] as const,
     run(args) {
       return args;
     },
@@ -168,7 +174,9 @@ Deno.test("custom parser for multi", async () => {
 
 Deno.test("custom async parser for multi", async () => {
   const cmd = command({
-    args: [arg.multiple("m", { parse: async (i: string) => i.toUpperCase() })] as const,
+    args: [
+      arg.multiple("m", { parse: async (i: string) => i.toUpperCase() }),
+    ] as const,
     run(args) {
       return args;
     },
@@ -179,7 +187,7 @@ Deno.test("custom async parser for multi", async () => {
 
 Deno.test("choices selection", async () => {
   const cmd = command({
-    args: [arg.required("a", {choices: ['1']})] as const,
+    args: [arg.required("a", { choices: ["1"] })] as const,
     run(args) {
       return args;
     },
@@ -190,38 +198,50 @@ Deno.test("choices selection", async () => {
 
 Deno.test("choices invalid selection", async () => {
   const cmd = command({
-    args: [arg.required("a", {choices: ['1', '10']})] as const,
+    args: [arg.required("a", { choices: ["1", "10"] })] as const,
     run(args) {
       return args;
     },
   });
-  await assertThrowsAsync(async () => {
-    await cmd.exec(["2"]);
-  }, InvalidChoiceError, 'Expected "2" to be one of:\n1\n10')
+  await assertThrowsAsync(
+    async () => {
+      await cmd.exec(["2"]);
+    },
+    InvalidChoiceError,
+    'Expected "2" to be one of:\n1\n10',
+  );
 });
 
 Deno.test("choices function invalid selection", async () => {
   const cmd = command({
-    args: [arg.required("a", {choices: () => ['1', '10']})] as const,
+    args: [arg.required("a", { choices: () => ["1", "10"] })] as const,
     run(args) {
       return args;
     },
   });
-  await assertThrowsAsync(async () => {
-    await cmd.exec(["2"]);
-  }, InvalidChoiceError, 'Expected "2" to be one of:\n1\n10')
+  await assertThrowsAsync(
+    async () => {
+      await cmd.exec(["2"]);
+    },
+    InvalidChoiceError,
+    'Expected "2" to be one of:\n1\n10',
+  );
 });
 
 Deno.test("choices async invalid selection", async () => {
   const cmd = command({
-    args: [arg.required("a", {choices: async () => ['1', '10']})] as const,
+    args: [arg.required("a", { choices: async () => ["1", "10"] })] as const,
     run(args) {
       return args;
     },
   });
-  await assertThrowsAsync(async () => {
-    await cmd.exec(["2"]);
-  }, InvalidChoiceError, 'Expected "2" to be one of:\n1\n10')
+  await assertThrowsAsync(
+    async () => {
+      await cmd.exec(["2"]);
+    },
+    InvalidChoiceError,
+    'Expected "2" to be one of:\n1\n10',
+  );
 });
 
 Deno.test("invalid: required after optional", async () => {

@@ -1,3 +1,5 @@
+// deno-lint-ignore-file no-explicit-any
+
 import {
   InvalidChoiceError,
   MultipleArgNotLastError,
@@ -148,7 +150,7 @@ export async function parse(argv: string[], defs: List): Promise<any[]> {
     throw new RequiredArgsError(missingRequiredArgs);
   }
 
-  let maxArgs = numOptionalArgs(defs);
+  const maxArgs = numOptionalArgs(defs);
   if (maxArgs !== -1 && argv.length > maxArgs) {
     throw new UnexpectedArgsError(argv.slice(maxArgs));
   }

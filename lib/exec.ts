@@ -1,5 +1,5 @@
 export async function run(cmd: string[]) {
-  const p = Deno.run({ cmd, });
+  const p = Deno.run({ cmd });
   const status = await p.status();
   throwIfError(cmd, status);
 }
@@ -7,8 +7,8 @@ export async function run(cmd: string[]) {
 export async function stdout(cmd: string[]): Promise<string> {
   const p = Deno.run({
     cmd,
-    stdout: 'piped',
-    env: {NO_COLOR: '1'},
+    stdout: "piped",
+    env: { NO_COLOR: "1" },
   });
   const status = await p.status();
   throwIfError(cmd, status);
