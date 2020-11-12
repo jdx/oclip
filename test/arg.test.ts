@@ -1,8 +1,4 @@
-import {
-  assertEquals,
-  assertThrows,
-  assertThrowsAsync,
-} from "./deps.ts";
+import { assertEquals, assertThrows, assertThrowsAsync } from "./deps.ts";
 import {
   InvalidChoiceError,
   MultipleArgNotLastError,
