@@ -12,5 +12,6 @@ jobs:
         with:
           deno-version: v1.x
       - run: deno --version
+      - run: deno cache --reload --lock=lock.json test/deps.ts
       - run: deno test
       - run: ./bin/lint
