@@ -1,5 +1,7 @@
 ---
 scripts:
-  lint: deno run --allow-run scripts/lint.ts
-  gen_readme: deno run --allow-run --allow-write scripts/gen_readme.ts
+  cache_load: deno cache --reload --lock=lock.json test/deps.ts
   fmt: deno run --allow-run scripts/fmt.ts
+  gen_readme: deno run --allow-run --allow-write scripts/gen_readme.ts
+  lint: deno run --allow-run scripts/lint.ts
+  test: deno test

@@ -12,7 +12,7 @@ jobs:
         with:
           deno-version: v1.x
       - run: deno --version
-      - run: deno cache --reload --lock=lock.json test/deps.ts
-      - run: deno test
+      - run: ./bin/cache_load
+      - run: ./bin/test
       - run: mkdir node_modules
       - run: ./bin/lint
