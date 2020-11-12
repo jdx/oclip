@@ -37,17 +37,7 @@ function build<T>(
   name: string,
   type: ArgType,
   options: ArgOptions<T> & { parse: (input: string) => T },
-): Arg<T>;
-function build(
-  name: string,
-  type: ArgType,
-  options?: ArgOptions<any>,
-): Arg<string>;
-function build(
-  name: string,
-  type: ArgType,
-  options: ArgOptions<any> = {},
-): Arg<any> {
+): Arg<T> {
   return {
     name,
     type,
@@ -71,15 +61,15 @@ function build(
 export const required = <T=string>(
   name: string,
   options: ArgOptions<T> = {},
-): RequiredArg<T> => build(name, "required", options) as any;
+): RequiredArg<T> => build(name, "required", options as any) as any;
 export const optional = <T=string>(
   name: string,
   options: ArgOptions<T> = {},
-): OptionalArg<T> => build(name, "optional", options) as any;
+): OptionalArg<T> => build(name, "optional", options as any) as any;
 export const multiple = <T=string>(
   name: string,
   options: ArgOptions<T> = {},
-): MultipleArg<T> => build(name, "multiple", options) as any;
+): MultipleArg<T> => build(name, "multiple", options as any) as any;
 
 export type ArgToResult<A> = A extends OptionalArg<infer T> ? T | undefined
   : A extends RequiredArg<infer T> ? T
