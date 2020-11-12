@@ -1,7 +1,7 @@
 import { command } from "../mod.ts";
 import { exec } from "./helpers/exec.ts";
 
-const cmd = command({
+export default command({
   async run() {
     try {
       await exec(
@@ -11,8 +11,5 @@ const cmd = command({
       Deno.exit(1);
     }
   },
+  main: import.meta.main,
 });
-
-if (import.meta.main) {
-  cmd.run();
-}

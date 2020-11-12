@@ -16,3 +16,4 @@ jobs:
       - run: ./bin/test
       - run: mkdir node_modules
       - run: ./bin/lint
+      - run: ./bin/gen_readme

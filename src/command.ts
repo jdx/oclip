@@ -59,5 +59,14 @@ export class Command<A extends arg.List, F extends Flags, R> {
 export function command<A extends arg.List, F extends Flags, R>(
   options: CommandOptions<A, F, R>,
 ): Command<A, F, R> {
-  return new Command(options);
+  const cmd = new Command(options);
+  if (options.main) {
+    cmd.run(Deno.args)
+      .catch((err) => {
+        console.error(err);
+        console.error(err.message);
+        Deno.exit(1);
+      });
+  }
+  return cmd;
 }

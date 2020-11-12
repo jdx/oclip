@@ -1,7 +1,7 @@
 import { command } from "../mod.ts";
 import { stdout } from "./helpers/exec.ts";
 
-const cmd = command({
+export default command({
   async run() {
     async function apiDocumentation(): Promise<string> {
       const doc = await stdout(["deno", "doc", "mod.ts"]);
@@ -23,6 +23,8 @@ const cmd = command({
     ];
 
     await Deno.writeTextFile("README.md", contents.join("\n"));
+
+    console.log(`Updated README.md`);
   },
   main: import.meta.main,
 });
