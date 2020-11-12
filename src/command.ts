@@ -1,9 +1,11 @@
 // deno-lint-ignore-file no-explicit-any
 
 import * as arg from "./arg.ts";
-import {Flags} from './flag.ts';
+import { Flags } from "./flag.ts";
 
-export type CommandRunFn<A extends arg.List, F extends Flags, R> = (args: arg.ListToResults<A>) => Promise<R> | R;
+export type CommandRunFn<A extends arg.List, F extends Flags, R> = (
+  args: arg.ListToResults<A>,
+) => Promise<R> | R;
 export interface CommandOptions<A extends arg.List, F extends Flags, R> {
   args?: A;
   flags?: F;

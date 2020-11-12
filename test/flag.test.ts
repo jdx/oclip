@@ -5,8 +5,8 @@ import { arg, command } from "../mod.ts";
 
 Deno.test("single flag", async () => {
   const cmd = command({
-    args: [arg.required('f')] as const,
-    flags: {verbose: {} as any} as const,
+    args: [arg.required("f")] as const,
+    flags: { verbose: {} as any } as const,
     run(args) {
       return args[0];
     },

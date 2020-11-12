@@ -58,15 +58,15 @@ function build<T>(
   };
 }
 
-export const required = <T=string>(
+export const required = <T = string>(
   name: string,
   options: ArgOptions<T> = {},
 ): RequiredArg<T> => build(name, "required", options as any) as any;
-export const optional = <T=string>(
+export const optional = <T = string>(
   name: string,
   options: ArgOptions<T> = {},
 ): OptionalArg<T> => build(name, "optional", options as any) as any;
-export const multiple = <T=string>(
+export const multiple = <T = string>(
   name: string,
   options: ArgOptions<T> = {},
 ): MultipleArg<T> => build(name, "multiple", options as any) as any;
