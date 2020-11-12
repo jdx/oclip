@@ -1,6 +1,4 @@
-#!/usr/bin/env deno run --allow-run
-
-import { run } from "../lib/exec.ts";
+import { run } from "./helpers/exec.ts";
 
 try {
   await run(["deno", "lint", "--unstable", "--ignore=node_modules"]);

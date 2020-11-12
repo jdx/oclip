@@ -1,6 +1,4 @@
-#!/usr/bin/env deno run --allow-write --allow-run
-
-import { stdout } from "../lib/exec.ts";
+import { stdout } from "./helpers/exec.ts";
 
 async function apiDocumentation(): Promise<string> {
   const doc = await stdout(["deno", "doc", "crane.ts"]);
