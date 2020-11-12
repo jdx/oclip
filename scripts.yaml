@@ -2,3 +2,4 @@
 scripts:
   lint: deno run --allow-run scripts/lint.ts
   gen_readme: deno run --allow-run --allow-write scripts/gen_readme.ts
+  fmt: deno run --allow-run scripts/fmt.ts
