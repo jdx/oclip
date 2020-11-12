@@ -18,6 +18,7 @@ export interface ArgBase<T> {
   order: number;
   default?: T | (() => Promise<T> | T);
   choices?: (string[]) | (() => Promise<string[]> | string[]);
+  hidden: boolean;
 }
 
 export interface ArgOptions<T> {
@@ -25,6 +26,7 @@ export interface ArgOptions<T> {
   default?: T | (() => Promise<T> | T);
   parse?: (input: string) => Promise<T> | T;
   choices?: (string[]) | (() => Promise<string[]> | string[]);
+  hidden?: boolean;
 }
 
 export type RequiredArg<T> = ArgBase<T> & { type: "required" };
@@ -46,6 +48,7 @@ function build<T>(
     parse: options.parse || ((input: string) => input),
     default: options.default,
     choices: options.choices,
+    hidden: !!options.hidden,
     toString() {
       let s = "";
       //if (this.hidden) return s;
