@@ -39,8 +39,16 @@ function build<T>(
   type: ArgType,
   options: ArgOptions<T> & { parse: (input: string) => T },
 ): Arg<T>;
-function build(name: string, type: ArgType, options?: ArgOptions<any>): Arg<string>;
-function build(name: string, type: ArgType, options: ArgOptions<any> = {}): Arg<any> {
+function build(
+  name: string,
+  type: ArgType,
+  options?: ArgOptions<any>,
+): Arg<string>;
+function build(
+  name: string,
+  type: ArgType,
+  options: ArgOptions<any> = {},
+): Arg<any> {
   return {
     name,
     type,
