@@ -11,7 +11,6 @@ jobs:
       - uses: denolib/setup-deno@v2
         with:
           deno-version: v1.x
-      - run: |
-          deno --version
-          ./bin/lint
-          deno test
+      - run: deno --version
+      - run: deno test
+      - run: ./bin/lint
