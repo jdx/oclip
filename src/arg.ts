@@ -13,7 +13,6 @@ export type ArgType = "required" | "optional" | "multiple";
 export interface ArgBase<T> {
   name: string;
   description?: string;
-  type: ArgType;
   parse: (input: string) => T;
   toString(): string;
   order: number;
@@ -69,15 +68,15 @@ function build(
   };
 }
 
-export const required = <T>(
+export const required = <T=string>(
   name: string,
   options: ArgOptions<T> = {},
 ): RequiredArg<T> => build(name, "required", options) as any;
-export const optional = <T>(
+export const optional = <T=string>(
   name: string,
   options: ArgOptions<T> = {},
 ): OptionalArg<T> => build(name, "optional", options) as any;
-export const multiple = <T>(
+export const multiple = <T=string>(
   name: string,
   options: ArgOptions<T> = {},
 ): MultipleArg<T> => build(name, "multiple", options) as any;

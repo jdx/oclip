@@ -1,17 +1,18 @@
 import { assertEquals, assertThrows, assertThrowsAsync } from "./deps.ts";
 import {
+  arg,
+  command,
   InvalidChoiceError,
   MultipleArgNotLastError,
   RequiredArgAfterOptionalValidationError,
   RequiredArgsError,
   UnexpectedArgsError,
 } from "../mod.ts";
-import { arg, command } from "../mod.ts";
 
 Deno.test("single arg", async () => {
   const cmd = command({
     args: [arg.required("str")] as const,
-    run(args) {
+    run(args): string {
       return args[0];
     },
   });
@@ -22,7 +23,7 @@ Deno.test("single arg", async () => {
 Deno.test("single number arg", async () => {
   const cmd = command({
     args: [arg.required("num", { parse: (i: string) => parseInt(i) })] as const,
-    run(args) {
+    run(args): number {
       return args[0];
     },
   });
@@ -33,7 +34,7 @@ Deno.test("single number arg", async () => {
 Deno.test("two args", async () => {
   const cmd = command({
     args: [arg.required("a"), arg.required("b")] as const,
-    run(args) {
+    run(args): [string, string] {
       return [args[0], args[1]];
     },
   });
@@ -44,7 +45,7 @@ Deno.test("two args", async () => {
 Deno.test("two optional args", async () => {
   const cmd = command({
     args: [arg.optional("a"), arg.optional("b")] as const,
-    run(args) {
+    run(args): [string | undefined, string | undefined] {
       return [args[0], args[1]];
     },
   });
@@ -66,12 +67,12 @@ Deno.test("ignores missing optional arg", async () => {
 Deno.test("single multiple arg", async () => {
   const cmd = command({
     args: [arg.multiple("m")] as const,
-    run(args) {
-      return args;
+    run(args): string[] {
+      return args[0];
     },
   });
   const result = await cmd.exec(["123"]);
-  assertEquals(result, [["123"]]);
+  assertEquals(result, ["123"]);
 });
 
 Deno.test("2 arg multiples", async () => {
@@ -88,8 +89,8 @@ Deno.test("2 arg multiples", async () => {
 Deno.test("parses multiple args after required", async () => {
   const cmd = command({
     args: [arg.required("a"), arg.multiple("m")] as const,
-    run(args) {
-      return args;
+    run(args): [string, string[]] {
+      return [args[0], args[1]];
     },
   });
   const result = await cmd.exec(["1", "2", "3"]);
