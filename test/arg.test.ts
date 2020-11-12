@@ -16,7 +16,7 @@ Deno.test("single arg", async () => {
       return args[0];
     },
   });
-  const result = await cmd.exec(["123"]);
+  const result = await cmd.run(["123"]);
   assertEquals(result, "123");
 });
 
@@ -27,7 +27,7 @@ Deno.test("single number arg", async () => {
       return args[0];
     },
   });
-  const result = await cmd.exec(["123"]);
+  const result = await cmd.run(["123"]);
   assertEquals(result, 123);
 });
 
@@ -38,7 +38,7 @@ Deno.test("two args", async () => {
       return [args[0], args[1]];
     },
   });
-  const result = await cmd.exec(["123", "abc"]);
+  const result = await cmd.run(["123", "abc"]);
   assertEquals(result, ["123", "abc"]);
 });
 
@@ -49,7 +49,7 @@ Deno.test("two optional args", async () => {
       return [args[0], args[1]];
     },
   });
-  const result = await cmd.exec(["123", "abc"]);
+  const result = await cmd.run(["123", "abc"]);
   assertEquals(result, ["123", "abc"]);
 });
 
@@ -60,7 +60,7 @@ Deno.test("ignores missing optional arg", async () => {
       return [args[0], args[1]];
     },
   });
-  const result = await cmd.exec(["123"]);
+  const result = await cmd.run(["123"]);
   assertEquals(result, ["123", undefined]);
 });
 
@@ -71,7 +71,7 @@ Deno.test("single multiple arg", async () => {
       return args[0];
     },
   });
-  const result = await cmd.exec(["123"]);
+  const result = await cmd.run(["123"]);
   assertEquals(result, ["123"]);
 });
 
@@ -82,7 +82,7 @@ Deno.test("2 arg multiples", async () => {
       return args;
     },
   });
-  const result = await cmd.exec(["1", "2"]);
+  const result = await cmd.run(["1", "2"]);
   assertEquals(result, [["1", "2"]]);
 });
 
@@ -93,7 +93,7 @@ Deno.test("parses multiple args after required", async () => {
       return [args[0], args[1]];
     },
   });
-  const result = await cmd.exec(["1", "2", "3"]);
+  const result = await cmd.run(["1", "2", "3"]);
   assertEquals(result, ["1", ["2", "3"]]);
 });
 
@@ -104,7 +104,7 @@ Deno.test("default as function", async () => {
       return args;
     },
   });
-  const result = await cmd.exec([]);
+  const result = await cmd.run([]);
   assertEquals(result, ["abc"]);
 });
 
@@ -115,7 +115,7 @@ Deno.test("default as async function", async () => {
       return args;
     },
   });
-  const result = await cmd.exec([]);
+  const result = await cmd.run([]);
   assertEquals(result, ["abc"]);
 });
 
@@ -126,7 +126,7 @@ Deno.test("default as value", async () => {
       return args;
     },
   });
-  const result = await cmd.exec([]);
+  const result = await cmd.run([]);
   assertEquals(result, ["abc"]);
 });
 
@@ -139,7 +139,7 @@ Deno.test("custom parser", async () => {
       return args;
     },
   });
-  const result = await cmd.exec(["abc"]);
+  const result = await cmd.run(["abc"]);
   assertEquals(result, ["ABC"]);
 });
 
@@ -152,7 +152,7 @@ Deno.test("custom async parser", async () => {
       return args;
     },
   });
-  const result = await cmd.exec(["abc"]);
+  const result = await cmd.run(["abc"]);
   assertEquals(result, ["ABC"]);
 });
 
@@ -165,7 +165,7 @@ Deno.test("custom parser for multi", async () => {
       return args;
     },
   });
-  const result = await cmd.exec(["abc", "def", "ghi"]);
+  const result = await cmd.run(["abc", "def", "ghi"]);
   assertEquals(result, [["ABC", "DEF", "GHI"]]);
 });
 
@@ -178,7 +178,7 @@ Deno.test("custom async parser for multi", async () => {
       return args;
     },
   });
-  const result = await cmd.exec(["abc", "def", "ghi"]);
+  const result = await cmd.run(["abc", "def", "ghi"]);
   assertEquals(result, [["ABC", "DEF", "GHI"]]);
 });
 
@@ -189,7 +189,7 @@ Deno.test("choices selection", async () => {
       return args;
     },
   });
-  const result = await cmd.exec(["1"]);
+  const result = await cmd.run(["1"]);
   assertEquals(result, ["1"]);
 });
 
@@ -202,7 +202,7 @@ Deno.test("choices invalid selection", async () => {
   });
   await assertThrowsAsync(
     async () => {
-      await cmd.exec(["2"]);
+      await cmd.run(["2"]);
     },
     InvalidChoiceError,
     'Expected "2" to be one of:\n1\n10',
@@ -218,7 +218,7 @@ Deno.test("choices function invalid selection", async () => {
   });
   await assertThrowsAsync(
     async () => {
-      await cmd.exec(["2"]);
+      await cmd.run(["2"]);
     },
     InvalidChoiceError,
     'Expected "2" to be one of:\n1\n10',
@@ -234,7 +234,7 @@ Deno.test("choices async invalid selection", async () => {
   });
   await assertThrowsAsync(
     async () => {
-      await cmd.exec(["2"]);
+      await cmd.run(["2"]);
     },
     InvalidChoiceError,
     'Expected "2" to be one of:\n1\n10',
@@ -274,7 +274,7 @@ Deno.test("missing required arg", async () => {
   });
   await assertThrowsAsync(
     async () => {
-      await cmd.exec(["123"]);
+      await cmd.run(["123"]);
     },
     RequiredArgsError,
     `Missing 1 required arg:
@@ -289,7 +289,7 @@ Deno.test("unexpected arg", async () => {
   });
   await assertThrowsAsync(
     async () => {
-      await cmd.exec(["123", "bar"]);
+      await cmd.run(["123", "bar"]);
     },
     UnexpectedArgsError,
     `Unexpected argument: bar`,

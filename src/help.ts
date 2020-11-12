@@ -1,20 +1,20 @@
 // deno-lint-ignore-file no-explicit-any
 
-import {Command} from './command.ts';
+import { Command } from "./command.ts";
 
 export function commandHelp(command: Command<any, any, any>): string {
   const lines = [];
-  if (command.description) lines.push(command.description, '');
-  lines.push('Usage: ' + command.usage(), '');
+  if (command.description) lines.push(command.description, "");
+  lines.push("Usage: " + command.usage(), "");
   const argsWithDescription = command.args.filter(
     (a) => !a.hidden && a.description,
   );
   if (argsWithDescription.length) {
-    lines.push('Arguments:');
+    lines.push("Arguments:");
     for (const arg of argsWithDescription) {
-      lines.push('  ' + arg.toString().padEnd(17) + ' # ' + arg.description);
+      lines.push("  " + arg.toString().padEnd(17) + " # " + arg.description);
     }
-    lines.push('');
+    lines.push("");
   }
   // const flags = Object.values(command.flags).filter((f) => !f.hidden);
   // if (flags.length) {
@@ -24,5 +24,5 @@ export function commandHelp(command: Command<any, any, any>): string {
   //   }
   //   lines.push('');
   // }
-  return lines.join('\n');
+  return lines.join("\n");
 }

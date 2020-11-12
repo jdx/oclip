@@ -1,5 +1,5 @@
 {
-  "name": "crane",
+  "name": "oclip",
   "version": "0.0.0",
   "dependencies": {
     "typescript": "^4.0.5"

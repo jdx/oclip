@@ -1,8 +1,8 @@
-import { run } from "./helpers/exec.ts";
+import { exec } from "./helpers/exec.ts";
 
 try {
-  await run(["deno", "lint", "--unstable", "--ignore=node_modules"]);
-  await run(["deno", "fmt", "--check", "--unstable", "--ignore=node_modules"]);
+  await exec(["deno", "lint", "--unstable", "--ignore=node_modules"]);
+  await exec(["deno", "fmt", "--check", "--unstable", "--ignore=node_modules"]);
 } catch {
   Deno.exit(1);
 }

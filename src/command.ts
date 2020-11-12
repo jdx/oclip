@@ -19,22 +19,22 @@ export class Command<A extends arg.List, F extends Flags, R> {
     this.description = options.description;
     this.args = options.args || [];
     this.hidden = !!options.hidden;
-    this.run = options.run;
+    this._run = options.run;
     arg.validate(this.args);
   }
   readonly description?: string;
   readonly args: arg.List;
   readonly hidden: boolean;
-  private readonly run: CommandRunFn<A, F, R>;
+  private readonly _run: CommandRunFn<A, F, R>;
 
-  async exec(argv = Deno.args): Promise<R> {
+  async run(argv = Deno.args): Promise<R> {
     const argResults = await arg.parse(argv, this.args);
-    const result = await this.run(argResults as any);
+    const result = await this._run(argResults as any);
     return result;
   }
 
   usage(): string {
-    return 'USAGE';
+    return "USAGE";
   }
 }
 

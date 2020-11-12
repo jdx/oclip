@@ -1,7 +1,7 @@
 import { stdout } from "./helpers/exec.ts";
 
 async function apiDocumentation(): Promise<string> {
-  const doc = await stdout(["deno", "doc", "crane.ts"]);
+  const doc = await stdout(["deno", "doc", "mod.ts"]);
   return [
     "```",
     doc,
@@ -10,7 +10,7 @@ async function apiDocumentation(): Promise<string> {
 }
 
 const contents = [
-  "# crane",
+  "# oclip",
   "",
   "## API Documentation",
   "",

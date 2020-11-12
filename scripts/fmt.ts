@@ -1,9 +1,18 @@
-import { run } from "./helpers/exec.ts";
+import { command } from "../mod.ts";
+import { exec } from "./helpers/exec.ts";
 
-try {
-  await run(
-    ["deno", "fmt", "--unstable", "--ignore=node_modules", ...Deno.args],
-  );
-} catch {
-  Deno.exit(1);
+const cmd = command({
+  async run() {
+    try {
+      await exec(
+        ["deno", "fmt", "--unstable", "--ignore=node_modules", ...Deno.args],
+      );
+    } catch {
+      Deno.exit(1);
+    }
+  },
+});
+
+if (import.meta.main) {
+  cmd.run();
 }

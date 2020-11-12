@@ -1,11 +1,14 @@
-import {command} from '../mod.ts';
-import {commandHelp} from './help.ts';
-import {assertEquals} from '../test/deps.ts';
+import { command } from "../mod.ts";
+import { commandHelp } from "./help.ts";
+import { assertEquals } from "../test/deps.ts";
 
-Deno.test('empty command help', () => {
+Deno.test("empty command help", () => {
   const help = commandHelp(command({
-    run() {}
+    run() {},
   }));
-  assertEquals(help, `Usage: USAGE
-`);
+  assertEquals(
+    help,
+    `Usage: USAGE
+`,
+  );
 });

@@ -11,6 +11,6 @@ Deno.test("single flag", async () => {
       return args[0];
     },
   });
-  const result = await cmd.exec(["123"]);
+  const result = await cmd.run(["123"]);
   assertEquals(result, "123");
 });

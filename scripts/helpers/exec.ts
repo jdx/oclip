@@ -1,4 +1,4 @@
-export async function run(cmd: string[]) {
+export async function exec(cmd: string[]) {
   const p = Deno.run({ cmd });
   console.log(`$ ${cmd.join(" ")}`);
   const status = await p.status();
