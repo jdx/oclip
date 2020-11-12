@@ -1,4 +1,4 @@
-export type Alphabet = AlphabetLowercase | AlphabetUppercase
+export type Alphabet = AlphabetLowercase | AlphabetUppercase;
 export type AlphabetUppercase =
   | 'A'
   | 'B'
@@ -25,7 +25,7 @@ export type AlphabetUppercase =
   | 'W'
   | 'X'
   | 'Y'
-  | 'Z'
+  | 'Z';
 export type AlphabetLowercase =
   | 'a'
   | 'b'
@@ -52,4 +52,4 @@ export type AlphabetLowercase =
   | 'w'
   | 'x'
   | 'y'
-  | 'z'
+  | 'z';

@@ -1,76 +1,98 @@
-import { Command } from '../command'
-import { RequiredArgsError, UnexpectedArgsError } from '../errors/args'
-import  Context  from '../context'
+import { Command } from '../command';
+import { RequiredArgsError, UnexpectedArgsError } from '../errors/args';
+import Context from '../context';
 
 export interface Arg<T> {
-  id: number
-  name?: string
-  description?: string
-  required: boolean
-  multiple?: boolean
+  id: number;
+  name?: string;
+  description?: string;
+  required: boolean;
+  multiple?: boolean;
   hidden?: boolean;
-  parse(input: string): T
-  choices?: string[] | (() => string[] | Promise<string[]>)
-  default?: () => Promise<T>
+  parse(input: string): T;
+  choices?: string[] | (() => string[] | Promise<string[]>);
+  default?: () => Promise<T>;
   /**
    * display the argument for help or error messages
    * @param settings.usage alternate output for inline in usage strings
    */
-  toString(settings?: {usage?: boolean}): string
+  toString(settings?: { usage?: boolean }): string;
 }
-export type MultipleArg<T> = Arg<T> & {multiple: true, required: false}
-export type OptionalArg<T> = Arg<T> & {required: false}
-export type RequiredArg<T> = Arg<T> & {required: true}
+export type MultipleArg<T> = Arg<T> & { multiple: true; required: false };
+export type OptionalArg<T> = Arg<T> & { required: false };
+export type RequiredArg<T> = Arg<T> & { required: true };
 
-export type Args = Arg<any>[]
+export type Args = Arg<any>[];
 
 export interface ArgOpts<T> {
-  description?: string
-  parse?: (input: string) => T | Promise<T>
-  choices?: string[] | (() => string[] | Promise<string[]>)
-  default?: T | (() => T) | (() => Promise<T>)
+  description?: string;
+  parse?: (input: string) => T | Promise<T>;
+  choices?: string[] | (() => string[] | Promise<string[]>);
+  default?: T | (() => T) | (() => Promise<T>);
 }
 
-export interface ArgBuilder<U=string> {
-  <T=U>(name: string, description: string, options?: ArgOpts<T>): Arg<T>
-  <T=U>(name: string, options?: ArgOpts<T>): Arg<T>
-  <T=U>(options?: ArgOpts<T>): Arg<T>
+export interface ArgBuilder<U = string> {
+  <T = U>(name: string, description: string, options?: ArgOpts<T>): Arg<T>;
+  <T = U>(name: string, options?: ArgOpts<T>): Arg<T>;
+  <T = U>(options?: ArgOpts<T>): Arg<T>;
 
-  required <T=U>(name: string, description: string, options?: ArgOpts<T>): RequiredArg<T>
-  required <T=U>(name: string, options?: ArgOpts<T>): RequiredArg<T>
-  required <T=U>(options?: ArgOpts<T>): RequiredArg<T>
+  required<T = U>(
+    name: string,
+    description: string,
+    options?: ArgOpts<T>,
+  ): RequiredArg<T>;
+  required<T = U>(name: string, options?: ArgOpts<T>): RequiredArg<T>;
+  required<T = U>(options?: ArgOpts<T>): RequiredArg<T>;
 
-  optional <T=U>(name: string, description: string, options?: ArgOpts<T>): OptionalArg<T>
-  optional <T=U>(name: string, options?: ArgOpts<T>): OptionalArg<T>
-  optional <T=U>(options?: ArgOpts<T>): OptionalArg<T>
+  optional<T = U>(
+    name: string,
+    description: string,
+    options?: ArgOpts<T>,
+  ): OptionalArg<T>;
+  optional<T = U>(name: string, options?: ArgOpts<T>): OptionalArg<T>;
+  optional<T = U>(options?: ArgOpts<T>): OptionalArg<T>;
 
-  multiple <T=U>(name: string, description: string, options?: ArgOpts<T>): MultipleArg<T>
-  multiple <T=U>(name: string, options?: ArgOpts<T>): MultipleArg<T>
-  multiple <T=U>(options?: ArgOpts<T>): MultipleArg<T>
+  multiple<T = U>(
+    name: string,
+    description: string,
+    options?: ArgOpts<T>,
+  ): MultipleArg<T>;
+  multiple<T = U>(name: string, options?: ArgOpts<T>): MultipleArg<T>;
+  multiple<T = U>(options?: ArgOpts<T>): MultipleArg<T>;
 
-  extend <T=U>(options?: ArgOpts<T>): ArgBuilder<T>
+  extend<T = U>(options?: ArgOpts<T>): ArgBuilder<T>;
 }
 
-const getParams = (name?: string | ArgOpts<any>, description?: string | ArgOpts<any>, options?: ArgOpts<any>): [string | undefined, string | undefined, ArgOpts<any>] => {
-  if (typeof name === 'object') return [undefined, undefined, name]
-  if (typeof description === 'object') return [name, undefined, description]
-  return [name, description, options || {}]
-}
+const getParams = (
+  name?: string | ArgOpts<any>,
+  description?: string | ArgOpts<any>,
+  options?: ArgOpts<any>,
+): [string | undefined, string | undefined, ArgOpts<any>] => {
+  if (typeof name === 'object') return [undefined, undefined, name];
+  if (typeof description === 'object') return [name, undefined, description];
+  return [name, description, options || {}];
+};
 
-function argBuilder<T>(defaultOptions: ArgOpts<T> & {parse: (input: string) => T}): ArgBuilder<T> {
-  const arg: ArgBuilder = (name?: string | ArgOpts<any>, description?: string | ArgOpts<any>, options: ArgOpts<any> = {}): Arg<any> => {
-    [name, description, options] = getParams(name, description, options)
+function argBuilder<T>(
+  defaultOptions: ArgOpts<T> & { parse: (input: string) => T },
+): ArgBuilder<T> {
+  const arg: ArgBuilder = (
+    name?: string | ArgOpts<any>,
+    description?: string | ArgOpts<any>,
+    options: ArgOpts<any> = {},
+  ): Arg<any> => {
+    [name, description, options] = getParams(name, description, options);
     const arg: Arg<T> = {
-      toString({usage = false}: {usage?: boolean} = {}) {
-        let s = ''
-        if (this.hidden) return s
+      toString({ usage = false }: { usage?: boolean } = {}) {
+        let s = '';
+        if (this.hidden) return s;
         if (this.name) {
-          s += `${this.name.toUpperCase()}`
+          s += `${this.name.toUpperCase()}`;
         }
-        if (!usage) return s
-        s = '<' + (s || 'UNKNOWN ARGUMENT') + '>'
-        if (!this.required) s = `[${s}]`
-        return s
+        if (!usage) return s;
+        s = '<' + (s || 'UNKNOWN ARGUMENT') + '>';
+        if (!this.required) s = `[${s}]`;
+        return s;
       },
       ...defaultOptions,
       required: true,
@@ -78,96 +100,128 @@ function argBuilder<T>(defaultOptions: ArgOpts<T> & {parse: (input: string) => T
       ...options,
       name,
       id: -1,
-    }
+    };
     if ('default' in arg && typeof arg['default'] !== 'function') {
-      const val = arg['default']
-      arg['default'] = async () => val as any
+      const val = arg['default'];
+      arg['default'] = async () => val as any;
     }
-    return arg
-  }
+    return arg;
+  };
 
   arg.required = (name?: any, description?: any, options: any = {}) => {
-    [name, description, options] = getParams(name, description, options)
-    return arg(name, {...defaultOptions, description, ...options, required: true}) as any
-  }
+    [name, description, options] = getParams(name, description, options);
+    return arg(name, {
+      ...defaultOptions,
+      description,
+      ...options,
+      required: true,
+    }) as any;
+  };
   arg.optional = (name?: any, description?: any, options: any = {}) => {
-    [name, description, options] = getParams(name, description, options)
-    return arg(name, {...defaultOptions, description, ...options, required: false}) as any
-  }
-  arg.multiple = (name?: any, description?: any, options: any = {}): MultipleArg<any> => {
-    [name, description, options] = getParams(name, description, options)
-    return arg(name, {...defaultOptions, description, ...options, required: false, multiple: true}) as any
-  }
-  arg.extend = (options: any = {}) => argBuilder({...defaultOptions, ...options})
+    [name, description, options] = getParams(name, description, options);
+    return arg(name, {
+      ...defaultOptions,
+      description,
+      ...options,
+      required: false,
+    }) as any;
+  };
+  arg.multiple = (
+    name?: any,
+    description?: any,
+    options: any = {},
+  ): MultipleArg<any> => {
+    [name, description, options] = getParams(name, description, options);
+    return arg(name, {
+      ...defaultOptions,
+      description,
+      ...options,
+      required: false,
+      multiple: true,
+    }) as any;
+  };
+  arg.extend = (options: any = {}) =>
+    argBuilder({ ...defaultOptions, ...options });
 
-  return arg
+  return arg;
 }
 
-export const arg = argBuilder({parse: (s: string) => s})
+export const arg = argBuilder({ parse: (s: string) => s });
 
 const addIdToArgs = (args: Arg<any>[]) => {
-  for (let i=0; i<args.length; i++) {
-    args[i].id = i
+  for (let i = 0; i < args.length; i++) {
+    args[i].id = i;
   }
-}
+};
 
 const validateNothingRequiredAfterOptional = (defs: Arg<any>[]) => {
-  let state: 'required' | 'optional' | 'multiple' = 'required'
+  let state: 'required' | 'optional' | 'multiple' = 'required';
   for (const def of defs) {
-    switch(state) {
-    case 'required':
-      if (def.multiple) state = 'multiple'
-      else if (!def.required) state = 'optional'
-      break
-    case 'optional':
-      if (def.required) throw new Error('required arguments may not follow optional arguments')
-      if (def.multiple === true) state = 'multiple'
-      break
-    case 'multiple':
-      throw new Error('multiple args must be the last ones defined')
+    switch (state) {
+      case 'required':
+        if (def.multiple) state = 'multiple';
+        else if (!def.required) state = 'optional';
+        break;
+      case 'optional':
+        if (def.required)
+          throw new Error(
+            'required arguments may not follow optional arguments',
+          );
+        if (def.multiple === true) state = 'multiple';
+        break;
+      case 'multiple':
+        throw new Error('multiple args must be the last ones defined');
     }
   }
-}
+};
 
 // const numRequiredArgs = (args: Arg<any>[]) => args.reduce((total, arg) => arg.required ? total+1 : total, 0)
-const numOptionalArgs = (args: Arg<any>[]) => args.reduce((total, arg) => arg.multiple ? -1 : total + 1, 0)
+const numOptionalArgs = (args: Arg<any>[]) =>
+  args.reduce((total, arg) => (arg.multiple ? -1 : total + 1), 0);
 
 export const validateArgDefs = (argDefs: Args): void => {
-  validateNothingRequiredAfterOptional(argDefs)
-}
+  validateNothingRequiredAfterOptional(argDefs);
+};
 
-export const validateArgs = async (ctx: Context, defs: Args, args: any[]): Promise<{subdomain?: Command }> => {
-  addIdToArgs(defs)
-  const maxArgs = numOptionalArgs(defs)
+export const validateArgs = async (
+  ctx: Context,
+  defs: Args,
+  args: any[],
+): Promise<{ subcommand: Command | undefined }> => {
+  addIdToArgs(defs);
+  const maxArgs = numOptionalArgs(defs);
 
-  let subcommand: Command | undefined
+  let subcommand: Command | undefined;
 
   for (const def of defs.slice(0, args.length)) {
-    const input = args[def.id]
+    const input = args[def.id];
     if (def.choices) {
-      const choices = (typeof def.choices === 'function' ? await def.choices() : def.choices)
+      const choices =
+        typeof def.choices === 'function' ? await def.choices() : def.choices;
       if (!choices.includes(input)) {
-        throw new Error(`Expected "${input}" to be one of:\n${choices.join('\n')}`)
+        throw new Error(
+          `Expected "${input}" to be one of:\n${choices.join('\n')}`,
+        );
       }
     }
-    args[def.id] = def.parse(input)
+    args[def.id] = def.parse(input);
   }
 
-  const missingArgs = defs.slice(args.length)
+  const missingArgs = defs.slice(args.length);
 
   for (const def of missingArgs) {
-    const arg = def.default && await def.default()
-    if (arg === undefined) continue
-    args[def.id] = arg
+    const arg = def.default && (await def.default());
+    if (arg === undefined) continue;
+    args[def.id] = arg;
   }
 
-  const missingRequiredArgs = defs.filter(a => a.required && !args[a.id])
+  const missingRequiredArgs = defs.filter((a) => a.required && !args[a.id]);
   if (missingRequiredArgs.length) {
-    throw new RequiredArgsError({args: missingRequiredArgs})
+    throw new RequiredArgsError({ args: missingRequiredArgs });
   }
 
   if (maxArgs !== -1 && args.length > maxArgs) {
-    throw new UnexpectedArgsError({args: args.slice(maxArgs)})
+    throw new UnexpectedArgsError({ args: args.slice(maxArgs) });
   }
-  return {subcommand}
-}
+  return { subcommand };
+};

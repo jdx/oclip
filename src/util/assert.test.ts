@@ -1,11 +1,11 @@
-import assert from './assert'
+import assert from './assert';
 
 test('asserts ok', () => {
-  assert(true)
-})
+  assert(true);
+});
 
 test('asserts fail', () => {
   expect(() => {
-    assert(false)
-  }).toThrowError('assertion failed')
-})
+    assert(false);
+  }).toThrowError('assertion failed');
+});

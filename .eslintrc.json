@@ -3,21 +3,21 @@
   "env": {
     "node": true
   },
-  "plugins": [
-    "@typescript-eslint"
-  ],
+  "plugins": ["@typescript-eslint"],
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "prettier",
     "prettier/@typescript-eslint"
   ],
-  "overrides": [{
-    "files": ["*.test.ts"],
-    "env": {
-      "jest": true
+  "overrides": [
+    {
+      "files": ["*.test.ts"],
+      "env": {
+        "jest": true
+      }
     }
-  }],
+  ],
   "rules": {
     "@typescript-eslint/no-explicit-any": 0,
     "@typescript-eslint/no-empty-function": 0

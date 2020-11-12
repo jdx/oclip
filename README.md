@@ -5,9 +5,9 @@
 
 oclip is a new Node CLI flag parser. It has these killer features which you won't find in any other popular CLI tool:
 
-* **lazy-loading** commands out of the box means oclip will have the lowest overhead possible. This becomes paramount as CLIs grow.
-* **type inference** TypeScript is not required, but when it is used oclip will be able to infer all the details about flags and args. You'll rarely ever have to specify types manually.
-* **0 dependencies** You don't need a single runtime or even development dependency other than `oclip` itself. Currently oclip only [costs ~10kB](https://bundlephobia.com/result?p=oclip@0.0.3). This is particularly great for [`npx`](https://www.npmjs.com/package/npx) which typically will reinstall a CLI everytime it's run. Try it yourself with `npx oclip-example`.
+- **lazy-loading** commands out of the box means oclip will have the lowest overhead possible. This becomes paramount as CLIs grow.
+- **type inference** TypeScript is not required, but when it is used oclip will be able to infer all the details about flags and args. You'll rarely ever have to specify types manually.
+- **0 dependencies** You don't need a single runtime or even development dependency other than `oclip` itself. Currently oclip only [costs ~10kB](https://bundlephobia.com/result?p=oclip@0.0.3). This is particularly great for [`npx`](https://www.npmjs.com/package/npx) which typically will reinstall a CLI everytime it's run. Try it yourself with `npx oclip-example`.
 
 _Feel free to play around with this code all you like but anticipate heavily breaking changes until we release 1.x._
 
@@ -17,15 +17,15 @@ In a new or existing node project, first add oclip: `npm i oclip` or `yarn add o
 
 ```typescript
 // typescript
-import {command} from 'oclip'
+import { command } from 'oclip';
 // javascript
-const {command} = require('oclip')
+const { command } = require('oclip');
 
 command({
   run() {
-    console.log('hello world!')
-  }
-}).exec()
+    console.log('hello world!');
+  },
+}).exec();
 ```
 
 > Note: You can also clone the [example template](https://github.com/oclif/oclip-example)
@@ -37,19 +37,16 @@ Run this with `node path/to/script` (for JS) or `ts-node path/to/script` (for TS
 Arguments are required by default, use `.optional()` to make them optional:
 
 ```typescript
-import {command, arg} from 'oclip'
+import { command, arg } from 'oclip';
 
 // $ mycli argOne argTwo
 command({
-  args: [
-    arg('ARG_ONE'),
-    arg.optional('ARG_TWO'),
-  ],
-  run({args: [argOne, argTwo]}) {
-    console.log(`argOne: ${argOne}`)
-    console.log(`argTwo: ${argTwo}`)
-  }
-}).exec()
+  args: [arg('ARG_ONE'), arg.optional('ARG_TWO')],
+  run({ args: [argOne, argTwo] }) {
+    console.log(`argOne: ${argOne}`);
+    console.log(`argTwo: ${argTwo}`);
+  },
+}).exec();
 ```
 
 If you run this script with `--help` you'll see the following:
@@ -64,21 +61,21 @@ Usage: mycli <ARG_ONE> [<ARG_TWO>]
 ### Parsing Flags
 
 ```typescript
-import {command, flag} from 'oclip'
+import { command, flag } from 'oclip';
 
 // $ mycli --verbose --file=FILENAME
 // TypeScript is able to infer that `verbose` is a boolean and `file` is a string.
 command({
   flags: {
     // -v for a short char and help description
-    verbose: flag.boolean({char: 'v', description: 'show extra output'}),
-    file: flag.input({char: 'f', description: 'file to read from'})
+    verbose: flag.boolean({ char: 'v', description: 'show extra output' }),
+    file: flag.input({ char: 'f', description: 'file to read from' }),
   },
-  run({flags: {verbose, file}}) {
-    console.log(`verbose: ${verbose}`)
-    console.log(`file: ${file}`)
-  }
-}).exec()
+  run({ flags: { verbose, file } }) {
+    console.log(`verbose: ${verbose}`);
+    console.log(`file: ${file}`);
+  },
+}).exec();
 ```
 
 If you run this script with `--help` you'll see the following:
@@ -98,26 +95,26 @@ Options:
 
 Main goals:
 
-* To be the tool of choice for the Node community's CLIs in TS and JS
-* Option/flag parsing in the GNU style
-* Powerful args/flags functionality that can be extended for resuable custom behavior/types
-* Subcommand dispatching with lazy-loading
-* In-CLI help output
-* Completions for bash/zsh/fish
-* Man-page CLI doc generation
-* Never requiring a dependency, internal or external
-* Doing whatever we can to make TypeScript inference and types as helpful as possible
-* Providing configuration support
-* Middleware hooks
+- To be the tool of choice for the Node community's CLIs in TS and JS
+- Option/flag parsing in the GNU style
+- Powerful args/flags functionality that can be extended for resuable custom behavior/types
+- Subcommand dispatching with lazy-loading
+- In-CLI help output
+- Completions for bash/zsh/fish
+- Man-page CLI doc generation
+- Never requiring a dependency, internal or external
+- Doing whatever we can to make TypeScript inference and types as helpful as possible
+- Providing configuration support
+- Middleware hooks
 
 Anti-goals include:
 
-* plugin support—this is oclif's domain
-* project generators—if we need that then we're doing something too complex
-* repls—like [vorpal](https://www.npmjs.com/package/vorpal)
-* Building this in another language
-* Classes, decorators, or any other kind of alternate syntaxes. We need to support the ability to be flexible, but the way things are done must be consistent
-* Doing really anything after the command starts
+- plugin support—this is oclif's domain
+- project generators—if we need that then we're doing something too complex
+- repls—like [vorpal](https://www.npmjs.com/package/vorpal)
+- Building this in another language
+- Classes, decorators, or any other kind of alternate syntaxes. We need to support the ability to be flexible, but the way things are done must be consistent
+- Doing really anything after the command starts
 
 ## Arguments
 
@@ -128,17 +125,14 @@ Label an argument as `multiple` to allow N number arguments at the end:
 ```typescript
 // $ mycli source destination_1 destination_2 destination_3
 command({
-  args: [
-    arg('source'),
-    arg.multiple('destination')
-  ],
-  run({args: [source, ...destinations]}) {
-    console.log(`source: ${source}`)
+  args: [arg('source'), arg.multiple('destination')],
+  run({ args: [source, ...destinations] }) {
+    console.log(`source: ${source}`);
     for (const destination of destinations) {
-      console.log(`destination: ${destination}`)
+      console.log(`destination: ${destination}`);
     }
-  }
-}).exec()
+  },
+}).exec();
 ```
 
 ## Flags
@@ -151,10 +145,14 @@ Break up your CLI into separate commands:
 // run these with `$ mycli login` or `$ mycli refresh`
 topic({
   children: {
-    login: command({/*...*/}),
-    refresh: command({/*...*/}),
-  }
-}).exec()
+    login: command({
+      /*...*/
+    }),
+    refresh: command({
+      /*...*/
+    }),
+  },
+}).exec();
 ```
 
 ### Subtopics
@@ -167,16 +165,24 @@ topic({
   children: {
     auth: topic({
       children: {
-        login: command({/*...*/}),
-        logout: command({/*...*/}),
+        login: command({
+          /*...*/
+        }),
+        logout: command({
+          /*...*/
+        }),
         token: topic({
-          get: command({/*...*/}),
-          reset: command({/*...*/}),
-        })
-      }
+          get: command({
+            /*...*/
+          }),
+          reset: command({
+            /*...*/
+          }),
+        }),
+      },
     }),
-  }
-}).exec()
+  },
+}).exec();
 ```
 
 > Note: We will not be supporting "topic-commands" (commands that are also a topic) like oclif does because it is not compatible with space-separated commands.
@@ -200,10 +206,10 @@ topic({
       children: {
         login: path.join(__dirname, '/topics/auth/login'),
         logout: path.join(__dirname, '/topics/auth/logout'),
-      }
+      },
     }),
-  }
-}).exec()
+  },
+}).exec();
 ```
 
 > Note: `__dirname` is the directory of the script. It's handy in this case since we usually want to load scripts relative to the current path.
@@ -214,8 +220,8 @@ Alternatively, we can set the `commandRoot` option of a topic to have it add top
 
 ```typescript
 topic({
-  commandRoot: path.join(__dirname, '/topics')
-}).exec()
+  commandRoot: path.join(__dirname, '/topics'),
+}).exec();
 ```
 
 > Note: It's possible to define both a `commandRoot` and `children`. This means they could conflict. oclip will attemp to merge the 2 and if there is a conflict, `children` always wins.
@@ -227,16 +233,19 @@ For some use-cases commands are not static but generated in code. There are 2 wa
 Here is an example of building the children:
 
 ```typescript
-const commandNames = ['foo', 'bar', 'baz']
-const commands = commandNames.map(name => [name, command({
-  run() {
-    console.log(`running command: ${name}`)
-  }
-})])
+const commandNames = ['foo', 'bar', 'baz'];
+const commands = commandNames.map((name) => [
+  name,
+  command({
+    run() {
+      console.log(`running command: ${name}`);
+    },
+  }),
+]);
 
 topic({
-  children: Object.fromEntries(commands)
-}).exec()
+  children: Object.fromEntries(commands),
+}).exec();
 ```
 
 And here is `getChild()`. Note that these can't be displayed in the help without customizing the topic's help manually.
@@ -248,11 +257,11 @@ topic({
     // it can return a topic, command, or nothing
     return command({
       run() {
-        console.log(`running command: ${name}`)
-      }
-    })
-  }
-}).exec()
+        console.log(`running command: ${name}`);
+      },
+    });
+  },
+}).exec();
 ```
 
 > Note: I do not recommend dynamic at all as it has to execute all of the commands and topics so you lose all the performance benefits from the lazy-loading.
@@ -268,12 +277,12 @@ As an example:
 ```typescript
 const cmd = command({
   flags: { verbose: flag.boolean('v') },
-  run: async ({flags}) => {
-    return flags.verbose
-  }
-})
-const p = cmd.exec(['-v']) // p is a promise that evaluates to true
-const q = cmd.exec([])     // q is a promise that evaluates to false
+  run: async ({ flags }) => {
+    return flags.verbose;
+  },
+});
+const p = cmd.exec(['-v']); // p is a promise that evaluates to true
+const q = cmd.exec([]); // q is a promise that evaluates to false
 ```
 
 ## Testing
@@ -284,11 +293,11 @@ The `.exec()` method on a command/topic are simply functions that return a promi
 test('--verbose', async () => {
   await command({
     flags: { verbose: flag.boolean('v') },
-    run: ({flags}) => {
-      expect(flags).toMatchObject({verbose: true})
-    }
-  }).exec(['-v'])
-})
+    run: ({ flags }) => {
+      expect(flags).toMatchObject({ verbose: true });
+    },
+  }).exec(['-v']);
+});
 ```
 
 If it errors it will reject the promise it returns:
@@ -297,36 +306,37 @@ If it errors it will reject the promise it returns:
 test('errors if flag is not valid', async () => {
   const cmd = command({
     flags: { verbose: flag.boolean('v') },
-    run: ({flags}) => {
-      expect(flags).toMatchObject({verbose: true})
-    }
-  })
-  await expect(cmd.exec(['--invalid-flag']))
-    .rejects.toThrowError(/Unexpected argument: --invalid-flag/)
-})
+    run: ({ flags }) => {
+      expect(flags).toMatchObject({ verbose: true });
+    },
+  });
+  await expect(cmd.exec(['--invalid-flag'])).rejects.toThrowError(
+    /Unexpected argument: --invalid-flag/,
+  );
+});
 ```
 
 Use [`stdout-stderr`](https://github.com/jdxcode/stdout-stderr) if you want to check output:
 
 ```typescript
-import {stdout} from 'stdout-stderr'
+import { stdout } from 'stdout-stderr';
 
 test('prints to stdout', async () => {
-  stdout.start()
+  stdout.start();
   await command({
-    run: () => console.log('sample text')
-  }).exec([])
-  stdout.stop()
-  expect(stdout.output).toEqual('sample text\n')
-})
+    run: () => console.log('sample text'),
+  }).exec([]);
+  stdout.stop();
+  expect(stdout.output).toEqual('sample text\n');
+});
 ```
 
 ## Error status codes
 
 Error codes 190-199 are reserved for oclif use.
 
-* **190**: unhandled exception
-* **191**: help signal
+- **190**: unhandled exception
+- **191**: help signal
 
 ## FAQs
 
@@ -342,17 +352,17 @@ As a departure from oclif, oclip will support space-separated arguments. Later w
 
 Use oclif if:
 
-* You want plugins
-* You want commands represented as classes
-* You want colon-separated arguments
-* You prefer an opinionated setup
+- You want plugins
+- You want commands represented as classes
+- You want colon-separated arguments
+- You prefer an opinionated setup
 
 Use oclip if:
 
-* You want things to be simple (oclip has 0 dependencies)
-* You need more control for things like dynamically generated commands
-* You want space-separated arguments
-* You want the best type inference available for TypeScript CLIs
+- You want things to be simple (oclip has 0 dependencies)
+- You need more control for things like dynamically generated commands
+- You want space-separated arguments
+- You want the best type inference available for TypeScript CLIs
 
 ### Can I convert from oclif to oclip?
 
