@@ -16,4 +16,3 @@ jobs:
       - run: deno test
       - run: mkdir node_modules
       - run: ./bin/lint
-      - run: ./scripts/lint.ts
