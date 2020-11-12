@@ -24,14 +24,14 @@ export class Command {
   id?: string
   parent?: Topic
 
-  async exec(argv = process.argv.slice(2)) {
+  async exec(argv = process.argv.slice(2)): Promise<any> {
     const ctx = new Context(this)
     const {args, flags} = await parse(ctx, argv, this.args, this.flags)
     const result: any = await this.run({args: args as any, flags: flags as any, ctx})
     return result
   }
 
-  usage(ctx: Context) {
+  usage(ctx: Context): string {
     const args = this.args.map(a => a.toString({usage: true}))
     return [ctx.subjectPath(), ...args].join(' ')
   }

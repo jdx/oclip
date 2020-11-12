@@ -1,3 +1,4 @@
+---
 name: Node.js CI
 
 on: [push]
@@ -12,35 +13,35 @@ jobs:
         node-version: [10.x, 12.x, 13.x]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Get yarn cache
-      id: yarn-cache
-      run: echo "::set-output name=dir::$(yarn cache dir)"
-    - uses: actions/cache@v1
-      with:
-        path: ${{ steps.yarn-cache.outputs.dir }}
-        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-yarn-
-    - run: git submodule update --init --recursive
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: yarn --frozen-lockfile
-    - run: yarn test --collectCoverage
-      env:
-        CI: true
-    - run: yarn lint
-    - run: bash <(curl -s https://codecov.io/bash)
-      env:
-        CODECOV_TOKEN: 5183f977-3ea8-48b1-87a0-0a5114afabf0
-    - run: |
-        yarn link
-        cd example
-        yarn link oclip
-        yarn
-        npx ts-node src/cli.ts serve 20000
-        yarn pack
-        tar -xvzf oclip-example-*.tgz
-        ./package/bin/run serve 20000
+      - uses: actions/checkout@v2
+      - name: Get yarn cache
+        id: yarn-cache
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - uses: actions/cache@v1
+        with:
+          path: ${{ steps.yarn-cache.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - run: git submodule update --init --recursive
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: yarn --frozen-lockfile
+      - run: yarn test --collectCoverage
+        env:
+          CI: true
+      - run: yarn lint
+      - run: bash <(curl -s https://codecov.io/bash)
+        env:
+          CODECOV_TOKEN: 5183f977-3ea8-48b1-87a0-0a5114afabf0
+      - run: |
+          yarn link
+          cd example
+          yarn link oclip
+          yarn
+          npx ts-node src/cli.ts serve 20000
+          yarn pack
+          tar -xvzf oclip-example-*.tgz
+          ./package/bin/run serve 20000

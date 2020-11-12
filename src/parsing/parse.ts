@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { validateArgs, Args } from './args'
 import { Flags, Flag } from './flags'
 import assert from '../util/assert'
@@ -38,7 +39,7 @@ export default async function parse<F extends Flags>(ctx: Context, argv: string[
         arg = arg.slice(-2)
       }
       if (arg.includes('=')) {
-        let [a, ...rest] = arg.split('=')
+        const [a, ...rest] = arg.split('=')
         arg = a
         argv.unshift(rest.join('='))
       }

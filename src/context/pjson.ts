@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import * as path from 'path'
 import {_parent} from '..'
 import assert from '../util/assert'

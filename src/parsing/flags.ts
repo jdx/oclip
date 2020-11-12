@@ -146,7 +146,7 @@ function flagBuilder<T>(defaultOptions: InputFlagOpts<T> & {parse: (input: strin
     options = getParams(char, description, options)
     const flag: InputFlag<T> = {
       toString() {
-        let types = []
+        const types = []
         if (this.char) types.push(`-${this.char}`)
         if (this.name) {
           types.push(`--${this.name}`)
@@ -211,7 +211,7 @@ flag.bool = (char?: Alphabet | BoolFlagOpts, description?: string | BoolFlagOpts
     required: false,
     multiple: false,
     toString() {
-      let types = []
+      const types = []
       if (this.char) types.push(`-${this.char}`)
       if (this.name) {
         types.push(`--${this.name}`)

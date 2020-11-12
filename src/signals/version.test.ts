@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable @typescript-eslint/no-var-requires */
 import { command } from '../command'
 import {VersionSignal} from './version'
 import Context from '../context'

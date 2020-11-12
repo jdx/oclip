@@ -4,10 +4,10 @@ export abstract class OclipError extends Error {
   }
 
   code = 190
-  render() { return this.message }
+  render(): string { return this.message }
 }
 
-export function unhandledRejectionHandler(reason: unknown) {
+export function unhandledRejectionHandler(reason: unknown): void {
   if (reason instanceof OclipError) {
     console.error(reason.render())
     process.exit(reason.code)

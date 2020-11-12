@@ -1,7 +1,7 @@
 import Context  from '../context'
 import { Topic } from '../topic'
 
-export function topicHelp(ctx: Context, topic: Topic) {
+export function topicHelp(ctx: Context, topic: Topic): string {
   const lines = []
   lines.push('Usage: ' + topic.usage(ctx), '')
   lines.push('Commands:')

@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable @typescript-eslint/no-var-requires */
+
 import { Flags } from '../parsing/flags'
 import { Args } from '../parsing/args'
 import { CommandOptions, Command } from '../command'
@@ -31,6 +34,7 @@ export class Topic {
     this.description = options.description
     this.args = options.args || []
     this.flags = options.flags
+    // eslint-disable-next-line prefer-const
     for (let [id, c] of Object.entries(options.children)) {
       this.children[id] = {
         load: () => {
@@ -73,7 +77,7 @@ export class Topic {
     return c.exec(argv)
   }
 
-  usage(ctx: Context) {
+  usage(ctx: Context): string {
     const args = this.args.map(a => a.toString({usage: true}))
     return [ctx.subjectPath(), ...args].join(' ')
   }

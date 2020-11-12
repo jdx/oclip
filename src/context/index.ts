@@ -19,7 +19,7 @@ export default class Context {
   bin = this.pjson.oclip.bin
   version = this.pjson.version || '?.?.?'
 
-  subjectPath() {
+  subjectPath(): string {
     const p = []
     let subject: Subject | undefined = this.subject
     while (subject?.id) {

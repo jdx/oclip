@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
+
 import {HelpSignal} from './help'
 import { command } from '../command'
 import Context from '../context'

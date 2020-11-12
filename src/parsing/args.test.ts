@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import {arg, command} from '..'
 import { RequiredArgsError } from '../errors/args'
 

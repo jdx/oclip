@@ -132,17 +132,17 @@ const validateNothingRequiredAfterOptional = (defs: Arg<any>[]) => {
 // const numRequiredArgs = (args: Arg<any>[]) => args.reduce((total, arg) => arg.required ? total+1 : total, 0)
 const numOptionalArgs = (args: Arg<any>[]) => args.reduce((total, arg) => arg.multiple ? -1 : total + 1, 0)
 
-export const validateArgDefs = (argDefs: Args) => {
+export const validateArgDefs = (argDefs: Args): void => {
   validateNothingRequiredAfterOptional(argDefs)
 }
 
-export const validateArgs = async (ctx: Context, defs: Args, args: any[]) => {
+export const validateArgs = async (ctx: Context, defs: Args, args: any[]): Promise<{subdomain?: Command }> => {
   addIdToArgs(defs)
-  let maxArgs = numOptionalArgs(defs)
+  const maxArgs = numOptionalArgs(defs)
 
   let subcommand: Command | undefined
 
-  for (let def of defs.slice(0, args.length)) {
+  for (const def of defs.slice(0, args.length)) {
     const input = args[def.id]
     if (def.choices) {
       const choices = (typeof def.choices === 'function' ? await def.choices() : def.choices)
