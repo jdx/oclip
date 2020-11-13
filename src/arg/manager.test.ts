@@ -1,6 +1,6 @@
 import { expect } from "https://deno.land/x/expect/mod.ts";
 
-import { assertEquals } from "../../test/deps.ts";
+import { assertEquals } from "/deps.ts";
 import { build } from "./arg.ts";
 import { ArgManager } from "./manager.ts";
 

@@ -1,4 +1,4 @@
-import { assertEquals } from "../../test/deps.ts";
+import { assertEquals } from "/deps.ts";
 import { build } from "./arg.ts";
 
 Deno.test("required", async () => {
