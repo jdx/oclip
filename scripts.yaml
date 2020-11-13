@@ -15,7 +15,7 @@ scripts:
     # imap: import_map.json
     unstable: true
   test:
-    cmd: deno test
+    cmd: deno test --allow-env
     # imap: import_map.json
     unstable: true
   test_watch:

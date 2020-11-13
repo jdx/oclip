@@ -1,10 +1,4 @@
-import { ArgConfig } from "./config.ts";
-
-export interface ArgTypes {
-  required: RequiredArg;
-  optional: OptionalArg;
-  rest: RestArg;
-}
+import { ArgConfig, ArgOptions } from "./config.ts";
 
 export abstract class ArgBase<D> {
   constructor(protected cfg: ArgConfig<D>) {
@@ -42,3 +36,26 @@ export class RestArg<D = unknown> extends ArgBase<D> {
 }
 
 export type Arg<D = unknown> = RequiredArg<D> | OptionalArg<D> | RestArg<D>;
+
+export interface ArgTypes {
+  required: RequiredArg;
+  optional: OptionalArg;
+  rest: RestArg;
+}
+
+type ArgTypeStrFromOpts<AO extends ArgOptions<unknown>> = AO extends {
+  rest: true;
+}
+  ? "rest"
+  : AO extends { optional: true }
+  ? "optional"
+  : "required";
+
+export type ArgTypeFromOpts<
+  AO extends ArgOptions<unknown>,
+  D
+> = ArgTypeStrFromOpts<AO> extends "rest"
+  ? RestArg<D>
+  : ArgTypeStrFromOpts<AO> extends "optional"
+  ? OptionalArg<D>
+  : RequiredArg<D>;
