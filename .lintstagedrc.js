@@ -4,5 +4,6 @@ module.exports = {
   "*.{js,ts,jsx,tsx}": ["bin/fmt", "bin/lint"],
   "*.test.{js,ts}": ["bin/test"],
   "*/deps.ts": ["bin/cache_load"],
+  ".husky/*": ["shellcheck -x"],
   "*": ["bin/gen_readme"],
 };
