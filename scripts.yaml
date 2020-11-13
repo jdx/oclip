@@ -1,6 +1,9 @@
 ---
 scripts:
-  cache_load: deno cache --reload --lock=lock.json deps.ts
+  cache_load:
+    cmd: deno cache --reload --lock=lock.json --lock-write deps.ts test/deps.ts
+    imap: import_map.json
+    unstable: true
   fmt:
     cmd: deno fmt --unstable --ignore=node_modules
   gen_readme:

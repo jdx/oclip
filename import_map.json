@@ -1,9 +1,5 @@
 {
   "imports": {
-    "/": "./",
-    "fmt/": "https://deno.land/std/fmt/",
-    "fs/": "https://deno.land/std/fs/",
-    "http/": "https://deno.land/std/http/",
-    "opine": "https://arweave.net/t7ZEG_QqqCBEyyf3Q9fZTfFPDYEALUKfIcbTpLgzhjs/mod.ts"
+    "/": "./"
   }
 }
