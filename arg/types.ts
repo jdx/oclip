@@ -7,7 +7,10 @@ export interface ArgTypes {
 }
 
 export abstract class ArgBase<D> {
-  constructor(protected cfg: ArgConfig<D>) {}
+  constructor(protected cfg: ArgConfig<D>) {
+    this.name = cfg.name;
+  }
+  public readonly name: string
 
   toString(): string {
     let s = "";
