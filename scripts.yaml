@@ -2,11 +2,11 @@
 scripts:
   cache_load: deno cache --reload --lock=lock.json deps.ts
   fmt:
-    cmd: deno run --allow-run scripts/fmt.ts
+    cmd: deno fmt --unstable --ignore=node_modules
   gen_readme:
     cmd: deno run --allow-run --allow-write scripts/gen_readme.ts
   lint:
-    cmd: deno run --allow-run scripts/lint.ts
+    cmd: deno lint --unstable --ignore=node_modules
   run:
     cmd: deno run
     imap: import_map.json
