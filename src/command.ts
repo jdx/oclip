@@ -1,7 +1,7 @@
 // deno-lint-ignore-file no-explicit-any
 
-import * as arg from "./arg.ts";
-import { BoolFlagOpts, Flags } from "./flag.ts";
+import * as arg from "/arg-old.ts";
+import { BoolFlagOpts, Flags } from "/flag.ts";
 
 /**
  * @callback CommandRunFn
