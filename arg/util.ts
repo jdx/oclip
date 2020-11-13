@@ -7,8 +7,7 @@
 //
 export type LengthOfTuple<T extends readonly any[]> = T extends {
   length: infer L;
-}
-  ? L
+} ? L
   : never;
 
 // Drops the first element of a tuple. Example:
@@ -18,8 +17,7 @@ export type LengthOfTuple<T extends readonly any[]> = T extends {
 //
 export type DropFirstInTuple<T extends readonly any[]> = ((
   ...args: T
-) => any) extends (arg: any, ...rest: infer U) => any
-  ? U
+) => any) extends (arg: any, ...rest: infer U) => any ? U
   : T;
 
 // Gets the type of the last element of a tuple. Example:
@@ -39,6 +37,8 @@ export type DropFirstInTuple<T extends readonly any[]> = ((
 //   type Baz = typeof baz;
 //   //=> boolean
 //
-export type LastInTuple<T extends readonly any[]> = T[LengthOfTuple<
-  DropFirstInTuple<T>
->];
+export type LastInTuple<T extends readonly any[]> = T[
+  LengthOfTuple<
+    DropFirstInTuple<T>
+  >
+];

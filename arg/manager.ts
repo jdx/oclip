@@ -23,8 +23,7 @@ import { Arg, ArgTypes } from "./types.ts";
 // export class ArgList? {
 
 type ArgList = readonly Arg[];
-type LastArg<AL extends ArgList> = LastInTuple<AL> extends Arg
-  ? LastInTuple<AL>
+type LastArg<AL extends ArgList> = LastInTuple<AL> extends Arg ? LastInTuple<AL>
   : undefined;
 
 export class ArgManager<AL extends ArgList> {

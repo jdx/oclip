@@ -45,17 +45,13 @@ export interface ArgTypes {
 
 type ArgTypeStrFromOpts<AO extends ArgOptions<unknown>> = AO extends {
   rest: true;
-}
-  ? "rest"
-  : AO extends { optional: true }
-  ? "optional"
+} ? "rest"
+  : AO extends { optional: true } ? "optional"
   : "required";
 
 export type ArgTypeFromOpts<
   AO extends ArgOptions<unknown>,
-  D
-> = ArgTypeStrFromOpts<AO> extends "rest"
-  ? RestArg<D>
-  : ArgTypeStrFromOpts<AO> extends "optional"
-  ? OptionalArg<D>
+  D,
+> = ArgTypeStrFromOpts<AO> extends "rest" ? RestArg<D>
+  : ArgTypeStrFromOpts<AO> extends "optional" ? OptionalArg<D>
   : RequiredArg<D>;
