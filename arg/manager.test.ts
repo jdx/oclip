@@ -1,4 +1,4 @@
-import { expect } from "../deps.ts";
+import { expect } from "/deps.ts";
 import { build } from "./arg.ts";
 import { ArgManager } from "./manager.ts";
 
@@ -8,5 +8,5 @@ Deno.test("lastArgType", async () => {
   expect(manager.lastArgType()).toBe(undefined);
   const arg = build({ name: "foo-1" });
   manager.append(arg);
-  expect(manager.lastArgType()).toBe("xyz");
+  expect(manager.lastArgType()).toBe(undefined);
 });

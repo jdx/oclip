@@ -12,6 +12,6 @@ Eggs version:
 Platform:
   x86_64-apple-darwin
 
-2020-11-13T05:17:20.334Z [DEBUG]    Options:  { file: "deps.ts" }
-2020-11-13T05:17:20.337Z [DEBUG]    Dependency file contents:  [ '} from "https://deno.land/std@0.74.0/testing/asserts.ts";' ]
-2020-11-13T05:17:20.350Z [CRITICAL] An unexpected error occurred: "Cannot read property 'length' of undefined" "TypeError: Cannot read property 'length' of undefined\n    at Command.update [as fn] (update.ts:72:24)\n    at async Command.execute (command.ts:796:9)\n    at async Command.parse (command.ts:731:14)\n    at async Command.parse (command.ts:688:14)\n    at async eggs.ts:74:23"
+2020-11-13T05:39:31.181Z [DEBUG]    Options:  { file: "deps.ts" }
+2020-11-13T05:39:31.185Z [DEBUG]    Dependency file contents:  [ 'export { expect } from "https://deno.land/x/expect/mod.ts";' ]
+2020-11-13T05:39:31.197Z [CRITICAL] An unexpected error occurred: "Cannot read property 'length' of undefined" "TypeError: Cannot read property 'length' of undefined\n    at Command.update [as fn] (update.ts:72:24)\n    at async Command.execute (command.ts:796:9)\n    at async Command.parse (command.ts:731:14)\n    at async Command.parse (command.ts:688:14)\n    at async eggs.ts:74:23"

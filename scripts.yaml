@@ -1,9 +1,18 @@
 ---
 scripts:
   cache_load: deno cache --reload --lock=lock.json deps.ts
-  fmt: deno run --allow-run scripts/fmt.ts
-  gen_readme: deno run --allow-run --allow-write scripts/gen_readme.ts
-  lint: deno run --allow-run scripts/lint.ts
-  run: deno run
-  test: deno test
+  fmt:
+    cmd: deno run --allow-run scripts/fmt.ts
+  gen_readme:
+    cmd: deno run --allow-run --allow-write scripts/gen_readme.ts
+  lint:
+    cmd: deno run --allow-run scripts/lint.ts
+  run:
+    cmd: deno run
+    imap: import_map.json
+    unstable: true
+  test:
+    cmd: deno test
+    imap: import_map.json
+    unstable: true
   test_watch: while true; do ls src/*.ts | entr -d bin/test; done

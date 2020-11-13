@@ -1,17 +1,17 @@
-import { assertEquals } from "../test/deps.ts";
+import { expect } from "../deps.ts";
 import { build } from "./arg.ts";
 
 Deno.test("required", async () => {
   const arg = build({ name: "foo-1" });
-  assertEquals(arg.type, "required");
+  expect(arg.type).toBe("required");
 });
 
 Deno.test("optional", async () => {
   const arg = build({ name: "foo-1", optional: true });
-  assertEquals(arg.type, "optional");
+  expect(arg.type).toBe("optional");
 });
 
 Deno.test("rest", async () => {
   const arg = build({ name: "foo-1", rest: true });
-  assertEquals(arg.type, "rest");
+  expect(arg.type).toBe("rest");
 });
