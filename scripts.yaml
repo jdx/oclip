@@ -2,7 +2,7 @@
 scripts:
   cache_load:
     cmd: deno cache --reload --lock=lock.json --lock-write deps.ts test/deps.ts
-    imap: import_map.json
+    # imap: import_map.json
     unstable: true
   fmt:
     cmd: deno fmt --unstable --ignore=node_modules
@@ -12,10 +12,10 @@ scripts:
     cmd: deno lint --unstable --ignore=node_modules
   run:
     cmd: deno run
-    imap: import_map.json
+    # imap: import_map.json
     unstable: true
   test:
     cmd: deno test
-    imap: import_map.json
+    # imap: import_map.json
     unstable: true
   test_watch: while true; do ls src/*.ts | entr -d bin/test; done

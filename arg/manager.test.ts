@@ -1,4 +1,4 @@
-import { expect } from "/deps.ts";
+import { expect } from "../deps.ts";
 import { build } from "./arg.ts";
 import { ArgManager } from "./manager.ts";
 
