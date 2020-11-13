@@ -18,4 +18,7 @@ scripts:
     cmd: deno test
     # imap: import_map.json
     unstable: true
-  test_watch: while true; do ls src/*.ts | entr -d bin/test; done
+  test_watch:
+    cmd: deno test
+    watch: true
+    # cmd: while true; do ls src/*.ts | entr -d bin/test; done

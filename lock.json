@@ -1,12 +1,5 @@
 {
-  "https://deno.land/std@0.50.0/fmt/colors.ts": "127ce39ca2ad9714d4ada8d61367f540d76b5b0462263aa839166876b522d3de",
-  "https://deno.land/std@0.50.0/testing/asserts.ts": "213fedbb90a60ae232932c45bd62668f0c5cd17fc0f2a273e96506cba416d181",
-  "https://deno.land/std@0.50.0/testing/diff.ts": "8f591074fad5d35c0cafa63b1c5334dc3a17d5b934f3b9e07172eed9d5b55553",
   "https://deno.land/std@0.77.0/fmt/colors.ts": "c5665c66f1a67228f21c5989bbb04b36d369b98dd7ceac06f5e26856c81c2531",
   "https://deno.land/std@0.77.0/testing/_diff.ts": "48a34be6be2721bafe48033a46e8d80c44d5458ea862e5ffdb9083d8c2b97a46",
-  "https://deno.land/std@0.77.0/testing/asserts.ts": "2887fa46577bd0f8c9f6555a9abb65f0765d1fd943d3ed4593cdbc5f5a8105d8",
-  "https://rpen2pb6t25p7gyqfkc42ee2fc3bfdlpt4qzjc3lvm56tnwfqnxq.arweave.net/i8jdPD6euv-bECqFzRCaKLYSjW-fIZSLa6s76bbFg28/expect.ts": "442072caf548d46cac0df8bd2f9f25ad779401a9d343f0181155af92301a70c3",
-  "https://rpen2pb6t25p7gyqfkc42ee2fc3bfdlpt4qzjc3lvm56tnwfqnxq.arweave.net/i8jdPD6euv-bECqFzRCaKLYSjW-fIZSLa6s76bbFg28/matchers.ts": "931ad85422e4e054633e6bc7d8c52155dceacec6955c03ba4304d131804edd47",
-  "https://rpen2pb6t25p7gyqfkc42ee2fc3bfdlpt4qzjc3lvm56tnwfqnxq.arweave.net/i8jdPD6euv-bECqFzRCaKLYSjW-fIZSLa6s76bbFg28/mock.ts": "562d4b1d735d15b0b8e935f342679096b64fe452f86e96714fe8616c0c884914",
-  "https://rpen2pb6t25p7gyqfkc42ee2fc3bfdlpt4qzjc3lvm56tnwfqnxq.arweave.net/i8jdPD6euv-bECqFzRCaKLYSjW-fIZSLa6s76bbFg28/mod.ts": "0304d2430e1e96ba669a8495e24ba606dcc3d152e1f81aaa8da898cea24e36c2"
+  "https://deno.land/std@0.77.0/testing/asserts.ts": "2887fa46577bd0f8c9f6555a9abb65f0765d1fd943d3ed4593cdbc5f5a8105d8"
 }
