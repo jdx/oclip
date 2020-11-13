@@ -3,8 +3,5 @@
   "version": "0.0.0",
   "dependencies": {
     "typescript": "^4.0.5"
-  },
-  "devDependencies": {
-    "tsd": "^0.13.1"
   }
 }

@@ -1,4 +1,4 @@
-import { assertEquals } from "/deps.ts";
+import { assertEquals } from "../test/deps.ts";
 import { buildConfig } from "./config.ts";
 import { RequiredArg } from "./types.ts";
 

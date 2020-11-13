@@ -1,4 +1,4 @@
-import { assertEquals } from "/deps.ts";
+import { assertEquals } from "../test/deps.ts";
 import { ArgOptions, buildConfig } from "./config.ts";
 
 Deno.test("config", () => {

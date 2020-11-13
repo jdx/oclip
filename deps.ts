@@ -1,1 +1,1 @@
-export { bold } from "https://deno.land/std@v0.32.0/fmt/colors.ts";
+export { expect } from "https://deno.land/x/expect/mod.ts";
