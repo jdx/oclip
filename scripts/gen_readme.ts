@@ -29,4 +29,4 @@
 //   main: import.meta.main,
 // });
 
-console.log('yay')
+console.log("yay");
