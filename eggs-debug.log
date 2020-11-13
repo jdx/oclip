@@ -1,0 +1,22 @@
+Arguments:
+  update,--file,src/deps.ts
+
+Deno version:
+  deno: 1.5.2
+  v8: 8.7.220.3
+  typescript: 4.0.5
+
+Eggs version:
+  0.3.2
+
+Platform:
+  x86_64-apple-darwin
+
+2020-11-13T04:56:31.692Z [DEBUG]    Options:  { file: "src/deps.ts" }
+2020-11-13T04:56:31.696Z [DEBUG]    Dependency file contents:  [
+  'import * as colors from "https://deno.land/std@v0.55.0/fmt/colors.ts";',
+  'import * as bcrypt from "https://deno.land/x/bcrypt@v0.2.0/mod.ts";',
+  'import * as eggs from "https://x.nest.land/eggs@v0.1.0/mod.ts";',
+  'import * as http from "https://deno.land/std/http/mod.ts";'
+]
+2020-11-13T04:56:31.709Z [CRITICAL] An unexpected error occurred: "Cannot read property 'length' of undefined" "TypeError: Cannot read property 'length' of undefined\n    at Command.update [as fn] (update.ts:72:24)\n    at async Command.execute (command.ts:796:9)\n    at async Command.parse (command.ts:731:14)\n    at async Command.parse (command.ts:688:14)\n    at async eggs.ts:74:23"

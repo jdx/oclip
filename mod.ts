@@ -1,1 +1,1 @@
-export * from './src/arg/arg.ts';
+export * from "./arg/arg.ts";

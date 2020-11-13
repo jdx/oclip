@@ -14,12 +14,14 @@ export interface ArgOptionsBase {
   choices?: ObjectOrPromiseOrFunction<string>;
 }
 
-export type ArgOptions<D> = (ArgOptionsBase & {
-  default?: ObjectOrPromiseOrFunction<string>;
-}) | (ArgOptionsBase & {
-  parse: ParseFn<D>;
-  default?: ObjectOrPromiseOrFunction<D>;
-})
+export type ArgOptions<D> =
+  | (ArgOptionsBase & {
+    default?: ObjectOrPromiseOrFunction<string>;
+  })
+  | (ArgOptionsBase & {
+    parse: ParseFn<D>;
+    default?: ObjectOrPromiseOrFunction<D>;
+  });
 
 export interface ArgConfig<D> extends ArgOptionsBase {
   //id: number;
@@ -30,14 +32,16 @@ export interface ArgConfig<D> extends ArgOptionsBase {
   rest: boolean;
 }
 
-export function buildConfig<D>(options: ArgOptions<D> & {parse: ParseFn<D>}): ArgConfig<D>
-export function buildConfig(options: ArgOptions<string>): ArgConfig<string>
+export function buildConfig<D>(
+  options: ArgOptions<D> & { parse: ParseFn<D> },
+): ArgConfig<D>;
+export function buildConfig(options: ArgOptions<string>): ArgConfig<string>;
 export function buildConfig(options: ArgOptions<any>): ArgConfig<any> {
   return {
-    parse: 'parse' in options ? options.parse : ((input: string) => input),
+    parse: "parse" in options ? options.parse : ((input: string) => input),
     hidden: !!options.hidden,
     optional: !!options.optional,
     rest: !!options.rest,
     ...options,
-  }
+  };
 }

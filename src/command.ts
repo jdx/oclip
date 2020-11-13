@@ -72,33 +72,32 @@ export function command<A extends arg.List, F extends Flags, R>(
 }
 
 interface ArgOptions<T> {
-  name: string
-  required?: boolean
-  rest?: boolean
-  parse?: (input: string) => T
+  name: string;
+  required?: boolean;
+  rest?: boolean;
+  parse?: (input: string) => T;
 }
 abstract class ArgBase<T> {
   constructor(opts: ArgOptions<T>) {
   }
 }
 class RequiredArg<T> extends ArgBase<T> {
-  value!: T
+  value!: T;
 }
 class OptionalArg<T> extends ArgBase<T> {
-  value?: T
+  value?: T;
 }
 class RestArg<T> extends ArgBase<T> {
-  value: T[] = []
+  value: T[] = [];
 }
-type Arg<T> = RequiredArg<T> | OptionalArg<T> | RestArg<T>
+type Arg<T> = RequiredArg<T> | OptionalArg<T> | RestArg<T>;
 type ArgDataTypeFromOptions<AO extends ArgOptions<unknown>> =
-  AO['parse'] extends (input: string) => infer T
-  ? T : string;
+  AO["parse"] extends (input: string) => infer T ? T : string;
 
-type ArgOptsToType<AO extends ArgOptions<unknown>>
- = AO['rest'] extends true ? RestArg<ArgDataTypeFromOptions<AO>>
- : AO['required'] extends true ? RequiredArg<ArgDataTypeFromOptions<AO>>
- : OptionalArg<ArgDataTypeFromOptions<AO>>;
+type ArgOptsToType<AO extends ArgOptions<unknown>> = AO["rest"] extends true
+  ? RestArg<ArgDataTypeFromOptions<AO>>
+  : AO["required"] extends true ? RequiredArg<ArgDataTypeFromOptions<AO>>
+  : OptionalArg<ArgDataTypeFromOptions<AO>>;
 
 class CMD<AL extends readonly Arg<unknown>[]> {
   static init(): CMD<[]> {
@@ -107,7 +106,9 @@ class CMD<AL extends readonly Arg<unknown>[]> {
 
   constructor(private readonly args: AL) {}
 
-  arg<AO extends ArgOptions<unknown>>(opts: AO): CMD<[...AL, ArgOptsToType<AO>]> {
+  arg<AO extends ArgOptions<unknown>>(
+    opts: AO,
+  ): CMD<[...AL, ArgOptsToType<AO>]> {
     let arg: Arg<unknown>;
     if (opts.rest) arg = new RestArg(opts);
     else if (opts.required) arg = new RequiredArg(opts);
@@ -117,8 +118,8 @@ class CMD<AL extends readonly Arg<unknown>[]> {
 }
 
 const cmd = CMD.init()
-  .arg({name: 'foo1', parse: () => 1})
-  .arg({name: 'foo2', required: true})
-  .arg({name: 'foo3'})
-  .arg({name: 'foo4'});
+  .arg({ name: "foo1", parse: () => 1 })
+  .arg({ name: "foo2", required: true })
+  .arg({ name: "foo3" })
+  .arg({ name: "foo4" });
 console.log(cmd);

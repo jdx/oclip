@@ -3,8 +3,8 @@
 import { ArgOptions, buildConfig, ParseFn } from "./config.ts";
 import { Arg, OptionalArg, RequiredArg, RestArg } from "./types.ts";
 
-export function build<D>(options: ArgOptions<D> & ParseFn<D>): Arg<D>
-export function build(options: ArgOptions<string>): Arg<string>
+export function build<D>(options: ArgOptions<D> & ParseFn<D>): Arg<D>;
+export function build(options: ArgOptions<string>): Arg<string>;
 export function build(options: ArgOptions<any>): Arg<any> {
   const cfg = buildConfig(options);
 

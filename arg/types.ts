@@ -1,9 +1,9 @@
-import {ArgConfig} from './config.ts';
+import { ArgConfig } from "./config.ts";
 
 export interface ArgTypes {
-  required: RequiredArg,
-  optional: OptionalArg,
-  rest: RestArg,
+  required: RequiredArg;
+  optional: OptionalArg;
+  rest: RestArg;
 }
 
 export abstract class ArgBase<D> {
@@ -21,19 +21,19 @@ export abstract class ArgBase<D> {
 }
 
 export class RequiredArg<D = unknown> extends ArgBase<D> {
-  type = 'required' as const
+  type = "required" as const;
   optional = false;
   value!: D;
 }
 
 export class OptionalArg<D = unknown> extends ArgBase<D> {
-  type = 'optional' as const
+  type = "optional" as const;
   optional = true;
   value?: D;
 }
 
 export class RestArg<D = unknown> extends ArgBase<D> {
-  type = 'rest' as const
+  type = "rest" as const;
   rest = true;
   value: D[] = [];
 }

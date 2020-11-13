@@ -8,7 +8,7 @@ Deno.test("lastArgType", async () => {
   const manager = ArgManager.init();
 
   assertEquals(manager.lastArgType(), undefined);
-  const arg = build({ name: "foo-1" })
+  const arg = build({ name: "foo-1" });
   manager.append(arg);
-  assertEquals(manager.lastArgType(), 'xyz');
+  assertEquals(manager.lastArgType(), "xyz");
 });

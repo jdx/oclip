@@ -4,9 +4,6 @@ scripts:
   fmt: deno run --allow-run scripts/fmt.ts
   gen_readme: deno run --allow-run --allow-write scripts/gen_readme.ts
   lint: deno run --allow-run scripts/lint.ts
-  test: deno test --unstable --import-map=import_map.json
-  test_watch: |
-    while true; do
-      fd '\.ts$' | entr -d bin/test
-      echo restarting
-    done
+  run: deno run
+  test: deno test
+  test_watch: while true; do ls src/*.ts | entr -d bin/test; done
