@@ -45,6 +45,8 @@ jobs:
           prerelease: false
 
       - run: npm whoami
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -52,6 +54,8 @@ jobs:
         with:
           registry-url: 'https://npm.pkg.github.com'
       - run: npm whoami
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GH_TOKEN }}
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GH_TOKEN }}
