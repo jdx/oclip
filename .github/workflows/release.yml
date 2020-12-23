@@ -44,7 +44,7 @@ jobs:
           draft: true
           prerelease: false
 
-      - run: npm publish xxxxxxx
+      - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - uses: actions/setup-node@v2
