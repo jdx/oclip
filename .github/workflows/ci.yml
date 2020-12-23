@@ -151,7 +151,7 @@ jobs:
           cd example
           npm link oclip
           npm ci
-      - run: npx ts-node src/commands/kill.ts -v 20000
+      - run: npx ts-node src/cli.ts 20000
       - run: |
           npm pack
           tar -xvzf oclip-example-*.tgz
