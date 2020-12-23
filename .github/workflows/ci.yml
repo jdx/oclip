@@ -7,18 +7,44 @@ env:
   CI: true
 
 jobs:
-  setup:
-    runs-on: ubuntu-latest
+  canary:
+    name: node-15.x on ${{ matrix.os }}-${{ matrix.architecture }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        node_version: [14.x]
+        architecture: [x64]
     steps:
       - uses: actions/checkout@v2
         with:
           token: ${{ secrets.GH_TOKEN }} # delete this when it is public
           submodules: recursive
 
-  build:
-    needs: setup
+      - name: Get npm cache directory
+        id: npm-cache
+        run: echo "::set-output name=dir::$(npm config get cache)"
+      - name: Cache Node.js modules
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.npm-cache.outputs.dir }}
+          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-
+            ${{ runner.OS }}-
+      - name: Use Node.js ${{ matrix.node_version }}
+        uses: actions/setup-node@v2
+        with:
+          node_version: ${{ matrix.node_version }}
+          architecture: ${{ matrix.architecture }}
+      - run: npm ci
+      - run: npm test
+
+  test:
+    name: node-${{ matrix.node_version }} on ${{ matrix.os }}-${{ matrix.architecture }}
+    needs: canary
     runs-on: ${{ matrix.os }}
-    name: Node ${{ matrix.node_version }} - ${{ matrix.architecture }} on ${{ matrix.os }}
 
     strategy:
       fail-fast: false
@@ -26,46 +52,128 @@ jobs:
         os:
           - ubuntu-latest
           - macos-latest
-          # - windows-latest
-        # node-version: [10.x, 12.x, 14.x, 15.x]
-        node-version: [10.x, 15.x]
+          - windows-latest
+        # node_version: [10.x, 12.x, 14.x, 15.x]
+        node_version: [10.x, 15.x]
         architecture: [x64]
 
     steps:
-      # - uses: actions/checkout@v2
-      #   with:
-      #     token: ${{ secrets.GH_TOKEN }} # delete this when it is public
-      #     submodules: recursive
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GH_TOKEN }} # delete this when it is public
+          submodules: recursive
 
+      - name: Get npm cache directory
+        id: npm-cache
+        run: echo "::set-output name=dir::$(npm config get cache)"
       - name: Cache Node.js modules
         uses: actions/cache@v2
         with:
-          path: ~/.npm
+          path: ${{ steps.npm-cache.outputs.dir }}
           key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js ${{ matrix.node_version }}
         uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node-version }}
+          node_version: ${{ matrix.node_version }}
           architecture: ${{ matrix.architecture }}
 
       - run: npm ci
-      - run: npm test --collectCoverage
 
-      - run: bash <(curl -s https://codecov.io/bash)
+      - if: ${{ matrix.node_version == '15.x' }}
+        run: |
+          npm test --collectCoverage
+          bash <(curl -s https://codecov.io/bash)
         env:
           CODECOV_TOKEN: 5183f977-3ea8-48b1-87a0-0a5114afabf0
+      - if: ${{ matrix.node_version != '15.x' }}
+        run: npm test
 
+  e2e:
+    needs: canary
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
+        node_version: [14.x]
+        architecture: [x64]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GH_TOKEN }} # delete this when it is public
+          submodules: recursive
+
+      - name: Get npm cache directory
+        id: npm-cache
+        run: echo "::set-output name=dir::$(npm config get cache)"
+      - name: Cache Node.js modules
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.npm-cache.outputs.dir }}
+          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-
+            ${{ runner.OS }}-
+
+      - name: Use Node.js ${{ matrix.node_version }}
+        uses: actions/setup-node@v2
+        with:
+          node_version: ${{ matrix.node_version }}
+          architecture: ${{ matrix.architecture }}
+
+      - run: npm ci
       - run: |
           npm link
           cd example
           npm link oclip
           npm ci
-          npx ts-node src/commands/kill.ts -v 20000
+      - run: npx ts-node src/commands/kill.ts -v 20000
+      - run: |
           npm pack
-          yarn pack
           tar -xvzf oclip-example-*.tgz
-          ./package/bin/run serve 20000
+      - run: ./package/bin/run serve 20000
+
+  release:
+    needs: [test, e2e]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GH_TOKEN }} # delete this when it is public
+          submodules: recursive
+
+      - name: Get npm cache directory
+        id: npm-cache
+        run: echo "::set-output name=dir::$(npm config get cache)"
+      - name: Cache Node.js modules
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.npm-cache.outputs.dir }}
+          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-
+            ${{ runner.OS }}-
+
+      - name: Use Node.js ${{ matrix.node_version }}
+        uses: actions/setup-node@v2
+        with:
+          node_version: ${{ matrix.node_version }}
+          architecture: ${{ matrix.architecture }}
+
+      - run: echo npm publish xxxxxxx
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - uses: actions/setup-node@v2
+        with:
+          registry-url: 'https://npm.pkg.github.com'
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GH_TOKEN }}
