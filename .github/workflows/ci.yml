@@ -38,8 +38,6 @@ jobs:
         env:
           CODECOV_TOKEN: 5183f977-3ea8-48b1-87a0-0a5114afabf0
 
-      - run: echo $CI
-
       # - run: git submodule update --init --recursive
       # - run: |
       #     yarn link
