@@ -24,6 +24,9 @@
     "/lib"
   ],
   "homepage": "https://github.com/oclif/oclip#readme",
+  "keywords": [
+    "cli"
+  ],
   "license": "MIT",
   "main": "lib/index.js",
   "repository": {
