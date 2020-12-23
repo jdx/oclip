@@ -8,20 +8,12 @@ env:
 
 jobs:
   canary:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        node_version: [14.x]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        with:
-          token: ${{ secrets.GH_TOKEN }} # delete this when it is public
-          submodules: recursive
       - uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node_version }}
+          node-version: 14.x
       - id: npm-cache
         run: echo "::set-output name=dir::$(npm config get cache)"
       - uses: actions/cache@v2
