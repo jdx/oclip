@@ -1,40 +1,52 @@
-import {arg, Arg, OptionalArg, ArgValues} from './arg';
+import { Arg, ArgList, ArgBuilder, ArgValues, OptionalArg} from './arg';
+import { UnexpectedArgumentException } from './errors';
 
-export interface CommandOpts<DArgs extends readonly any[], DFlags> {
-  args: DArgs,
-  flags: DFlags,
+export type ExecFn<ArgDefs extends ArgList, R> = (args: ArgValues<ArgDefs>) => R
+
+export interface Command<ArgDefs extends ArgList, Flags, R> {
+  args: ArgDefs
+  flags: Flags
+  onexec: ExecFn<ArgDefs, R>
 }
 
-export type ExecFn<Args extends readonly Arg<any>[]> = (args: ArgValues<Args>) => void
+export type ArgBuilderFn<A extends Arg> = (ab: ArgBuilder<OptionalArg<string>>) => ArgBuilder<A>
 
-export class Command<Args extends readonly any[], DFlags> {
-  constructor(private opts: CommandOpts<Args, DFlags>) { }
+export class CommandBuilder<ArgDefs extends ArgList, Flags, R> {
+  constructor(private readonly value: Command<ArgDefs, Flags, R>) { }
 
-  private _onexec: ExecFn<Args> = () => { }
+  arg<A extends Arg>(build: ArgBuilderFn<A>): CommandBuilder<[...ArgDefs, A], Flags, R> {
+    const arg = build(ArgBuilder.init()).value;
 
-  arg<T>(builder: (arg: OptionalArg<string>) => Arg<T>): Command<[...Args, Arg<T>], DFlags> {
-    return new Command({
-      ...this.opts,
-      args: [
-        ...this.opts.args,
-        builder(arg()),
-      ]
+    return new CommandBuilder({
+      ...this.value,
+      args: [...this.value.args, arg] as any
     });
   }
 
-  onexec(exec: ExecFn<Args>): this {
-    this._onexec = exec;
-    return this;
+  onexec<R>(onexec: ExecFn<ArgDefs, R>): CommandBuilder<ArgDefs, Flags, R> {
+    return new CommandBuilder({
+      ...this.value,
+      onexec,
+    })
+  }
+
+  async exec(argv = process.argv): Promise<R> {
+    const cmd = this.value;
+
+    argv = argv.slice(2);
+
+    const args = [];
+    const argDefs = cmd.args.slice();
+    for (const raw of argv) {
+      const argDef = argDefs.shift();
+      if (!argDef) throw new UnexpectedArgumentException(raw);
+      args.push(argDef.parse(raw));
+    }
+
+    return await cmd.onexec(args as any);
   }
 }
 
-export function command(): Command<[], unknown> {
-  return new Command({ args: [], flags: {} });
+export function command(): CommandBuilder<[], any, void> {
+  return new CommandBuilder({ args: [], flags: {}, onexec: () => {}});
 }
-
-command()
-  .arg(a => a)
-  .arg(a => a.parse(input => 100))
-  .onexec(args => {
-    console.log(args);
-  })
