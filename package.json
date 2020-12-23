@@ -38,7 +38,7 @@
   "scripts": {
     "lint": "tsc -p . && eslint . && prettier -c .",
     "posttest": "yarn lint",
-    "prepare": "tsc -p .",
+    "prepare": "rm -rf lib && tsc -p .",
     "test": "jest"
   },
   "types": "lib/index.d.ts"
