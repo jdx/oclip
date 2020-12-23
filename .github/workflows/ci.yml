@@ -146,16 +146,19 @@ jobs:
           node-version: ${{ matrix.node_version }}
 
       - run: npm ci
+      - run: npm link
       - run: |
-          npm link
-          cd example
           npm link oclip
           npm ci
+        working-directory: example
       - run: npx ts-node src/cli.ts 20000
+        working-directory: example
       - run: |
           npm pack
           tar -xvzf oclip-example-*.tgz
+        working-directory: example
       - run: ./package/bin/run serve 20000
+        working-directory: example
 
   release:
     needs: [test, lint, e2e]
