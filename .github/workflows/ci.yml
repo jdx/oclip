@@ -8,7 +8,6 @@ env:
 
 jobs:
   canary:
-    name: node-15.x on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -37,7 +36,6 @@ jobs:
       - run: npm test
 
   test:
-    name: node-${{ matrix.node_version }} on ${{ matrix.os }}
     needs: canary
     runs-on: ${{ matrix.os }}
 
