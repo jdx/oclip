@@ -18,7 +18,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          submodules: 'recursive'
+          token: ${{ secrets.GH_TOKEN }}
+          submodules: recursive
       - name: Cache Node.js modules
         uses: actions/cache@v2
         with:
