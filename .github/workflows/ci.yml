@@ -138,9 +138,11 @@ jobs:
         working-directory: example
       - run: npx ts-node src/cli.ts 20000
         working-directory: example
+      - id: oclip-example-version
+        run: echo "::set-output name=version::$(npm view oclip-example version)"
       - run: |
           npm pack
-          tar -xvzf oclip-example-*.tgz
+          tar -xvzf oclip-example-${{steps.oclip-example-version.outputs.version}}.tgz
         working-directory: example
       - run: ./package/bin/cli.js serve 20000
         working-directory: example
