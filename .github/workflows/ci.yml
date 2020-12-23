@@ -17,6 +17,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: 'recursive'
       - name: Cache Node.js modules
         uses: actions/cache@v2
         with:
@@ -38,13 +40,12 @@ jobs:
         env:
           CODECOV_TOKEN: 5183f977-3ea8-48b1-87a0-0a5114afabf0
 
-      # - run: git submodule update --init --recursive
-      # - run: |
-      #     yarn link
-      #     cd example
-      #     yarn link oclip
-      #     yarn
-      #     npx ts-node src/cli.ts serve 20000
-      #     yarn pack
-      #     tar -xvzf oclip-example-*.tgz
-      #     ./package/bin/run serve 20000
+      - run: |
+          yarn link
+          cd example
+          yarn link oclip
+          yarn
+          npx ts-node src/cli.ts serve 20000
+          yarn pack
+          tar -xvzf oclip-example-*.tgz
+          ./package/bin/run serve 20000
