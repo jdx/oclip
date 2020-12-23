@@ -23,7 +23,8 @@
     "typescript": "^4.1.3"
   },
   "files": [
-    "/dist"
+    "/dist",
+    "!**/*.test.js"
   ],
   "homepage": "https://github.com/oclif/oclip#readme",
   "keywords": [
