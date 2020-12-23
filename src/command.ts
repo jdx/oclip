@@ -1,7 +1,11 @@
 import { Arg, ArgList, ArgBuilder, ArgValues, OptionalArg } from './arg';
 import { UnexpectedArgumentException } from './errors';
 
-export type ExecFn<ArgDefs extends ArgList, R> = (args: ArgValues<ArgDefs>) => R;
+export type ExecFnThis<ArgDefs extends ArgList> = { args: ArgDefs };
+export type ExecFn<ArgDefs extends ArgList, R> = (
+  this: ExecFnThis<ArgDefs>,
+  args: ArgValues<ArgDefs>
+) => R;
 
 export interface Command<ArgDefs extends ArgList, Flags, R> {
   args: ArgDefs;
