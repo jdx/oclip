@@ -1,6 +1,6 @@
 import { Arg, ArgList, ArgBuilder, ArgValues, OptionalArg } from './arg';
-import { UnexpectedArgumentException } from './errors';
 import { FlagBuilder, FlagDef, FlagDict, FlagValues } from './flags';
+import { parse } from './parse';
 
 export type ExecFnThis<ArgDefs extends ArgList> = { args: ArgDefs };
 export type ExecFn<ArgDefs extends ArgList, FlagDefs extends FlagDict, R> = (
@@ -56,31 +56,7 @@ export class CommandBuilder<ArgDefs extends ArgList, FlagDefs extends FlagDict, 
 
   async exec(argv = process.argv): Promise<R> {
     const cmd = this.value;
-
-    argv = argv.slice(2);
-
-    const args = [];
-    const flags = {} as any;
-    const argDefs = cmd.args.slice();
-    let parsingFlags = true;
-    for (const raw of argv) {
-      if (raw === '--') {
-        parsingFlags = false;
-        continue;
-      }
-      if (parsingFlags && raw.startsWith('--')) {
-        const name = raw.slice(2);
-        if (name in cmd.flags) {
-          flags[name] = true;
-          continue;
-        }
-      }
-
-      const argDef = argDefs.shift();
-      if (!argDef) throw new UnexpectedArgumentException(raw);
-      args.push(argDef.parse(raw));
-    }
-
+    const { args, flags } = await parse(cmd, argv);
     return await cmd.onexec(args as any, flags);
   }
 }
