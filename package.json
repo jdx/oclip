@@ -37,7 +37,7 @@
   },
   "scripts": {
     "lint": "tsc -p . && eslint . && prettier -c .",
-    "prepare": "rm -rf lib && tsc -p .",
+    "prepack": "rm -rf lib && tsc -p .",
     "test": "jest"
   },
   "types": "lib/index.d.ts"
