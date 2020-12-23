@@ -37,7 +37,6 @@
   },
   "scripts": {
     "lint": "tsc -p . && eslint . && prettier -c .",
-    "posttest": "yarn lint",
     "prepare": "rm -rf lib && tsc -p .",
     "test": "jest"
   },
