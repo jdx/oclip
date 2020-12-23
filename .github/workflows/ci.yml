@@ -10,69 +10,7 @@ env:
   CI: true
 
 jobs:
-  canary:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: 14.x
-      - id: npm-cache
-        run: echo "::set-output name=dir::$(npm config get cache)"
-      - uses: actions/cache@v2
-        with:
-          path: ${{ steps.npm-cache.outputs.dir }}
-          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.OS }}-node-
-            ${{ runner.OS }}-
-      - run: npm ci
-      - run: npm test
-
   test:
-    needs: canary
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      fail-fast: false
-      matrix:
-        os:
-          - ubuntu-latest
-          - macos-latest
-          - windows-latest
-        node_version: [12.x, 14.x, 15.x]
-
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          token: ${{ secrets.GH_TOKEN }} # delete this when it is public
-          submodules: recursive
-      - uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node_version }}
-      - id: npm-cache
-        run: echo "::set-output name=dir::$(npm config get cache)"
-      - uses: actions/cache@v2
-        with:
-          path: ${{ steps.npm-cache.outputs.dir }}
-          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.OS }}-node-
-            ${{ runner.OS }}-
-
-      - run: npm ci
-
-      - if: ${{ matrix.node_version == '15.x' && matrix.os == 'ubuntu-latest' }}
-        run: |
-          npm test --collectCoverage
-          bash <(curl -s https://codecov.io/bash)
-        env:
-          CODECOV_TOKEN: 5183f977-3ea8-48b1-87a0-0a5114afabf0
-      - if: ${{ matrix.node_version != '15.x' && matrix.os == 'ubuntu-latest' }}
-        run: npm test
-
-  lint:
-    needs: canary
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -81,6 +19,7 @@ jobs:
           - ubuntu-latest
           # - macos-latest
           # - windows-latest
+        # node_version: [12.x, 14.x, 15.x]
         node_version: [14.x]
     steps:
       - uses: actions/checkout@v2
@@ -99,52 +38,22 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
-
       - run: npm ci
+      - run: npm test --collectCoverage
+          bash <(curl -s https://codecov.io/bash)
+        env:
+          CODECOV_TOKEN: 5183f977-3ea8-48b1-87a0-0a5114afabf0
       - run: npm run lint
 
-  e2e:
-    needs: canary
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os:
-          - ubuntu-latest
-          - macos-latest
-          - windows-latest
-        node_version: [14.x]
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          token: ${{ secrets.GH_TOKEN }} # delete this when it is public
-          submodules: recursive
-      - uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node_version }}
-      - id: npm-cache
-        run: echo "::set-output name=dir::$(npm config get cache)"
-      - uses: actions/cache@v2
-        with:
-          path: ${{ steps.npm-cache.outputs.dir }}
-          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.OS }}-node-
-            ${{ runner.OS }}-
-
-      - run: npm ci
       - run: npm link
+      - id: oclip-example-version
+        run: echo "::set-output name=version::$(npm view oclip-example version)"
+        working-directory: example
       - run: |
           npm link oclip
           npm ci
-        working-directory: example
-      - run: npx ts-node src/cli.ts 20000
-        working-directory: example
-      - id: oclip-example-version
-        run: echo "::set-output name=version::$(npm view oclip-example version)"
-      - run: |
+          npx ts-node src/cli.ts 20000
           npm pack
           tar -xvzf oclip-example-${{steps.oclip-example-version.outputs.version}}.tgz
-        working-directory: example
-      - run: ./package/bin/cli.js serve 20000
+          ./package/bin/cli.js serve 20000
         working-directory: example
