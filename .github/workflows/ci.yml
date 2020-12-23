@@ -18,17 +18,18 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          token: ${{ secrets.GH_TOKEN }}
+          token: ${{ secrets.GH_TOKEN }} # delete this when it is public
           submodules: recursive
+
       - name: Cache Node.js modules
         uses: actions/cache@v2
         with:
-          # npm cache files are stored in `~/.npm` on Linux/macOS
           path: ~/.npm
           key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
@@ -42,10 +43,10 @@ jobs:
           CODECOV_TOKEN: 5183f977-3ea8-48b1-87a0-0a5114afabf0
 
       - run: |
-          yarn link
+          npm link
           cd example
-          yarn link oclip
-          yarn
+          npm link oclip
+          npm ci
           npx ts-node src/cli.ts serve 20000
           yarn pack
           tar -xvzf oclip-example-*.tgz
