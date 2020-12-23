@@ -1,5 +1,5 @@
 ---
-name: Node.js CI
+name: Release
 
 on:
   push:
@@ -25,7 +25,7 @@ jobs:
             ${{ runner.OS }}-
       - uses: actions/setup-node@v2
         with:
-          node_version: 14.x
+          node-version: 14.x
       - run: npm ci
       - run: npm test
 
