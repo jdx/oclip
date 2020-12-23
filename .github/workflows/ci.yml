@@ -36,7 +36,7 @@ jobs:
             v1-${{ runner.OS }}-node-
             v1-${{ runner.OS }}-
       - run: npm ci
-      - run: npm test --ci --coverage
+      - run: npm test -- --ci --coverage
         env:
           CI: true
       - run: bash <(curl -s https://codecov.io/bash)
