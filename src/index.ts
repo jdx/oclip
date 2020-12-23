@@ -1,3 +1,1 @@
-import {command} from './command';
-
-command();
+export {command} from './command';
