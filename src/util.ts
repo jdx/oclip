@@ -1,1 +1,1 @@
-export type ParseFn<T> = (input: string) => T
+export type ParseFn<T> = (input: string) => T;

@@ -234,7 +234,7 @@ Here is an example of building the children:
 
 ```typescript
 const commandNames = ['foo', 'bar', 'baz'];
-const commands = commandNames.map((name) => [
+const commands = commandNames.map(name => [
   name,
   command({
     run() {
@@ -311,7 +311,7 @@ test('errors if flag is not valid', async () => {
     },
   });
   await expect(cmd.exec(['--invalid-flag'])).rejects.toThrowError(
-    /Unexpected argument: --invalid-flag/,
+    /Unexpected argument: --invalid-flag/
   );
 });
 ```

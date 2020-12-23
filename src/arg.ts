@@ -1,24 +1,28 @@
-import { ParseFn } from "./util";
+import { ParseFn } from './util';
 
-export type ArgKind = 'required' | 'optional'
+export type ArgKind = 'required' | 'optional';
 
-export interface Arg<T=any, TKind extends ArgKind = any> {
-  id: number
-  name?: string
-  parse: ParseFn<T>
-  kind: TKind
+export interface Arg<T = any, TKind extends ArgKind = any> {
+  id: number;
+  name?: string;
+  parse: ParseFn<T>;
+  kind: TKind;
 }
 
-export type RequiredArg<T = unknown> = Arg<T, 'required'>
-export type OptionalArg<T = unknown> = Arg<T, 'optional'>
+export type RequiredArg<T = unknown> = Arg<T, 'required'>;
+export type OptionalArg<T = unknown> = Arg<T, 'optional'>;
 
-export type ArgType<A extends Arg> = ReturnType<A['parse']>
+export type ArgType<A extends Arg> = ReturnType<A['parse']>;
 export type ArgValue<A extends Arg> = A extends Arg<infer T, infer K>
-? K extends 'optional' ? T | undefined : T
-: never;
+  ? K extends 'optional'
+    ? T | undefined
+    : T
+  : never;
 
 export type ArgList = readonly Arg[];
-export type ArgValues<Args extends ArgList> = { [A in keyof Args]: Args[A] extends Args[number] ? ArgValue<Args[A]> : never }
+export type ArgValues<Args extends ArgList> = {
+  [A in keyof Args]: Args[A] extends Args[number] ? ArgValue<Args[A]> : never;
+};
 
 let lastID = 0;
 
@@ -28,21 +32,21 @@ export class ArgBuilder<A extends Arg> {
       id: lastID++,
       parse: s => s,
       kind: 'optional',
-    })
+    });
   }
 
-  private constructor(readonly value: A) { }
+  private constructor(readonly value: A) {}
 
   name(name: string): ArgBuilder<A> {
-    return new ArgBuilder({...this.value, name})
+    return new ArgBuilder({ ...this.value, name });
   }
 
   required(): ArgBuilder<RequiredArg<ArgType<A>>> {
-    return new ArgBuilder({ ...this.value, kind: 'required'});
+    return new ArgBuilder({ ...this.value, kind: 'required' });
   }
 
   optional(): ArgBuilder<OptionalArg<ArgType<A>>> {
-    return new ArgBuilder({ ...this.value, kind: 'optional'});
+    return new ArgBuilder({ ...this.value, kind: 'optional' });
   }
 
   parse<T>(parse: ParseFn<T>): ArgBuilder<Arg<T, A['kind']>> {

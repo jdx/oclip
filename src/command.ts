@@ -1,25 +1,25 @@
-import { Arg, ArgList, ArgBuilder, ArgValues, OptionalArg} from './arg';
+import { Arg, ArgList, ArgBuilder, ArgValues, OptionalArg } from './arg';
 import { UnexpectedArgumentException } from './errors';
 
-export type ExecFn<ArgDefs extends ArgList, R> = (args: ArgValues<ArgDefs>) => R
+export type ExecFn<ArgDefs extends ArgList, R> = (args: ArgValues<ArgDefs>) => R;
 
 export interface Command<ArgDefs extends ArgList, Flags, R> {
-  args: ArgDefs
-  flags: Flags
-  onexec: ExecFn<ArgDefs, R>
+  args: ArgDefs;
+  flags: Flags;
+  onexec: ExecFn<ArgDefs, R>;
 }
 
-export type ArgBuilderFn<A extends Arg> = (ab: ArgBuilder<OptionalArg<string>>) => ArgBuilder<A>
+export type ArgBuilderFn<A extends Arg> = (ab: ArgBuilder<OptionalArg<string>>) => ArgBuilder<A>;
 
 export class CommandBuilder<ArgDefs extends ArgList, Flags, R> {
-  constructor(private readonly value: Command<ArgDefs, Flags, R>) { }
+  constructor(private readonly value: Command<ArgDefs, Flags, R>) {}
 
   arg<A extends Arg>(build: ArgBuilderFn<A>): CommandBuilder<[...ArgDefs, A], Flags, R> {
     const arg = build(ArgBuilder.init()).value;
 
     return new CommandBuilder({
       ...this.value,
-      args: [...this.value.args, arg] as any
+      args: [...this.value.args, arg] as any,
     });
   }
 
@@ -27,7 +27,7 @@ export class CommandBuilder<ArgDefs extends ArgList, Flags, R> {
     return new CommandBuilder({
       ...this.value,
       onexec,
-    })
+    });
   }
 
   async exec(argv = process.argv): Promise<R> {
@@ -48,5 +48,5 @@ export class CommandBuilder<ArgDefs extends ArgList, Flags, R> {
 }
 
 export function command(): CommandBuilder<[], any, void> {
-  return new CommandBuilder({ args: [], flags: {}, onexec: () => {}});
+  return new CommandBuilder({ args: [], flags: {}, onexec: () => {} });
 }
