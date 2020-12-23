@@ -35,7 +35,7 @@
     "type": "git",
     "url": "git+https://github.com/oclif/oclip.git"
   },
-    "scripts": {
+  "scripts": {
     "lint": "tsc -p . && eslint --ext ts ./src && cd example && eslint --ext ts . && prettier -c .",
     "posttest": "yarn lint",
     "prepare": "tsc -p .",
