@@ -22,3 +22,11 @@ test('has args available on *this*', async () => {
     .exec(['node', 'cmd', 'abc', ' 1 ', '123']);
   expect(args.map(a => a.name)).toEqual(['FOO', 'BAR', 'BAZ']);
 });
+
+test('can specify a flag', async () => {
+  const val = await command()
+    .flag('verbose', a => a)
+    .onexec((_, flags) => flags.verbose)
+    .exec(['node', 'cmd', '--verbose']);
+  expect(val).toEqual(true);
+});
