@@ -71,7 +71,7 @@ jobs:
 
       - run: npm ci
 
-      - if: ${{ matrix.node_version == '15.x' }}
+      - if: ${{ matrix.node_version == '15.x' && matrix.os == 'ubuntu-latest' }}
         run: |
           npm test --collectCoverage
           bash <(curl -s https://codecov.io/bash)
